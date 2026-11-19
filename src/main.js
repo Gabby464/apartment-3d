@@ -300,7 +300,6 @@ const roomLights = [[546, 751, 0.9], [850, 813, 0.5]].map(([x, y, i]) => {
 let elecOn = true;
 // CSS2DRenderer only checks each label's own .visible, so toggle the children too
 function showGroup(g, v) {
-  if (g.visible === v) return;
   g.visible = v;
   g.children.forEach((c) => { c.visible = v; });
 }
@@ -312,6 +311,7 @@ for (const p of ELECTRIC) {
   div.textContent = p.id;
   div.title = p.bg;
   const obj = new CSS2DObject(div);
+  obj.userData.room = p.room;
   const [nx, ny] = p.n || [0, 0];
   obj.position.set(M(p.x + nx * 6), M(p.ceil ? H - 8 : p.h), M(p.y + ny * 6));
   elecLabels.add(obj);
@@ -477,8 +477,10 @@ $('#show-elec').addEventListener('change', (e) => {
 });
 document.body.classList.add('show-elec');
 {
-  const typeName = { switch: 'Ключ', socket: 'Контакт', light: 'Осветление', sensor: 'Датчик' };
-  const rows = ELECTRIC.map((p) => `<li><span class="elec elec-${p.t}">${p.id}</span><div>${p.bg}`
+  const typeName = { switch: 'Ключ', socket: 'Контакт', light: 'Осветление', sensor: 'Датчик', intercom: 'Домофон' };
+  let lastRoom = '';
+  const order = ['Спалня', 'Дрешник', 'Антре', 'Дневна'];
+  const rows = [...ELECTRIC].sort((x, y) => order.indexOf(x.room) - order.indexOf(y.room)).map((p) => `${p.room !== lastRoom ? `<li class="elec-room">${(lastRoom = p.room)}</li>` : ''}<li><span class="elec elec-${p.t}">${p.id}</span><div>${p.bg}`
     + `<small>${typeName[p.t]}${p.ceil ? ' · таван' : ` · h ${p.h} см`}${p.note ? ` · ${p.note}` : ''}</small></div></li>`);
   $('#elec-list').innerHTML = rows.join('');
   $('#furn-list').innerHTML = FURNITURE.map((f) => `<li><div><b>${f.name}</b><small>${f.size}</small><small>${f.mech}</small></div></li>`).join('');
@@ -662,7 +664,11 @@ function frame() {
       lastRoom = room;
       hud.innerHTML = room ? `<b>${room.en}</b> <span>${room.bg}</span>${room.area ? ` · ${room.area.toFixed(2)} m²` : ''}` : '';
     }
-    showGroup(elecLabels, elecOn && (room?.id === 'bed2' || room?.id === 'closet'));
+    {
+      const here = { bed2: ['Спалня', 'Дрешник'], closet: ['Спалня', 'Дрешник'], hall: ['Антре'], living: ['Дневна'] }[room?.id] || [];
+      elecLabels.visible = elecOn;
+      elecLabels.children.forEach((c) => { c.visible = elecOn && here.includes(c.userData.room); });
+    }
     minimap.draw(player, room?.id);
     renderer.render(scene, persp);
     labelRenderer.render(scene, persp);
