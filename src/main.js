@@ -4,7 +4,7 @@ import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer
 import { H, INFO, ROOMS, WALLS, RAILINGS, LANDING, LANDING_LIMITS } from './plan.js';
 import { woodTexture, tileTexture } from './textures.js';
 import { Minimap } from './minimap.js';
-import { buildInterior, ELECTRIC } from './interior.js';
+import { buildInterior, ELECTRIC, FURNITURE } from './interior.js';
 
 const M = (v) => v / 100; // cm -> m
 const EYE = 1.6;
@@ -364,7 +364,7 @@ function circleHits(x, z, r) {
   };
   const out = new Set();
   for (const b of colliders) if (hit(b)) out.add(b);
-  for (const d of doors) if (d.frac < 0.6 && hit(d.rect)) out.add(d.rect);
+  for (const d of doors) if (d.rect && d.frac < 0.6 && hit(d.rect)) out.add(d.rect);
   return out;
 }
 const inWalkable = (x, z) => walkable.some((b) => x >= b[0] && x <= b[2] && z >= b[1] && z <= b[3]);
@@ -390,8 +390,8 @@ function toggleDoor(door) {
   if (!door) return;
   if (door.target > 0.5) {
     // don't close a door on top of the player
-    const [a, b, c, d] = door.rect;
-    if (mode === 'walk' && player.x > a - 0.3 && player.x < c + 0.3 && player.z > b - 0.3 && player.z < d + 0.3) {
+    const [a, b, c, d] = door.rect || [0, 0, 0, 0];
+    if (door.rect && mode === 'walk' && player.x > a - 0.3 && player.x < c + 0.3 && player.z > b - 0.3 && player.z < d + 0.3) {
       flash('Step out of the doorway first');
       return;
     }
@@ -402,6 +402,7 @@ function toggleDoor(door) {
 function nearestDoor() {
   let best = null, bd = 1.7;
   for (const d of doors) {
+    if (d.furniture) continue;
     const dist = Math.hypot(d.center.x - player.x, d.center.y - player.z);
     if (dist < bd) { bd = dist; best = d; }
   }
@@ -462,6 +463,12 @@ document.querySelectorAll('#modes button').forEach((b) => b.addEventListener('cl
 
 $('#cutaway').addEventListener('change', (e) => { cutaway = e.target.checked; applyClipping(); });
 $('#show-labels').addEventListener('change', (e) => { document.body.classList.toggle('hide-room-labels', !e.target.checked); });
+$('#open-all').addEventListener('click', () => {
+  const parts = doors.filter((d) => d.furniture || d.kind === 'slider');
+  const open = parts.some((d) => d.target < 0.5);
+  parts.forEach((d) => { d.target = open ? 1 : 0; });
+  $('#open-all').textContent = open ? 'Затвори всички мебели' : 'Отвори всички мебели';
+});
 $('#show-furniture').addEventListener('change', (e) => { furniture.visible = e.target.checked; });
 $('#show-elec').addEventListener('change', (e) => {
   elecOn = e.target.checked;
@@ -474,6 +481,7 @@ document.body.classList.add('show-elec');
   const rows = ELECTRIC.map((p) => `<li><span class="elec elec-${p.t}">${p.id}</span><div>${p.bg}`
     + `<small>${typeName[p.t]}${p.ceil ? ' · таван' : ` · h ${p.h} см`}${p.note ? ` · ${p.note}` : ''}</small></div></li>`);
   $('#elec-list').innerHTML = rows.join('');
+  $('#furn-list').innerHTML = FURNITURE.map((f) => `<li><div><b>${f.name}</b><small>${f.size}</small><small>${f.mech}</small></div></li>`).join('');
 }
 
 // facts + room list

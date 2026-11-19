@@ -47,6 +47,24 @@ export const ELECTRIC = [
     bg: 'Лампа до огледалото, дясно', note: 'на ключ К4' },
 ];
 
+// ---------------------------------------------------------------- furniture list (shown in the side panel)
+export const FURNITURE = [
+  { name: 'Легло 160 × 200 с повдигащ механизъм', size: 'тапицирано, табла 180 × 120',
+    mech: 'газови амортисьори – матракът се вдига, отдолу ракла за спално бельо и куфари' },
+  { name: 'Нощни шкафчета (2 бр.)', size: '45 × 37 × 30, висящи, орех',
+    mech: '1 чекмедже, пълно изтегляне, push-to-open (Tip-On), плавно затваряне' },
+  { name: 'Бюфет срещу леглото', size: '183 × 30 × 75, орех с релефни фронтове',
+    mech: 'ляво и дясно: врати с push-to-open (кърпи, хавлии); средата: 3 чекмеджета – бижута (кадифе с отделения), парфюми, дребни неща' },
+  { name: 'Тоалетка (продължение на бюфета)', size: '107 × 40, плот на 75 см',
+    mech: 'плитко чекмедже push-to-open с органайзер за гримове' },
+  { name: 'Дрешник – закачалки', size: '213 × 60, открито',
+    mech: 'дълги дрехи 82 см + два реда закачалки 123 см, рафтове за обувки и кутии, LED лента' },
+  { name: 'Дрешник – чекмеджета', size: '3 колони × 4 + 4 в дъното = 16 бр., 40 дълбоки',
+    mech: 'пълно изтегляне с плавно затваряне; вдлъбнат профил отгоре за издърпване (без дръжки); отделения за бижута, бельо, чорапи, колани' },
+  { name: 'Дрешник – шкафове горе', size: '3 бр., 70 × 130',
+    mech: 'врати на скрити панти с push-to-open, по 2 рафта' },
+];
+
 // ---------------------------------------------------------------- materials
 const mat = (color, opts = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.7, ...opts });
 const C = {
@@ -67,6 +85,13 @@ const C = {
   lightGlow: new THREE.MeshStandardMaterial({ color: '#ffffff', emissive: '#fff4e0', emissiveIntensity: 1.2 }),
   plate: mat('#fbfbfa', { roughness: 0.4 }),
   box: mat('#d9cdb9', { roughness: 0.9 }),
+  inner: mat('#c9a77c', { roughness: 0.6 }),          // light oak inside carcasses and drawers
+  metal: mat('#a7adb2', { roughness: 0.3, metalness: 0.8 }),
+  metalDark: mat('#6d7277', { roughness: 0.35, metalness: 0.7 }),
+  grip: mat('#24170f', { roughness: 0.8 }),           // shadow of the grip groove
+  lining: mat('#cfc8bc', { roughness: 1 }),
+  velvet: mat('#4d5a52', { roughness: 1 }),
+  velvetDark: mat('#3a443e', { roughness: 1 }),
 };
 
 function flutedWood() {
@@ -141,47 +166,237 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
   // rug
   b(398, 655, 658, 860, 0, 1, C.rug).castShadow = false;
 
-  // bed 160 x 200 with upholstered headboard on the south wall
-  b(438, 892, 618, 897, 0, 120, C.fabric);               // headboard
-  b(446, 697, 610, 892, 6, 33, C.fabric);                // base
-  b(448, 699, 608, 890, 33, 55, C.linen);                // mattress
-  b(444, 697, 612, 842, 38, 60, C.duvet);                // duvet
-  b(443, 700, 613, 745, 60, 62, C.sage);                 // throw
-  b(456, 846, 524, 886, 55, 72, C.linen);                // pillows
-  b(532, 846, 600, 886, 55, 72, C.linen);
-  b(466, 838, 590, 852, 58, 74, C.sage);                 // cushion
+  // ======================= MECHANISMS =======================
+  // A front is described in its own frame: u runs along the front, v is the distance out of the
+  // front face (v < 0 = inside the unit). n = outward direction in plan, f = plan coordinate of the face.
+  const frame = ([nx, ny], f) => (u1, u2, v1, v2) => {
+    if (ny) { const a = f + ny * v1, c = f + ny * v2; return [u1, Math.min(a, c), u2, Math.max(a, c)]; }
+    const a = f + nx * v1, c = f + nx * v2; return [Math.min(a, c), u1, Math.max(a, c), u2];
+  };
+  const centerOf = (n, f, u1, u2) => { const r = frame(n, f)((u1 + u2) / 2, (u1 + u2) / 2, 0, 0); return new THREE.Vector2(M(r[0]), M(r[1])); };
+  const tag = (mesh, part) => { mesh.userData.door = part; pickables.push(mesh); return mesh; };
+  const fluted = (w) => { const m = flutedWood(); m.map.repeat.set(Math.max(4, Math.round(w / 2.6)), 1); return m; };
+  const register = (part) => { part.furniture = true; part.frac = 0; part.target = 0; part.apply(); addDoor(part); return part; };
+  const quiet = (m) => { m.castShadow = false; return m; };
+
+  // carcass open at the front
+  function shell(n, f, u1, u2, depth, z0, z1, m, t = 1.8) {
+    const fr = frame(n, f);
+    b(...fr(u1, u1 + t, -depth, -2), z0, z1, m);
+    b(...fr(u2 - t, u2, -depth, -2), z0, z1, m);
+    b(...fr(u1, u2, -depth, -depth + t), z0, z1, m);
+    b(...fr(u1, u2, -depth, -2), z0, z0 + t, m);
+    b(...fr(u1, u2, -depth, -2), z1 - t, z1, m);
+  }
+
+  // drawer on full-extension soft-close runners; grip 'push' (push-to-open latch) or 'top' (grip groove on top)
+  function drawer({ n, f, u1, u2, z0, z1, depth, front, grip = 'push', fill }) {
+    const fr = frame(n, f);
+    const g = new THREE.Group();
+    group.add(g);
+    const part = { kind: 'drawer' };
+    const add = (r, za, zb, m, pick = true) => { const mesh = quiet(b(...r, za, zb, m, g)); if (pick) tag(mesh, part); return mesh; };
+    const zt = grip === 'top' ? z1 - 2.8 : z1 - 0.2;
+    add(fr(u1 + 0.2, u2 - 0.2, -2, 0), z0 + 0.2, zt, front).castShadow = true;
+    if (grip === 'top') add(fr(u1 + 0.2, u2 - 0.2, -2, -1.2), zt, z1 - 0.2, C.grip);
+    const ua = u1 + 2.6, ub = u2 - 2.6, vb = -depth + 4, zb = z0 + 1.5;
+    const zh = Math.max(zb + 6, z1 - 4.5);
+    add(fr(ua, ub, vb, -2), zb, zb + 1, C.inner);
+    add(fr(ua, ua + 1.2, vb, -2), zb, zh, C.inner);
+    add(fr(ub - 1.2, ub, vb, -2), zb, zh, C.inner);
+    add(fr(ua, ub, vb, vb + 1.2), zb, zh, C.inner);
+    add(fr(ua - 1.1, ua, vb, -3), zb + 1, zb + 2.6, C.metal, false);       // moving runner
+    add(fr(ub, ub + 1.1, vb, -3), zb + 1, zb + 2.6, C.metal, false);
+    quiet(b(...fr(ua - 1.6, ua - 1.1, -depth + 2, -3), zb + 0.6, zb + 3, C.metalDark)); // fixed runner
+    quiet(b(...fr(ub + 1.1, ub + 1.6, -depth + 2, -3), zb + 0.6, zb + 3, C.metalDark));
+    if (grip === 'push') {                                                // Tip-On latch at the back
+      const uc = (u1 + u2) / 2, zc = (zb + zh) / 2;
+      quiet(b(...fr(uc - 2.5, uc + 2.5, -depth + 1.8, vb), zc - 1.5, zc + 1.5, C.metalDark));
+    }
+    if (fill) {
+      const api = { u1: ua + 1.2, u2: ub - 1.2, v1: vb + 1.2, v2: -2.2, z: zb + 1, h: zh - zb - 1,
+        add: (a1, a2, c1, c2, za, zb2, m) => add(fr(a1, a2, c1, c2), za, zb2, m, false),
+        cyl: (u, v, za, zb2, r, m) => { const pt = fr(u, u, v, v); quiet(cylinder(pt[0], pt[1], za, zb2, r, m, g)); } };
+      fill(api);
+    }
+    const travel = depth * 0.85;
+    part.center = centerOf(n, f, u1, u2);
+    part.apply = () => { g.position.x = M(n[0] * travel * part.frac); g.position.z = M(n[1] * travel * part.frac); };
+    return register(part);
+  }
+
+  // hinged door on concealed (cup) hinges with push-to-open
+  function hingeDoor({ n, f, u1, u2, z0, z1, hinge = 'u1', front }) {
+    const fr = frame(n, f);
+    const part = { kind: 'hinge' };
+    const hu = hinge === 'u1' ? u1 + 0.2 : u2 - 0.2;
+    const hp = fr(hu, hu, -1, -1);
+    const pivot = new THREE.Group();
+    pivot.position.set(M(hp[0]), 0, M(hp[1]));
+    group.add(pivot);
+    const inner = new THREE.Group();
+    inner.position.set(-M(hp[0]), 0, -M(hp[1]));
+    pivot.add(inner);
+    tag(b(...fr(u1 + 0.2, u2 - 0.2, -2, 0), z0 + 0.2, z1 - 0.2, front, inner), part);
+    const [c1, c2] = hinge === 'u1' ? [u1 + 2, u1 + 7] : [u2 - 7, u2 - 2];
+    for (const z of [z0 + 8, z1 - 14]) quiet(b(...fr(c1, c2, -3.2, -2), z, z + 6, C.metal, inner));
+    const lu = hinge === 'u1' ? u2 - 4 : u1 + 1;                           // push latch on the carcass
+    quiet(b(...fr(lu, lu + 3, -5, -2.2), (z0 + z1) / 2 - 2, (z0 + z1) / 2 + 2, C.metalDark));
+    const s = hinge === 'u1' ? 1 : -1;
+    const d = n[1] ? [s, 0] : [0, s];
+    const sign = d[1] === n[0] && -d[0] === n[1] ? 1 : -1;
+    part.center = centerOf(n, f, u1, u2);
+    part.apply = () => { pivot.rotation.y = sign * 1.65 * part.frac; };
+    return register(part);
+  }
+
+  // ---- contents helpers
+  const linenCols = ['#e9e3d8', '#cfc4b3', '#a9b3a1', '#d8c2ad', '#8f9a8a', '#bfb2a2'];
+  const clothCols = ['#2f3a4a', '#8c6d5a', '#d8cfc4', '#5b6b5a', '#9e3f3a', '#e8e2d6', '#3d3d3d', '#b48a6b', '#6d7f99', '#c7b49b'];
+  const pick = (arr) => mat(arr[(rnd() * arr.length) | 0], { roughness: 0.95 });
+  const grid = (a, nu, nv, hh = 5, m = C.inner) => {
+    for (let i = 1; i < nu; i++) { const u = a.u1 + (i * (a.u2 - a.u1)) / nu; a.add(u - 0.4, u + 0.4, a.v1, a.v2, a.z, a.z + Math.min(hh, a.h), m); }
+    for (let j = 1; j < nv; j++) { const v = a.v1 + (j * (a.v2 - a.v1)) / nv; a.add(a.u1, a.u2, v - 0.4, v + 0.4, a.z, a.z + Math.min(hh, a.h), m); }
+  };
+  const folded = (a, cols, colors, layer = 4, fillRatio = 0.85) => {
+    const w = (a.u2 - a.u1) / cols;
+    for (let c = 0; c < cols; c++) {
+      const layers = Math.max(1, Math.floor((a.h * fillRatio) / layer) - (c % 2));
+      for (let k = 0; k < layers; k++) {
+        const j = (rnd() - 0.5) * 1.5;
+        a.add(a.u1 + c * w + 1 + j, a.u1 + (c + 1) * w - 1 + j, a.v1 + 1, a.v2 - 1, a.z + k * layer, a.z + (k + 1) * layer - 0.3, pick(colors));
+      }
+    }
+  };
+  const smalls = (a, nu, nv, colors, hmax) => {
+    for (let i = 0; i < nu; i++) for (let j = 0; j < nv; j++) {
+      const u = a.u1 + ((i + 0.5) * (a.u2 - a.u1)) / nu, v = a.v1 + ((j + 0.5) * (a.v2 - a.v1)) / nv;
+      if (rnd() < 0.25) continue;
+      const kind = rnd();
+      if (kind < 0.5) a.cyl(u, v, a.z, a.z + 1 + rnd() * hmax, 0.8 + rnd() * 1.6, pick(colors));
+      else a.add(u - 2 - rnd() * 2, u + 2 + rnd() * 2, v - 1.5 - rnd() * 2, v + 1.5 + rnd() * 2, a.z, a.z + 0.6 + rnd() * hmax * 0.4, pick(colors));
+    }
+  };
+  const gold = ['#c9a65a', '#d9d4cc', '#b08a5a', '#8c8c8c'];
+  const makeup = ['#2a2a2a', '#c58b7a', '#9e3f3a', '#e3c9a8', '#7a5a4a', '#d9b8a8'];
+  const perfume = (a) => {
+    const pts = [[0.15, 0.3], [0.38, 0.65], [0.6, 0.3], [0.82, 0.62], [0.25, 0.75], [0.7, 0.8]];
+    for (const [pu, pv] of pts) {
+      const u = a.u1 + pu * (a.u2 - a.u1), v = a.v1 + pv * (a.v2 - a.v1), hh = Math.min(a.h - 1, 8 + rnd() * 6);
+      a.cyl(u, v, a.z, a.z + hh, 2.5 + rnd() * 1.2, mat(['#e9d6b8', '#cfe0e6', '#f0c9c0', '#d8d0f0'][(rnd() * 4) | 0], { roughness: 0.1, transparent: true, opacity: 0.8 }));
+      a.cyl(u, v, a.z + hh, a.z + hh + 2, 1.2, mat('#c9a65a', { metalness: 0.7, roughness: 0.3 }));
+    }
+  };
+
+  // ======================= BED with lift-up storage =======================
+  b(438, 892, 618, 897, 0, 120, C.fabric);                 // headboard
+  b(446, 697, 610, 701, 6, 31, C.fabric);                  // storage box sides
+  b(446, 888, 610, 892, 6, 31, C.fabric);
+  b(446, 701, 450, 888, 6, 31, C.fabric);
+  b(606, 701, 610, 888, 6, 31, C.fabric);
+  quiet(b(450, 701, 606, 888, 6, 7.5, C.lining));          // storage floor
+  quiet(b(527, 701, 529, 888, 7.5, 30, C.lining));         // divider
+  quiet(b(456, 708, 522, 790, 7.5, 24, mat('#d9d3c7')));   // spare duvet (vacuum bag)
+  quiet(b(458, 800, 520, 880, 7.5, 19, mat('#b9c2b0')));   // winter blanket
+  quiet(b(536, 712, 600, 866, 7.5, 27, mat('#5f5a54')));   // suitcase
+  const bed = { kind: 'bed' };
+  const lid = new THREE.Group();
+  lid.position.set(M(528), M(31), M(886));
+  group.add(lid);
+  const lidIn = new THREE.Group();
+  lidIn.position.set(-M(528), -M(31), -M(886));
+  lid.add(lidIn);
+  const lb = (...a) => tag(b(...a, lidIn), bed);
+  lb(446, 697, 610, 892, 31, 33, C.fabric);                // upholstered platform
+  lb(448, 699, 608, 890, 33, 55, C.linen);                 // mattress
+  lb(444, 697, 612, 842, 38, 60, C.duvet);                 // duvet
+  lb(443, 700, 613, 745, 60, 62, C.sage);                  // throw
+  lb(456, 846, 524, 886, 55, 72, C.linen);                 // pillows
+  lb(532, 846, 600, 886, 55, 72, C.linen);
+  lb(466, 838, 590, 852, 58, 74, C.sage);
+  const struts = [470, 586].map((x) => {
+    const m = new THREE.Mesh(new THREE.CylinderGeometry(M(1.1), M(1.1), 1, 10), C.metal);
+    group.add(m);
+    return { m, a: new THREE.Vector3(M(x), M(12), M(870)), local: new THREE.Vector3(M(x), M(29), M(790)) };
+  });
+  const up = new THREE.Vector3(0, 1, 0), tmp = new THREE.Vector3();
+  bed.center = new THREE.Vector2(M(528), M(795));
+  bed.apply = () => {
+    lid.rotation.x = 0.72 * bed.frac;
+    lid.updateMatrixWorld(true);
+    for (const s of struts) {
+      const bpt = lidIn.localToWorld(tmp.copy(s.local));
+      const dir = bpt.clone().sub(s.a);
+      s.m.scale.set(1, dir.length(), 1);
+      s.m.position.copy(s.a).addScaledVector(dir, 0.5);
+      s.m.quaternion.setFromUnitVectors(up, dir.normalize());
+      s.m.visible = bed.frac > 0.02;
+    }
+  };
+  register(bed);
   block([438, 697, 618, 897]);
 
-  // floating nightstands (45 x 37) with a drawer, wall sconces above
+  // ======================= NIGHTSTANDS (walnut, floating, push-to-open) =======================
   for (const [x1, x2] of [[391, 436], [620, 665]]) {
-    b(x1, 855, x2, 892, 25, 55, C.oak);
-    b(x1 + 2, 854, x2 - 2, 855, 29, 51, C.front);
-    b((x1 + x2) / 2 - 6, 853, (x1 + x2) / 2 + 6, 854, 46, 47.5, C.black);
+    shell([0, -1], 855, x1, x2, 37, 25, 55, C.walnut);
+    drawer({ n: [0, -1], f: 855, u1: x1, u2: x2, z0: 26.8, z1: 53.2, depth: 35, front: C.walnut, fill: (a) => {
+      a.add(a.u1 + 2, a.u1 + 18, a.v1 + 3, a.v1 + 25, a.z, a.z + 2.5, mat('#7a8a99'));       // book
+      a.add(a.u1 + 22, a.u1 + 36, a.v1 + 4, a.v1 + 10, a.z, a.z + 3, mat('#3b3b3b'));        // glasses case
+      a.cyl(a.u1 + 28, a.v1 + 20, a.z, a.z + 2, 4, mat('#d9d4cc'));                         // charger
+      a.add(a.u1 + 22, a.u1 + 34, a.v1 + 25, a.v2 - 2, a.z, a.z + 1.5, mat('#c58b7a'));      // notebook
+    } });
     block([x1, 855, x2, 892]);
     const cx = (x1 + x2) / 2;
-    b(cx - 1, 885, cx + 1, 897, 149, 151, C.black);                 // arm
-    cylinder(cx, 885, 140, 156, 9, C.lampShade).castShadow = false;  // shade
-    // something on top
-    b(cx - 10, 862, cx + 8, 882, 55, 58, mat('#7a8a99'));          // book
+    b(cx - 1, 885, cx + 1, 897, 149, 151, C.black);                 // sconce arm
+    cylinder(cx, 885, 140, 156, 9, C.lampShade).castShadow = false; // shade
+    b(cx - 10, 862, cx + 8, 882, 55, 58, mat('#7a8a99'));          // book on top
   }
 
-  // low sideboard opposite the bed (fluted walnut, 183 x 30 x 75) with two picture shelves above
-  const walnut = C.walnut;
-  b(452, 605, 635, 627, 0, 8, C.black).castShadow = false;          // recessed plinth
-  b(452, 605, 635, 633, 8, 72, walnut);                             // body
-  b(450, 605, 637, 635, 72, 75, walnut);                            // top (continues over the dressing table)
-  const fluted = flutedWood();
-  for (let i = 0; i < 3; i++) {                                     // 3 push-to-open doors
-    const x1 = 452.5 + i * 61, x2 = x1 + 60.5;
-    b(x1, 633, x2, 635, 9, 71.5, fluted);
+  // ======================= SIDEBOARD (fluted walnut, 183 x 30 x 75) =======================
+  {
+    const n = [0, 1], f = 635, fr = frame(n, f);
+    quiet(b(452, 605, 635, 627, 0, 8, C.black));                     // recessed plinth
+    shell(n, f, 452, 635, 30, 8, 72, C.walnut);
+    b(450, 605, 637, 635, 72, 75, C.walnut);                         // top (continues over the dressing table)
+    for (const u of [512.2, 573.8]) b(...fr(u, u + 1.8, -30, -2), 8, 72, C.walnut);
+    // left: towels on a shelf
+    quiet(b(...fr(453.8, 512.2, -28, -3), 39, 40.8, C.inner));
+    folded({ u1: 455, u2: 511, v1: -27, v2: -4, z: 9.8, h: 28, add: (a1, a2, c1, c2, za, zb, m) => quiet(b(...fr(a1, a2, c1, c2), za, zb, m)) }, 2, linenCols, 4.5);
+    for (let k = 0; k < 4; k++) {                                     // rolled towels on top
+      const r = new THREE.Mesh(new THREE.CylinderGeometry(M(5.5), M(5.5), M(22), 20), pick(linenCols));
+      r.rotation.x = Math.PI / 2;
+      r.position.set(M(460 + k * 13), M(46.5), M(620));
+      group.add(r);
+    }
+    hingeDoor({ n, f, u1: 452, u2: 512.8, z0: 8.5, z1: 72, hinge: 'u1', front: fluted(60) });
+    // middle: three drawers – jewellery, perfume, small things
+    drawer({ n, f, u1: 512.8, u2: 574.4, z0: 51, z1: 72, depth: 28, front: fluted(61), fill: (a) => {
+      a.add(a.u1, a.u2, a.v1, a.v2, a.z, a.z + 0.6, C.velvet);
+      const a2 = { ...a, z: a.z + 0.6, h: 4 };
+      grid(a2, 4, 2, 3.5, C.velvetDark);
+      smalls(a2, 8, 4, gold, 2);
+    } });
+    drawer({ n, f, u1: 512.8, u2: 574.4, z0: 29.5, z1: 51, depth: 28, front: fluted(61), fill: perfume });
+    drawer({ n, f, u1: 512.8, u2: 574.4, z0: 8.5, z1: 29.5, depth: 28, front: fluted(61), fill: (a) => {
+      grid(a, 3, 1, 8);
+      smalls(a, 6, 3, ['#d9c7b0', '#8a7e70', '#efe9df', '#6b4a3a'], 9);
+    } });
+    // right: shelves for towels / bathrobe / boxes
+    for (const z of [30, 51]) quiet(b(...fr(575.6, 633.2, -28, -3), z, z + 1.8, C.inner));
+    const rAdd = (a1, a2, c1, c2, za, zb, m) => quiet(b(...fr(a1, a2, c1, c2), za, zb, m));
+    folded({ u1: 576, u2: 632, v1: -27, v2: -4, z: 9.8, h: 19, add: rAdd }, 2, linenCols, 4.5);
+    folded({ u1: 576, u2: 632, v1: -27, v2: -4, z: 31.8, h: 18, add: rAdd }, 1, ['#cfc4b3', '#e9e3d8'], 6);
+    rAdd(578, 602, -26, -6, 52.8, 66, mat('#c9b9a3'));
+    rAdd(606, 630, -26, -6, 52.8, 63, mat('#8f9a8a'));
+    hingeDoor({ n, f, u1: 574.4, u2: 635, z0: 8.5, z1: 72, hinge: 'u2', front: fluted(60) });
   }
-  for (const z of [125, 162]) b(462, 605, 628, 620, z, z + 3, walnut);
+  for (const z of [125, 162]) b(462, 605, 628, 620, z, z + 3, C.walnut);
   // leaning frames on the shelves
   const art = ['#efe9df', '#3a3a3a', '#d9b8a8', '#cfc6b8', '#8a5a4a', '#f4efe6', '#6f7d6b'];
   [[125, [[466, 30, 36], [500, 26, 30], [530, 34, 40], [570, 24, 28], [598, 28, 32]]],
    [162, [[470, 26, 30], [502, 30, 38], [540, 34, 42], [584, 26, 30]]]].forEach(([z, items], k) => {
     items.forEach(([x, w, h], j) => {
-      b(x, 608, x + w, 610.5, z + 3, z + 3 + h, mat(art[(j + k * 2) % art.length], { roughness: 0.9 })).castShadow = false;
+      quiet(b(x, 608, x + w, 610.5, z + 3, z + 3 + h, mat(art[(j + k * 2) % art.length], { roughness: 0.9 })));
     });
   });
   // on top: globe table lamp, vase with branches, books
@@ -200,16 +415,20 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
   }
   b(470, 612, 500, 630, 75, 78, mat('#e9e2d4'));
   b(472, 613, 498, 629, 78, 80, mat('#b9a58c'));
-  b(512, 612, 540, 630, 80, 83, mat('#6b4a3a', { roughness: 0.4 }));  // bowl
+  b(512, 612, 540, 630, 75, 78, mat('#6b4a3a', { roughness: 0.4 }));  // tray
   block([450, 605, 637, 635]);
 
-  // dressing table in the north-west corner, next to the window (daylight from the side)
-  // – one piece with the sideboard: same walnut top at 75 cm, 40 deep here, open below for the knees
-  b(343, 605, 450, 645, 72, 75, C.walnut);             // top, 107 x 40
-  b(345, 605, 450, 643, 60, 72, C.walnut);             // drawer box
-  const flutedDrawer = flutedWood();
-  flutedDrawer.map.repeat.set(42, 1);
-  b(345.5, 643, 449.5, 645, 60.5, 71.5, flutedDrawer); // push-to-open drawer, fluted like the doors
+  // ======================= DRESSING TABLE (one piece with the sideboard) =======================
+  b(343, 605, 450, 645, 72, 75, C.walnut);                // top, 107 x 40
+  b(343, 605, 345, 643, 59, 72, C.walnut);                // drawer housing
+  b(448.2, 605, 450, 643, 59, 72, C.walnut);
+  b(345, 605, 448.2, 607, 59, 72, C.walnut);
+  drawer({ n: [0, 1], f: 645, u1: 345, u2: 450, z0: 59, z1: 72, depth: 38, front: fluted(105), fill: (a) => {
+    a.add(a.u1, a.u2, a.v1, a.v2, a.z, a.z + 0.5, C.velvet);
+    const a2 = { ...a, z: a.z + 0.5, h: 5 };
+    grid(a2, 6, 2, 4.5, C.inner);
+    smalls(a2, 12, 4, makeup, 4);
+  } });
   {
     const glow = new THREE.Mesh(new THREE.CylinderGeometry(M(32), M(32), M(1), 48), C.lightGlow);
     glow.rotation.x = Math.PI / 2;
@@ -220,101 +439,131 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     mirror.position.set(M(394), M(140), M(607));
     group.add(mirror);
   }
-  // slim vertical lights either side of the mirror, at face height
-  for (const x of [352, 436]) {
+  for (const x of [352, 436]) {                           // lights either side of the mirror
     b(x - 3, 605, x + 3, 607, 112, 168, C.black);
-    b(x - 2, 607, x + 2, 610, 114, 166, C.lightGlow).castShadow = false;
+    quiet(b(x - 2, 607, x + 2, 610, 114, 166, C.lightGlow));
   }
-  b(355, 615, 375, 635, 76, 79, C.oakDark);             // tray
-  cylinder(420, 625, 76, 90, 3, mat('#e3c9a8', { roughness: 0.2 }));
-  cylinder(394, 672, 0, 45, 17, C.sage);                // stool
+  b(355, 615, 375, 635, 75, 78, C.oakDark);               // tray
+  cylinder(420, 625, 75, 89, 3, mat('#e3c9a8', { roughness: 0.2 }));
+  cylinder(394, 672, 0, 45, 17, C.sage);                  // stool
   block([343, 605, 450, 645]);
   block([377, 655, 411, 689]);
 
   // main ceiling light
-  cylinder(546, 751, H - 3, H, 22, C.lightGlow).castShadow = false;
+  quiet(cylinder(546, 751, H - 3, H, 22, C.lightGlow));
 
   // curtains on the west window (pulled to the sides)
-  b(347, 650, 349, 894, 246, 248, C.black).castShadow = false;
+  quiet(b(347, 650, 349, 894, 246, 248, C.black));
   for (const [y1, y2] of [[652, 694], [842, 890]]) {
     for (let k = 0; k < 6; k++) {
       const y = y1 + k * ((y2 - y1) / 6);
-      b(348 + (k % 2) * 3, y, 352 + (k % 2) * 3, y + (y2 - y1) / 6 + 1, 4, 244, C.curtain).castShadow = false;
+      quiet(b(348 + (k % 2) * 3, y, 352 + (k % 2) * 3, y + (y2 - y1) / 6 + 1, 4, 244, C.curtain));
     }
   }
 
-  // ======================= WALK-IN CLOSET =======================
-  // --- top run along the bathroom wall: hanging, 60 deep (y 710–770)
+  // ======================= WALK-IN CLOSET (walnut, no handles) =======================
+  // --- top run along the bathroom wall: open hanging, 60 deep (y 710–770)
   const T = { y1: 710, y2: 770 };
-  b(754, T.y1, 756, T.y2, 0, 260, C.white);           // end panel
-  b(838, T.y1, 840, T.y2, 0, 260, C.white);           // divider
-  b(754, T.y1, 963, T.y2, 258, 260, C.white);         // top
-  b(756, T.y1, 963, T.y2, 0, 4, C.black).castShadow = false; // plinth
+  b(754, T.y1, 756, T.y2, 0, 260, C.walnut);          // end panel
+  b(838, T.y1, 840, T.y2, 0, 260, C.walnut);          // divider
+  b(754, T.y1, 963, T.y2, 258, 260, C.walnut);        // top
+  quiet(b(756, T.y1, 963, T.y2, 0, 4, C.black));      // plinth
   // section 1: long hanging (dresses, coats) + shoe shelves below
-  b(756, T.y1, 838, T.y2, 205, 207, C.oak);
-  b(756, T.y1, 838, T.y2, 232, 234, C.oak);
+  b(756, T.y1, 838, T.y2, 205, 207, C.inner);
+  b(756, T.y1, 838, T.y2, 232, 234, C.inner);
   rail(756, 838, 740, 196);
   garments(756, 838, 718, 762, 194, 105, 145);
-  b(756, T.y1, 838, T.y2 - 5, 12, 14, C.oak);
-  b(756, T.y1, 838, T.y2 - 5, 32, 34, C.oak);
+  b(756, T.y1, 838, T.y2 - 5, 12, 14, C.inner);
+  b(756, T.y1, 838, T.y2 - 5, 32, 34, C.inner);
   for (let x = 760; x < 832; x += 13) {
     const m = mat(palette[(rnd() * palette.length) | 0]);
-    b(x, 738, x + 10, 765, 14, 22, m).castShadow = false;
-    b(x, 738, x + 10, 765, 34, 42, m).castShadow = false;
+    quiet(b(x, 738, x + 10, 765, 14, 22, m));
+    quiet(b(x, 738, x + 10, 765, 34, 42, m));
   }
   // section 2: double hanging (shirts / trousers)
-  b(840, T.y1, 963, T.y2, 205, 207, C.oak);
-  b(840, T.y1, 963, T.y2, 232, 234, C.oak);
-  b(840, T.y1, 963, T.y2, 108, 110, C.oak);
+  b(840, T.y1, 963, T.y2, 205, 207, C.inner);
+  b(840, T.y1, 963, T.y2, 232, 234, C.inner);
+  b(840, T.y1, 963, T.y2, 108, 110, C.inner);
   rail(840, 963, 740, 196);
   rail(840, 963, 740, 100);
   garments(840, 960, 718, 762, 194, 70, 82);
   garments(840, 960, 720, 760, 98, 55, 62);
-  // storage boxes on the top shelf
-  for (let x = 760; x < 950; x += 40) b(x, 716, x + 35, 764, 234, 256, C.box);
+  for (let x = 760; x < 950; x += 40) quiet(b(x, 716, x + 35, 764, 234, 256, C.box));
   block([754, T.y1, 963, T.y2]);
 
-  // --- bottom run along the south wall: drawers + cabinets, 40 deep (y 857–897)
-  const B = { y1: 859, y2: 897 };
-  b(754, B.y1, 963, B.y2, 0, 95, C.white);            // lower carcass
-  b(754, 857, 963, B.y2, 95, 98, C.oak);              // worktop
-  b(754, B.y1 + 20, 963, B.y2, 98, 130, C.oak);       // niche back (open niche for jewellery / perfume)
-  b(754, B.y1, 963, B.y2, 130, 260, C.white);         // upper carcass
-  const cols = [[756, 824], [825, 893], [894, 961]];
-  for (const [x1, x2] of cols) {
-    for (let i = 0; i < 4; i++) {
-      const z0 = 6 + i * 22.2;
-      b(x1, 858, x2, 859, z0, z0 + 21.6, C.front);
-      b((x1 + x2) / 2 - 10, 857, (x1 + x2) / 2 + 10, 858, z0 + 17, z0 + 18.5, C.black);
-    }
-    b(x1, 858, x2, 859, 131, 258, C.front);             // upper door
-    b(x2 - 6, 857, x2 - 4.5, 858, 140, 170, C.black);   // handle
+  // --- bottom run along the south wall, 40 deep: 3 x 4 drawers (grip groove on top) + cabinets above
+  {
+    const n = [0, -1], f = 857, fr = frame(n, f);
+    const cols = [[754, 823.7], [823.7, 893.3], [893.3, 963]];
+    shell(n, f, 754, 963, 40, 4, 95, C.walnut);
+    shell(n, f, 754, 963, 40, 130, 260, C.walnut);
+    for (const u of [822, 891.6]) { b(...fr(u, u + 1.8, -40, -2), 4, 95, C.walnut); b(...fr(u, u + 1.8, -40, -2), 130, 260, C.walnut); }
+    quiet(b(754, 857, 963, 897, 0, 4, C.black));
+    b(754, 857, 963, 897, 95, 98, C.walnut);               // worktop
+    b(754, 879, 963, 897, 98, 130, C.inner);              // open niche (jewellery, perfume)
+    b(770, 870, 810, 892, 98, 101, C.oakDark);
+    cylinder(840, 882, 98, 112, 3, mat('#e3c9a8', { roughness: 0.2 }));
+    cylinder(850, 886, 98, 108, 2.5, mat('#9fb3c2', { roughness: 0.2 }));
+    // drawer contents, top drawer first, per column (hers / shared / his)
+    const fills = [
+      [(a) => { a.add(a.u1, a.u2, a.v1, a.v2, a.z, a.z + 0.6, C.velvet); const a2 = { ...a, z: a.z + 0.6, h: 4 }; grid(a2, 5, 3, 3.5, C.velvetDark); smalls(a2, 10, 6, gold, 2); },
+       (a) => { grid(a, 5, 4, 9); smalls(a, 5, 4, ['#e8e2d6', '#d9b8a8', '#2a2a2a', '#c7b49b'], 6); },
+       (a) => folded(a, 3, clothCols, 3),
+       (a) => folded(a, 2, clothCols, 5)],
+      [(a) => { grid(a, 4, 2, 9); for (let i = 0; i < 8; i++) a.cyl(a.u1 + 7 + (i % 4) * ((a.u2 - a.u1 - 14) / 3), a.v1 + 8 + ((i / 4) | 0) * 16, a.z, a.z + 4, 4, pick(['#3d2b20', '#2a2a2a', '#6b4a3a', '#2f3a4a'])); },
+       (a) => { grid(a, 5, 4, 9); smalls(a, 5, 4, clothCols, 5); },
+       (a) => folded(a, 3, clothCols, 3.5),
+       (a) => folded(a, 2, linenCols, 5)],
+      [(a) => { a.add(a.u1, a.u2, a.v1, a.v2, a.z, a.z + 0.6, C.velvetDark); const a2 = { ...a, z: a.z + 0.6, h: 4 }; grid(a2, 4, 2, 3.5, C.inner); smalls(a2, 6, 3, ['#8c8c8c', '#2a2a2a', '#c9a65a'], 3); },
+       (a) => { grid(a, 5, 4, 9); smalls(a, 5, 4, ['#2a2a2a', '#2f3a4a', '#d9d4cc'], 6); },
+       (a) => folded(a, 3, clothCols, 3),
+       (a) => folded(a, 2, ['#2f3a4a', '#3d4a5e', '#5b6b7a', '#2a2a2a'], 5)],
+    ];
+    const zs = [[72.5, 95], [50, 72.5], [27.5, 50], [5, 27.5]];
+    cols.forEach(([u1, u2], c) => {
+      zs.forEach(([z0, z1], i) => drawer({ n, f, u1, u2, z0, z1, depth: 38, front: C.walnut, grip: 'top', fill: fills[c][i] }));
+      // cabinet above: two shelves, push-to-open door
+      const iu1 = u1 + (c === 0 ? 1.8 : 1.8), iu2 = u2 - 1.8;
+      const sAdd = (a1, a2, c1, c2, za, zb, m) => quiet(b(...fr(a1, a2, c1, c2), za, zb, m));
+      for (const z of [172, 215]) sAdd(iu1, iu2, -38, -3, z, z + 1.8, C.inner);
+      folded({ u1: iu1 + 1, u2: iu2 - 1, v1: -36, v2: -5, z: 131.8, h: 38, add: sAdd }, 2, clothCols, 7);
+      folded({ u1: iu1 + 1, u2: iu2 - 1, v1: -36, v2: -5, z: 173.8, h: 38, add: sAdd }, 2, clothCols, 6);
+      sAdd(iu1 + 3, iu1 + (iu2 - iu1) / 2 - 2, -34, -6, 216.8, 240, C.box);
+      sAdd(iu1 + (iu2 - iu1) / 2 + 2, iu2 - 3, -34, -6, 216.8, 236, mat('#7a5a43', { roughness: 0.6 }));
+      hingeDoor({ n, f, u1, u2, z0: 130, z1: 260, hinge: c === 2 ? 'u2' : 'u1', front: C.walnut });
+    });
+    block([754, 857, 963, 897]);
   }
-  // jewellery trays / perfume in the niche
-  b(770, 870, 810, 892, 98, 101, C.oakDark);
-  cylinder(840, 880, 98, 112, 3, mat('#e3c9a8', { roughness: 0.2 }));
-  cylinder(850, 884, 98, 108, 2.5, mat('#9fb3c2', { roughness: 0.2 }));
-  block([754, 857, 963, 897]);
 
-  // --- end of the closet (east wall), 87 x 40: drawers below, open shelves for bags above
-  b(925, 770, 963, 857, 0, 95, C.white);
-  for (let i = 0; i < 4; i++) {
-    const z0 = 6 + i * 22.2;
-    b(924, 772, 925, 855, z0, z0 + 21.6, C.front);
-    b(923, 803, 924, 823, z0 + 17, z0 + 18.5, C.black);
+  // --- end of the closet (east wall), 87 x 40: 4 drawers + open shelves for bags
+  {
+    const n = [-1, 0], f = 923;
+    shell(n, f, 770, 857, 40, 4, 95, C.walnut);
+    quiet(b(923, 770, 963, 857, 0, 4, C.black));
+    const shoes = (a) => {
+      for (let i = 0; i < 3; i++) for (let j = 0; j < 2; j++) {
+        const u = a.u1 + 4 + i * ((a.u2 - a.u1 - 8) / 3), v = a.v1 + 2 + j * ((a.v2 - a.v1) / 2);
+        const m = pick(['#2a2a2a', '#7a5a43', '#c8b49a', '#8e3b36', '#e8e2d6']);
+        a.add(u, u + 9, v, v + 15, a.z, a.z + 8, m);
+        a.add(u + 11, u + 20, v, v + 15, a.z, a.z + 8, m);
+      }
+    };
+    const endFills = [(a) => folded(a, 3, ['#9e3f3a', '#c7b49b', '#5b6b5a', '#e8e2d6'], 3), (a) => { grid(a, 3, 2, 9); smalls(a, 3, 2, clothCols, 8); }, shoes, shoes];
+    [[72.5, 95], [50, 72.5], [27.5, 50], [5, 27.5]].forEach(([z0, z1], i) =>
+      drawer({ n, f, u1: 770, u2: 857, z0, z1, depth: 38, front: C.walnut, grip: 'top', fill: endFills[i] }));
+    b(923, 770, 963, 857, 95, 98, C.walnut);
+    b(925, 770, 963, 772, 98, 258, C.walnut);           // side panels
+    b(925, 855, 963, 857, 98, 258, C.walnut);
+    for (const z of [140, 182, 220]) b(925, 772, 963, 855, z, z + 2, C.inner);
+    const bagCols = ['#7a5a43', '#2d2d2d', '#c8b49a', '#8e3b36', '#a7b1a0'];
+    [[100, 128], [142, 170], [184, 212], [222, 250]].forEach(([z0, z1], k) => {
+      for (let y = 778; y < 848; y += 25) {
+        const m = mat(bagCols[(k * 3 + y) % bagCols.length], { roughness: 0.6 });
+        quiet(b(935, y, 955, y + 20, z0, z0 + (z1 - z0) * (0.6 + ((y + k) % 3) * 0.12), m));
+      }
+    });
+    block([923, 770, 963, 857]);
   }
-  b(923, 770, 963, 857, 95, 98, C.oak);
-  b(925, 770, 963, 772, 98, 258, C.white);            // side panels
-  b(925, 855, 963, 857, 98, 258, C.white);
-  for (const z of [140, 182, 220]) b(925, 772, 963, 855, z, z + 2, C.oak);
-  const bagCols = ['#7a5a43', '#2d2d2d', '#c8b49a', '#8e3b36', '#a7b1a0'];
-  [[100, 128], [142, 170], [184, 212], [222, 250]].forEach(([z0, z1], k) => {
-    for (let y = 778; y < 848; y += 25) {
-      const m = mat(bagCols[(k * 3 + y) % bagCols.length], { roughness: 0.6 });
-      b(935, y, 955, y + 20, z0, z0 + (z1 - z0) * (0.6 + ((y + k) % 3) * 0.12), m).castShadow = false;
-    }
-  });
-  block([923, 770, 963, 857]);
 
   // closet ceiling light + sensor
   cylinder(850, 813, H - 3, H, 14, C.lightGlow).castShadow = false;
@@ -337,10 +586,9 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     const parts = [
       b(x1, y1, x2, y1 + 2.5, 1, 260, C.black, g), b(x1, y2 - 2.5, x2, y2, 1, 260, C.black, g),
       b(x1, y1, x2, y2, 1, 3.5, C.black, g), b(x1, y1, x2, y2, 257.5, 260, C.black, g),
-      b(x1, y2 - 9, x2 + 0.5, y2 - 7.5, 95, 135, C.black, g), // slim pull
       b(x1 + 1, y1 + 2.5, x2 - 1, y2 - 2.5, 3.5, 257.5, glass, g),
     ];
-    parts[5].castShadow = false;
+    parts[4].castShadow = false;
     for (const p of parts) { p.userData.door = door; pickables.push(p); }
     group.add(g);
     door.panels.push({ g, dz: M(710 - y1) });
