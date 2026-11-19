@@ -80,7 +80,7 @@ export const FURNITURE = [
     mech: 'пълно изтегляне с плавно затваряне; вдлъбнат профил отгоре за издърпване (без дръжки); отделения за бижута, бельо, чорапи, колани' },
   { name: 'Дрешник – шкафове горе', size: '3 бр., 70 × 130',
     mech: 'врати на скрити панти с push-to-open, по 2 рафта' },
-  { name: 'Двустранна мебел на мястото на стената антре/дневна', size: '200 × 75 × 210 см, над нея рифелово стъкло до тавана',
+  { name: 'Двустранна мебел на мястото на стената антре/дневна', size: '200 × 75 см, от пода до тавана',
     mech: 'заменя тухлената стена и вратата към дневната; закрепена за пода, тавана и стената на спалнята' },
   { name: '– откъм коридора: портманто', size: '40 дълбоко; коридорът остава 85 см',
     mech: 'ниша 1 м: закачалки, рафт за шапки с LED, пейка с възглавница и 2 чекмеджета за обувки (push); шкаф 1 м: 2 врати (едната огледало) – рафтове за обувки, прахосмукачка с контакт, дъска за гладене' },
@@ -93,7 +93,7 @@ const mat = (color, opts = {}) => new THREE.MeshStandardMaterial({ color, roughn
 const C = {
   oak: mat('#c9a77c', { roughness: 0.6 }),
   oakDark: mat('#a9875f', { roughness: 0.6 }),
-  walnut: mat('#5b3d2b', { roughness: 0.55 }),
+  walnut: mat('#7a5e4d', { roughness: 0.55 }),
   white: mat('#f1ede6', { roughness: 0.5 }),
   front: mat('#ece7de', { roughness: 0.45 }),
   black: mat('#232323', { roughness: 0.4, metalness: 0.4 }),
@@ -123,10 +123,10 @@ function flutedWood() {
   c.height = 4;
   const g = c.getContext('2d');
   const grad = g.createLinearGradient(0, 0, 32, 0);
-  grad.addColorStop(0, '#3b2619');
-  grad.addColorStop(0.2, '#6a4732');
-  grad.addColorStop(0.6, '#5a3b29');
-  grad.addColorStop(1, '#3b2619');
+  grad.addColorStop(0, '#574335');
+  grad.addColorStop(0.2, '#8f7462');
+  grad.addColorStop(0.6, '#7a5e4d');
+  grad.addColorStop(1, '#574335');
   g.fillStyle = grad;
   g.fillRect(0, 0, 32, 4);
   const t = new THREE.CanvasTexture(c);
@@ -605,15 +605,10 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
   // ======================= TWO-SIDED UNIT: hall coat storage | living-room TV section =======================
   // replaces the wall between the hall and the living room; spine at x 623–625, y 380–580
   {
-    const Y1 = 380, Y2 = 580, TOP = 210;
+    const Y1 = 380, Y2 = 580, TOP = H;                             // full height, up to the ceiling
     b(623, Y1, 625, Y2, 0, TOP, C.walnut);                         // spine
     b(590, Y1, 665, Y1 + 2, 0, TOP, C.walnut);                    // end panel facing the entrance
     b(590, Y1, 665, Y2, TOP - 2, TOP, C.walnut);                   // top
-    // fluted glass above, up to the ceiling – daylight into the hall
-    const g = flutedGlass();
-    quiet(b(623.5, Y1 + 2, 624.5, Y2, TOP, H - 2, g));
-    b(622.5, Y1, 625.5, Y2, H - 2.5, H, C.black);
-    b(622.5, Y1, 625.5, Y1 + 2, TOP, H, C.black);
     block([590, Y1, 665, Y2]);
 
     // ---- hall side (faces +x, 40 deep, front at x 665)
@@ -630,6 +625,11 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     }
     quiet(b(632, 400, 650, 420, 184, 196, mat('#c8b49a')));        // hat box
     quiet(b(632, 440, 650, 470, 184, 190, mat('#5b6b5a')));
+    shell(nH, fH, 382, 481, 40, 200, TOP - 2, C.walnut);           // cabinet above the coat niche
+    quiet(b(...frH(386, 430, -34, -6), 201.8, 222, C.box));
+    quiet(b(...frH(434, 477, -34, -6), 201.8, 218, mat('#9aa7ad')));
+    hingeDoor({ n: nH, f: fH, u1: 382, u2: 431.5, z0: 200, z1: TOP - 2, hinge: 'u1', front: C.walnut });
+    hingeDoor({ n: nH, f: fH, u1: 431.5, u2: 481, z0: 200, z1: TOP - 2, hinge: 'u2', front: C.walnut });
     b(...frH(382, 481, -40, 0), 42, 45, C.walnut);                // bench
     quiet(b(...frH(384, 479, -38, -1), 45, 50, C.sage));           // cushion
     shell(nH, fH, 382, 481, 40, 4, 42, C.walnut);
@@ -651,7 +651,10 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
       quiet(b(...frH(485, 530.6, -36, -3), z, z + 1.5, C.inner));
       for (const u of [487, 509]) { const m = pick(['#2a2a2a', '#7a5a43', '#c8b49a', '#8e3b36', '#e8e2d6']); quiet(b(...frH(u, u + 9, -30, -6), z + 1.5, z + 10, m)); quiet(b(...frH(u + 10, u + 19, -30, -6), z + 1.5, z + 10, m)); }
     }
-    for (const z of [165, 186]) quiet(b(...frH(485, 530.6, -36, -3), z, z + 1.5, C.inner));
+    for (const z of [165, 186, 215, 240]) quiet(b(...frH(485, 530.6, -36, -3), z, z + 1.5, C.inner));
+    for (const z of [215, 240]) quiet(b(...frH(532.4, 578.2, -36, -3), z, z + 1.5, C.inner));
+    quiet(b(...frH(488, 526, -32, -8), 216.5, 236, mat('#c8b49a')));
+    quiet(b(...frH(536, 575, -32, -8), 216.5, 232, C.box));
     quiet(b(...frH(488, 526, -32, -8), 166.5, 180, C.box));
     for (const z of [150, 178]) quiet(b(...frH(532.4, 578.2, -36, -3), z, z + 1.5, C.inner));
     quiet(cylinder(...frH(552, 552, -20, -20).slice(0, 2), 25, 130, 3, mat('#7d4a8c', { roughness: 0.4 })));   // stick vacuum

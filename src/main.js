@@ -20,7 +20,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
+renderer.toneMappingExposure = 1.3;
 app.appendChild(renderer.domElement);
 
 const labelRenderer = new CSS2DRenderer();
@@ -32,9 +32,9 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color('#dfe8f0');
 
 // ---------------------------------------------------------------- lights
-const hemi = new THREE.HemisphereLight(0xffffff, 0xd9cfbf, 1.25);
+const hemi = new THREE.HemisphereLight(0xffffff, 0xe6ddd0, 1.5);
 scene.add(hemi);
-scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+scene.add(new THREE.AmbientLight(0xffffff, 0.55));
 const sun = new THREE.DirectionalLight(0xfff1dc, 2.2);
 sun.position.set(CENTER.x - 6, 11, CENTER.z - 8);
 sun.target.position.copy(CENTER);
@@ -290,7 +290,7 @@ scene.add(ground);
 const furniture = new THREE.Group();
 scene.add(furniture);
 buildInterior({ box, M, group: furniture, colliders, pickables, H, addDoor: (d) => doors.push(d) });
-const roomLights = [[546, 751, 0.9], [850, 813, 0.5]].map(([x, y, i]) => {
+const roomLights = [[546, 751, 1.4], [850, 813, 0.9], [705, 470, 0.8], [500, 450, 1.2]].map(([x, y, i]) => {
   const l = new THREE.PointLight(0xffe7c4, i, 4.5, 1.6);
   l.position.set(M(x), M(H - 25), M(y));
   furniture.add(l);
@@ -438,7 +438,7 @@ function setMode(m) {
   ceilings.visible = m === 'walk';
   showGroup(labels, m !== 'walk');
   roomLights.forEach((l) => { l.visible = m === 'walk'; });
-  hemi.intensity = m === 'walk' ? 2.1 : 1.25;
+  hemi.intensity = m === 'walk' ? 2.4 : 1.5;
   sun.castShadow = m !== 'plan';
   if (m === 'walk') $('#panel').removeAttribute('open');
   if (m === 'orbit') {
