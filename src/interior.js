@@ -125,7 +125,7 @@ export const FURNITURE = [
   { name: '– горни шкафове', size: '35 дълбоки, 2 реда до тавана над дясната стена',
     mech: 'чаши, чинии, подправки, горе кутии; LED отдолу; гръб от зелени zellige плочки' },
   { name: 'Хол – 2 варианта (превключват се в панела)', size: 'А: диван с гръб към спалнята, ТВ на колона | Б: диван с гръб към трапезарията, ТВ на стената към спалнята',
-    mech: 'Б: висящ ТВ шкаф 150 × 35 от орех с 3 чекмеджета (push), ТВ 65" на стената' },
+    mech: 'Б: диванът е отместен към телевизора, проходът от антрето (1 м) е свободен; висящ ТВ шкаф 150 × 35 с 3 чекмеджета (push), ТВ 55" на стената, ~1,6 м от очите' },
   { name: 'Трапезария', size: 'овална маса 140 × 90 от орех на един крак + 4 заоблени тапицирани стола',
     mech: '2 висящи лампи-сфери над масата' },
 ];
@@ -820,38 +820,41 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     }
     });
     mkVariant('B', () => {
-    // ---- Variant B: sofa with its back to the dining area, chaise along the unit, TV on the bedroom wall
+    // ---- Variant B: sofa with its back to the dining area, moved south so the whole hall opening (y 280–380)
+    //      stays free; chaise along the unit; 55" TV on the bedroom wall over a floating console
     {
       const sofa = mat('#cbbfae', { roughness: 1 }), sofaDark = mat('#b9ad9b', { roughness: 1 });
-      const SN = 330;
-      b(440, SN, 621, SN + 95, 4, 40, sofa);                          // main base
-      b(531, SN + 95, 621, SN + 230, 4, 40, sofa);                    // chaise base
-      b(455, SN, 606, SN + 21, 40, 84, sofaDark);                     // back towards the dining table
-      b(440, SN, 455, SN + 95, 40, 62, sofa);                         // arm (balcony-door side)
-      b(606, SN, 621, SN + 230, 40, 62, sofa);                        // low side along the unit
-      b(457, SN + 21, 530, SN + 93, 40, 50, sofa);
-      b(531, SN + 21, 605, SN + 228, 40, 50, sofa);                   // chaise cushion
-      for (let k = 0; k < 2; k++) b(458 + k * 74, SN + 19, 528 + k * 74, SN + 33, 50, 82, sofaDark);
-      quiet(b(462, SN + 32, 500, SN + 42, 50, 82, C.sage));
-      quiet(b(560, SN + 32, 598, SN + 42, 50, 82, mat('#c7a98a')));
-      quiet(b(545, SN + 140, 600, SN + 200, 50, 53, mat('#8e9c86', { roughness: 1 })));
-      block([440, SN, 621, SN + 95]);
-      block([531, SN + 95, 621, SN + 230]);
-      quiet(b(400, 410, 615, 575, 0, 1, mat('#e2d9cb', { roughness: 1 })));
-      cylinder(475, 482, 34, 38, 30, C.walnut);
-      cylinder(475, 482, 0, 34, 11, C.walnut);
-      quiet(cylinder(466, 474, 38, 50, 5, mat('#d8cbb6')));
-      block([445, 452, 505, 512]);
-      // floating walnut TV console (150 x 35) with fluted push drawers, TV 65" on the wall above
+      const SN = 382;
+      b(440, SN, 621, SN + 92, 4, 40, sofa);                          // main base (92 deep)
+      b(531, SN + 92, 621, 545, 4, 40, sofa);                         // chaise (165 from the back)
+      b(455, SN, 606, SN + 20, 40, 84, sofaDark);                     // back towards the dining table
+      b(440, SN, 455, SN + 92, 40, 62, sofa);                         // arm (balcony-door side)
+      b(606, SN, 621, 545, 40, 62, sofa);                             // low side along the unit
+      b(457, SN + 20, 530, SN + 90, 40, 50, sofa);
+      b(531, SN + 20, 605, 543, 40, 50, sofa);                        // chaise cushion
+      for (let k = 0; k < 2; k++) b(458 + k * 74, SN + 18, 528 + k * 74, SN + 32, 50, 82, sofaDark);
+      quiet(b(462, SN + 31, 500, SN + 41, 50, 82, C.sage));
+      quiet(b(560, SN + 31, 598, SN + 41, 50, 82, mat('#c7a98a')));
+      quiet(b(545, 470, 600, 530, 50, 53, mat('#8e9c86', { roughness: 1 })));
+      block([440, SN, 621, SN + 92]);
+      block([531, SN + 92, 621, 545]);
+      quiet(b(400, 440, 615, 578, 0, 1, mat('#e2d9cb', { roughness: 1 })));
+      // small round walnut side table by the arm (no coffee table – keeps the floor in front of the TV free)
+      cylinder(418, 500, 52, 55, 17, C.walnut);
+      cylinder(418, 500, 0, 52, 2.2, C.walnut);
+      cylinder(418, 500, 0, 1.5, 14, C.walnut);
+      quiet(cylinder(414, 496, 55, 66, 4, mat('#d8cbb6')));
+      block([401, 483, 435, 517]);
+      // floating walnut TV console (150 x 35) with fluted push drawers, 55" TV on the wall above
       const nT = [0, -1], fT = 545, frT = frame(nT, fT);
       shell(nT, fT, 380, 530, 35, 25, 55, C.walnut);
       for (let i = 0; i < 3; i++) drawer({ n: nT, f: fT, u1: 380 + i * 50, u2: 430 + i * 50, z0: 26.8, z1: 53.2, depth: 33, front: fluted(49),
         fill: (a) => smalls(a, 3, 2, ['#2a2a2a', '#d9d4cc', '#6d7f99'], 6) });
       block([380, 545, 530, 580]);
-      b(386, 575, 530, 578, 76, 159, mat('#111214', { roughness: 0.25, metalness: 0.3 }));
-      quiet(b(389, 574.7, 527, 575, 79, 156, mat('#1d2a33', { roughness: 0.15 })));
-      quiet(b(400, 552, 425, 572, 55, 70, mat('#d8cbb6')));
-      quiet(cylinder(505, 562, 55, 75, 4, mat('#8f9a8a')));
+      b(394, 575, 516, 578, 85, 155, mat('#111214', { roughness: 0.25, metalness: 0.3 }));    // 55" = 122 x 70
+      quiet(b(397, 574.7, 513, 575, 88, 152, mat('#1d2a33', { roughness: 0.15 })));
+      quiet(b(392, 552, 412, 572, 55, 68, mat('#d8cbb6')));
+      quiet(cylinder(522, 562, 55, 75, 4, mat('#8f9a8a')));
     }
     });
 
