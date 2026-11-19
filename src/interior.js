@@ -58,10 +58,14 @@ export const ELECTRIC = [
     bg: 'LED лента в нишата за палта' },
   { id: 'Т9', t: 'socket', x: 625, y: 555, h: 120, n: [1, 0], w: 8, room: 'Антре',
     bg: 'Контакт в шкафа – зарядна стойка за прахосмукачка' },
-  { id: 'Т7', t: 'socket', x: 623, y: 480, h: 100, n: [-1, 0], w: 22, room: 'Дневна',
-    bg: 'Двоен контакт + антена + интернет зад телевизора', note: 'кабелите идват през пода/тавана – да се предвидят СЕГА' },
-  { id: 'Т8', t: 'socket', x: 623, y: 540, h: 35, n: [-1, 0], w: 15, room: 'Дневна',
-    bg: 'Двоен контакт в долния шкаф (рутер, приставка)' },
+  { id: 'Л12', t: 'light', x: 607, y: 480, h: 126, n: [-1, 0], plate: false, room: 'Дневна',
+    bg: 'LED ленти под рафта над дивана', note: 'отделно от Л11, с димер – уютна светлина вечер' },
+  { id: 'Т7', t: 'socket', x: 500, y: 580, h: 30, n: [0, -1], w: 15, room: 'Дневна',
+    bg: 'Двоен контакт до дивана (лампион, зарядно)' },
+  { id: 'Л11', t: 'light', x: 593, y: 480, h: 174, n: [-1, 0], plate: false, room: 'Дневна',
+    bg: 'LED под горните шкафове над дивана', note: 'захранването идва през тавана; ключът – с дневната' },
+  { id: 'Т8', t: 'socket', x: 625, y: 505, h: 225, n: [1, 0], w: 15, room: 'Антре',
+    bg: 'Контакт + интернет за рутера – горе в шкафа в антрето', note: 'по средата на апартамента – добро покритие' },
 ];
 
 // ---------------------------------------------------------------- furniture list (shown in the side panel)
@@ -84,8 +88,8 @@ export const FURNITURE = [
     mech: 'заменя тухлената стена и вратата към дневната; закрепена за пода, тавана и стената на спалнята' },
   { name: '– откъм коридора: портманто', size: '40 дълбоко; коридорът остава 85 см',
     mech: 'ниша 1 м: закачалки, рафт за шапки с LED, пейка с възглавница и 2 чекмеджета за обувки (push); шкаф 1 м: 2 врати (едната огледало) – рафтове за обувки, прахосмукачка с контакт, дъска за гладене' },
-  { name: '– откъм дневната: секция с TV', size: '33 дълбоко, TV до 55"',
-    mech: 'долен висящ шкаф с 4 чекмеджета (push, релефни фронтове), отворени рафтове от двете страни, горни шкафове с push врати' },
+  { name: '– откъм дневната: гръб за дивана', size: 'панел от релефни ламели до 175 см, над него шкафове 30 дълбоки до тавана',
+    mech: 'диванът (200 × 95) е облегнат на мебелта; отворен рафт над него на 128 см с LED ленти; горните шкафове с push врати и LED отдолу' },
 ];
 
 // ---------------------------------------------------------------- materials
@@ -607,9 +611,9 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
   {
     const Y1 = 380, Y2 = 580, TOP = H;                             // full height, up to the ceiling
     b(623, Y1, 625, Y2, 0, TOP, C.walnut);                         // spine
-    b(590, Y1, 665, Y1 + 2, 0, TOP, C.walnut);                    // end panel facing the entrance
-    b(590, Y1, 665, Y2, TOP - 2, TOP, C.walnut);                   // top
-    block([590, Y1, 665, Y2]);
+    b(621, Y1, 665, Y1 + 2, 0, TOP, C.walnut);                    // end panel facing the entrance
+    b(593, Y1, 665, Y2, TOP - 2, TOP, C.walnut);                   // top
+    block([621, Y1, 665, Y2]);
 
     // ---- hall side (faces +x, 40 deep, front at x 665)
     const nH = [1, 0], fH = 665, frH = frame(nH, fH);
@@ -665,38 +669,52 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     hingeDoor({ n: nH, f: fH, u1: 483, u2: 531.5, z0: 4, z1: TOP - 2, hinge: 'u1', front: C.walnut });
     hingeDoor({ n: nH, f: fH, u1: 531.5, u2: Y2, z0: 4, z1: TOP - 2, hinge: 'u2', front: C.mirror });
 
-    // ---- living side (faces -x, 33 deep, front at x 590)
-    const nL = [-1, 0], fL = 590, frL = frame(nL, fL);
-    // floating low cabinet with 4 drawers (fluted, push-to-open)
-    shell(nL, fL, 382, Y2, 33, 20, 58, C.walnut);
-    const lowFills = [
-      (a) => { grid(a, 2, 1, 9); smalls(a, 4, 3, ['#2a2a2a', '#d9d4cc', '#6d7f99'], 7); },
-      (a) => { a.add(a.u1 + 2, a.u1 + 22, a.v1 + 2, a.v2 - 2, a.z, a.z + 5, mat('#2a2a2a')); a.add(a.u1 + 24, a.u2 - 2, a.v1 + 3, a.v2 - 3, a.z, a.z + 3, mat('#3a3a3a')); },
-      (a) => folded(a, 2, ['#8a5a4a', '#cfc6b8', '#2f3a4a', '#6f7d6b', '#efe9df'], 3),
-      (a) => { a.add(a.u1 + 3, a.u2 - 3, a.v1 + 3, a.v2 - 3, a.z, a.z + 9, mat('#5f5a54')); },
-    ];
-    for (let i = 0; i < 4; i++) {
-      const u1 = 382 + i * 49.5;
-      drawer({ n: nL, f: fL, u1, u2: u1 + 49.5, z0: 20.5, z1: 57.5, depth: 31, front: fluted(49), fill: lowFills[i] });
-    }
-    // side columns with open shelves, TV niche in the middle, push-door cabinets on top
-    for (const [u1, u2] of [[382, 412], [548, Y2]]) {
-      b(...frL(u1 === 382 ? 412 : 548, (u1 === 382 ? 412 : 548) + 1.8, -33, 0), 58, 175, C.walnut);
-      for (const z of [58, 96, 135]) b(...frL(u1, u2, -33, 0), z, z + 1.8, C.walnut);
-      const books = (z) => { for (let u = u1 + 2; u < u2 - 4; u += 2.6 + rnd() * 1.5) quiet(b(...frL(u, u + 2.2, -30, -8 - rnd() * 4), z, z + 18 + rnd() * 9, pick(['#8a5a4a', '#cfc6b8', '#2f3a4a', '#6f7d6b', '#efe9df', '#b48a6b']))); };
-      books(59.8);
-      quiet(cylinder(...frL((u1 + u2) / 2, (u1 + u2) / 2, -16, -16).slice(0, 2), 97.8, 118, 5, mat('#d8cbb6')));
-      books(136.8);
-    }
-    b(...frL(382, Y2, -33, 0), 173.2, 175, C.walnut);             // shelf over the TV niche
-    quiet(b(...frL(414, 546, -30, -28), 171, 172.5, C.lightGlow)); // LED in the niche
-    b(...frL(414, 546, -4, -1), 85, 155, mat('#111214', { roughness: 0.25, metalness: 0.3 }));  // 55" TV
-    shell(nL, fL, 382, Y2, 33, 175, TOP - 2, C.walnut);
+    // ---- living side: flat fluted walnut panel behind the sofa, cabinets above it (30 deep, from 175 cm)
+    const nL = [-1, 0], fL = 593, frL = frame(nL, fL);
+    b(621, Y1, 623, Y2, 0, 175, fluted(200));                      // slatted panel behind the sofa
+    shell(nL, fL, 382, Y2, 30, 175, TOP - 2, C.walnut);
+    b(593, Y1, 623, Y1 + 2, 175, TOP, C.walnut);
+    quiet(b(...frL(384, Y2 - 2, -4, -2), 173.3, 175, C.lightGlow)); // LED under the cabinets – soft light over the sofa
     for (let i = 0; i < 4; i++) {
       const u1 = 382 + i * 49.5, u2 = u1 + 49.5;
-      quiet(b(...frL(u1 + 2, u2 - 2, -31, -4), 177, 192, pick(['#d9cdb9', '#b9a58c', '#cfc6b8'])));
+      quiet(b(...frL(u1 + 2, u2 - 2, -28, -4), 176.8, 196, pick(['#d9cdb9', '#b9a58c', '#cfc6b8'])));
+      quiet(b(...frL(u1 + 2, u2 - 2, -28, -4), 220, 236, pick(['#e9e3d8', '#cfc4b3'])));
+      quiet(b(...frL(u1 + 1.8, u2 - 1.8, -28, -2), 218, 219.8, C.inner));
       hingeDoor({ n: nL, f: fL, u1, u2, z0: 175, z1: TOP - 2, hinge: i % 2 ? 'u2' : 'u1', front: C.walnut });
     }
+
+    // open shelf over the sofa (16 deep, at 128 cm) with LED strips – light washes down the slats
+    b(...frL(382, Y2, -28, -12), 127, 129, C.walnut);
+    quiet(b(...frL(384, Y2 - 2, -26, -24), 125.6, 127, C.lightGlow));   // LED under the shelf, near the panel
+    quiet(b(...frL(384, Y2 - 2, -16, -14), 125.6, 127, C.lightGlow));   // LED under the shelf, front edge
+    for (let y = 390; y < 570; ) {                                     // books, vases, frames on the shelf
+      const r = rnd();
+      if (r < 0.45) { const w = 14 + rnd() * 12; for (let k = 0; k < w; k += 2.6) quiet(b(...frL(y + k, y + k + 2.2, -26, -14), 129, 146 + rnd() * 8, pick(['#8a5a4a', '#cfc6b8', '#2f3a4a', '#6f7d6b', '#efe9df', '#b48a6b']))); y += w + 8; }
+      else if (r < 0.75) { quiet(cylinder(...frL(y + 6, y + 6, -20, -20).slice(0, 2), 129, 146 + rnd() * 10, 4 + rnd() * 2, pick(['#d8cbb6', '#e9e3d8', '#8f9a8a']))); y += 20; }
+      else { quiet(b(...frL(y, y + 22, -27, -25), 129, 157, pick(['#efe9df', '#d9b8a8', '#3a3a3a']))); y += 30; }
+    }
+
+    // ---- sofa against the unit, facing the window / balcony door (3-seater, 200 x 95)
+    const sofa = mat('#cbbfae', { roughness: 1 }), sofaDark = mat('#b9ad9b', { roughness: 1 });
+    b(526, Y1, 621, Y2, 4, 40, sofa);                               // base
+    b(600, Y1 + 15, 621, Y2 - 15, 40, 84, sofaDark);               // back
+    b(526, Y1, 621, Y1 + 15, 40, 62, sofa);                        // arms
+    b(526, Y2 - 15, 621, Y2, 40, 62, sofa);
+    for (let k = 0; k < 3; k++) {                                   // seat cushions
+      const y1 = Y1 + 15.5 + k * 56.3;
+      b(528, y1, 600, y1 + 55.5, 40, 50, sofa);
+      b(598, y1 + 2, 612, y1 + 53, 50, 82, sofaDark);              // back cushions
+    }
+    quiet(b(588, 410, 598, 448, 50, 82, C.sage));                   // throw pillows
+    quiet(b(588, 512, 598, 550, 50, 82, mat('#c7a98a')));
+    block([526, Y1, 621, Y2]);
+    // rug + round walnut coffee table
+    quiet(b(400, 395, 600, 568, 0, 1, mat('#e2d9cb', { roughness: 1 })));
+    cylinder(452, 480, 34, 38, 40, C.walnut);
+    cylinder(452, 480, 0, 34, 14, C.walnut);
+    quiet(cylinder(440, 470, 38, 50, 5, mat('#d8cbb6')));
+    quiet(b(458, 482, 482, 500, 38, 41, mat('#8a5a4a')));
+    block([412, 440, 492, 520]);
   }
 
   // closet ceiling light + sensor
