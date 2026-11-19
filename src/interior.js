@@ -169,7 +169,7 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
   const walnut = C.walnut;
   b(452, 605, 635, 627, 0, 8, C.black).castShadow = false;          // recessed plinth
   b(452, 605, 635, 633, 8, 72, walnut);                             // body
-  b(450, 605, 637, 635, 72, 75, walnut);                            // top
+  b(450, 605, 637, 635, 72, 75, walnut);                            // top (continues over the dressing table)
   const fluted = flutedWood();
   for (let i = 0; i < 3; i++) {                                     // 3 push-to-open doors
     const x1 = 452.5 + i * 61, x2 = x1 + 60.5;
@@ -204,10 +204,12 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
   block([450, 605, 637, 635]);
 
   // dressing table in the north-west corner, next to the window (daylight from the side)
-  b(343, 605, 445, 647, 72, 76, C.walnut);                // top, 100 x 42
-  b(345, 605, 443, 645, 58, 72, C.white);              // drawer box
-  b(346, 645, 442, 646, 59, 71, C.front);              // drawer front
-  b(386, 646, 400, 647, 64, 65.5, C.black);
+  // – one piece with the sideboard: same walnut top at 75 cm, 40 deep here, open below for the knees
+  b(343, 605, 450, 645, 72, 75, C.walnut);             // top, 107 x 40
+  b(345, 605, 450, 643, 60, 72, C.walnut);             // drawer box
+  const flutedDrawer = flutedWood();
+  flutedDrawer.map.repeat.set(42, 1);
+  b(345.5, 643, 449.5, 645, 60.5, 71.5, flutedDrawer); // push-to-open drawer, fluted like the doors
   {
     const glow = new THREE.Mesh(new THREE.CylinderGeometry(M(32), M(32), M(1), 48), C.lightGlow);
     glow.rotation.x = Math.PI / 2;
@@ -226,7 +228,7 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
   b(355, 615, 375, 635, 76, 79, C.oakDark);             // tray
   cylinder(420, 625, 76, 90, 3, mat('#e3c9a8', { roughness: 0.2 }));
   cylinder(394, 672, 0, 45, 17, C.sage);                // stool
-  block([343, 605, 445, 647]);
+  block([343, 605, 450, 645]);
   block([377, 655, 411, 689]);
 
   // main ceiling light
