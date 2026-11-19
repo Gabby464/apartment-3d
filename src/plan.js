@@ -86,7 +86,7 @@ export const WALLS = [
     { type: 'door', from: 660, to: 745, head: 200, hinge: 'to', swing: 1, kind: 'interior' },    // B2 85/200
   ] },
   { r: [750, 433, 762, 710], openings: [                 // hall / bathroom (wall to the closet removed)
-    { type: 'door', from: 438, to: 508, head: 200, hinge: 'from', swing: 1, kind: 'interior' },  // bathroom – 70 cm (was 85), opens flat against the north wall, clears the laundry tower
+    { type: 'door', from: 438, to: 523, head: 200, hinge: 'from', swing: 1, kind: 'interior', bath: true },  // bathroom 85 cm; bathroom variant A narrows it to 70 (see main.js)
   ] },
   { r: [762, 698, 963, 710] },                           // bathroom / closet
 ];

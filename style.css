@@ -135,3 +135,7 @@ body:not(.show-elec) #elec-box { display: none; }
 #variant button { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 5px 8px; font-size: 12px; }
 #variant button.active { background: var(--ink); color: #fff; border-color: var(--ink); }
 .elec-fan { background: #5f6b75; }
+#bath-variant { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+#bath-variant span { color: var(--muted); margin-right: 2px; }
+#bath-variant button { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 5px 8px; font-size: 12px; }
+#bath-variant button.active { background: var(--ink); color: #fff; border-color: var(--ink); }

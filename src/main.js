@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { H, INFO, ROOMS, WALLS, RAILINGS, LANDING, LANDING_LIMITS } from './plan.js?v=20261119145041';
-import { woodTexture, tileTexture } from './textures.js?v=20261119145041';
-import { Minimap } from './minimap.js?v=20261119145041';
-import { buildInterior, ELECTRIC, FURNITURE } from './interior.js?v=20261119145041';
+import { H, INFO, ROOMS, WALLS, RAILINGS, LANDING, LANDING_LIMITS } from './plan.js?v=20261119150429';
+import { woodTexture, tileTexture } from './textures.js?v=20261119150429';
+import { Minimap } from './minimap.js?v=20261119150429';
+import { buildInterior, ELECTRIC, FURNITURE } from './interior.js?v=20261119150429';
 
 const M = (v) => v / 100; // cm -> m
 const EYE = 1.6;
@@ -179,7 +179,7 @@ function buildDoor(axis, op, p0, p1, rect) {
   const perp = face - op.swing * 3;
   const hinges = leaves === 2 ? ['from', 'to'] : [op.hinge || 'from'];
 
-  const door = { kind: op.kind, pivots: [], frac: op.open === false ? 0 : 1, target: op.open === false ? 0 : 1,
+  const door = { kind: op.kind, bath: !!op.bath, pivots: [], frac: op.open === false ? 0 : 1, target: op.open === false ? 0 : 1,
     rect: toM(rect(op.from, op.to)), center: null };
   const [cx1, cz1, cx2, cz2] = door.rect;
   door.center = new THREE.Vector2((cx1 + cx2) / 2, (cz1 + cz2) / 2);
@@ -291,6 +291,22 @@ const furniture = new THREE.Group();
 scene.add(furniture);
 const interior = buildInterior({ box, M, group: furniture, colliders, pickables, H, addDoor: (d) => doors.push(d) });
 let layoutVariant = 'A';
+let bathVariant = 'bA';
+// bathroom variant A: 70 cm door – a 15 cm filler and a jamb narrow the 85 cm opening, the leaf is shortened
+const bathDoor = doors.find((d) => d.bath);
+const bathFiller = [box(749.8, 508, 762.2, 523, 0, 200, wallMats), box(749.8, 504, 762.2, 508, 0, 200, frameMat)];
+const bathFillerCol = toM([750, 504, 762, 523]);
+function setBath(v) {
+  bathVariant = v;
+  interior.setVariant(v);
+  const a = v === 'bA';
+  bathFiller.forEach((m) => { m.visible = a; });
+  const i = colliders.indexOf(bathFillerCol);
+  if (a && i < 0) colliders.push(bathFillerCol);
+  if (!a && i >= 0) colliders.splice(i, 1);
+  if (bathDoor) bathDoor.pivots[0].pivot.children[0].scale.x = a ? 61.5 / 76.5 : 1;
+}
+setBath('bA');
 const roomLights = [[546, 751, 1.4], [850, 813, 0.9], [705, 470, 0.8], [500, 450, 1.2]].map(([x, y, i]) => {
   const l = new THREE.PointLight(0xffe7c4, i, 4.5, 1.6);
   l.position.set(M(x), M(H - 25), M(y));
@@ -471,6 +487,10 @@ $('#open-all').addEventListener('click', () => {
   parts.forEach((d) => { d.target = open ? 1 : 0; });
   $('#open-all').textContent = open ? 'Затвори всички мебели' : 'Отвори всички мебели';
 });
+document.querySelectorAll('#bath-variant button').forEach((btn) => btn.addEventListener('click', () => {
+  setBath(btn.dataset.v);
+  document.querySelectorAll('#bath-variant button').forEach((x) => x.classList.toggle('active', x === btn));
+}));
 document.querySelectorAll('#variant button').forEach((btn) => btn.addEventListener('click', () => {
   layoutVariant = btn.dataset.v;
   interior.setVariant(layoutVariant);
@@ -674,18 +694,18 @@ function frame() {
     {
       const here = { bed2: ['Спалня', 'Дрешник'], closet: ['Спалня', 'Дрешник'], hall: ['Антре'], bath: ['Баня'], living: ['Дневна', 'Кухня'], kitchen: ['Кухня', 'Дневна'] }[room?.id] || [];
       elecLabels.visible = elecOn;
-      elecLabels.children.forEach((c) => { c.visible = elecOn && here.includes(c.userData.room) && (!c.userData.variant || c.userData.variant === layoutVariant); });
+      elecLabels.children.forEach((c) => { c.visible = elecOn && here.includes(c.userData.room) && (!c.userData.variant || c.userData.variant === layoutVariant || c.userData.variant === bathVariant); });
     }
     minimap.draw(player, room?.id);
     renderer.render(scene, persp);
     labelRenderer.render(scene, persp);
   } else if (mode === 'orbit') {
-    elecLabels.children.forEach((c) => { c.visible = elecOn && (!c.userData.variant || c.userData.variant === layoutVariant); });
+    elecLabels.children.forEach((c) => { c.visible = elecOn && (!c.userData.variant || c.userData.variant === layoutVariant || c.userData.variant === bathVariant); });
     orbit.update();
     renderer.render(scene, persp);
     labelRenderer.render(scene, persp);
   } else {
-    elecLabels.children.forEach((c) => { c.visible = elecOn && (!c.userData.variant || c.userData.variant === layoutVariant); });
+    elecLabels.children.forEach((c) => { c.visible = elecOn && (!c.userData.variant || c.userData.variant === layoutVariant || c.userData.variant === bathVariant); });
     planCtl.update();
     renderer.render(scene, ortho);
     labelRenderer.render(scene, ortho);
