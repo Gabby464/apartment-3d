@@ -58,11 +58,15 @@ export const ELECTRIC = [
     bg: 'LED лента в нишата за палта' },
   { id: 'Т9', t: 'socket', x: 625, y: 555, h: 120, n: [1, 0], w: 8, room: 'Антре',
     bg: 'Контакт в шкафа – зарядна стойка за прахосмукачка' },
-  { id: 'Т10', t: 'socket', x: 470, y: 303, h: 3, floor: true, room: 'Дневна',
+  { id: 'Т10', variant: 'A', t: 'socket', x: 470, y: 303, h: 3, floor: true, room: 'Дневна',
     bg: 'Подов контакт до колоната на телевизора (ток + антена + интернет)', note: 'кабелът влиза в колоната; да се заложи в замазката СЕГА' },
   { id: 'Л12', t: 'light', x: 607, y: 480, h: 126, n: [-1, 0], plate: false, room: 'Дневна',
     bg: 'LED ленти под рафта над дивана', note: 'отделно от Л11, с димер – уютна светлина вечер' },
-  { id: 'Т7', t: 'socket', x: 357, y: 580, h: 30, n: [0, -1], w: 15, room: 'Дневна',
+  { id: 'Т10', variant: 'B', t: 'socket', x: 458, y: 580, h: 50, n: [0, -1], w: 22, room: 'Дневна',
+    bg: 'Вариант Б: контакт + антена + интернет зад телевизора на стената', note: 'скрит зад ТВ шкафа' },
+  { id: 'Т7', variant: 'B', t: 'socket', x: 610, y: 580, h: 30, n: [0, -1], w: 15, room: 'Дневна',
+    bg: 'Вариант Б: двоен контакт до лежанката (лампион, зарядно)' },
+  { id: 'Т7', variant: 'A', t: 'socket', x: 357, y: 580, h: 30, n: [0, -1], w: 15, room: 'Дневна',
     bg: 'Двоен контакт до дивана (лампион, зарядно)' },
   { id: 'Л11', t: 'light', x: 593, y: 480, h: 174, n: [-1, 0], plate: false, room: 'Дневна',
     bg: 'LED под горните шкафове над дивана', note: 'захранването идва през тавана; ключът – с дневната' },
@@ -116,6 +120,8 @@ export const FURNITURE = [
     mech: 'фурната е на височината на очите (80–140 см), микровълновата над нея; отдолу 2 чекмеджета за тави и тенджери; тесният шкаф се изтегля изцяло' },
   { name: '– горни шкафове', size: '35 дълбоки, 2 реда до тавана над дясната стена',
     mech: 'чаши, чинии, подправки, горе кутии; LED отдолу; гръб от зелени zellige плочки' },
+  { name: 'Хол – 2 варианта (превключват се в панела)', size: 'А: диван с гръб към спалнята, ТВ на колона | Б: диван с гръб към трапезарията, ТВ на стената към спалнята',
+    mech: 'Б: висящ ТВ шкаф 150 × 35 от орех с 3 чекмеджета (push), ТВ 65" на стената' },
   { name: 'Трапезария', size: 'овална маса 140 × 90 от орех на един крак + 4 заоблени тапицирани стола',
     mech: '2 висящи лампи-сфери над масата' },
 ];
@@ -190,6 +196,8 @@ function flutedGlass() {
 
 // ---------------------------------------------------------------- build
 export function buildInterior({ box, M, group, colliders, addDoor, pickables, H }) {
+  let realGroup = group;
+  const variants = {};
   const b = (x1, y1, x2, y2, z0, z1, m, parent = group) => box(x1, y1, x2, y2, z0, z1, m, parent);
   const block = (r) => colliders.push(r.map(M));
   const rnd = (() => { let s = 7; return () => ((s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296); })();
@@ -722,6 +730,14 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
       else { quiet(b(...frL(y, y + 22, -27, -25), 129, 157, pick(['#efe9df', '#d9b8a8', '#3a3a3a']))); y += 30; }
     }
 
+    realGroup = group;
+    const mkVariant = (key, build) => {
+      const g = new THREE.Group(); realGroup.add(g); group = g;
+      const c0 = colliders.length; build();
+      variants[key] = { g, cols: colliders.splice(c0) };
+      group = realGroup;
+    };
+    mkVariant('A', () => {
     // ---- corner sofa with chaise: back against the bedroom wall (y 580), chaise along the unit
     //      main part 250 x 95 (x 371–621), chaise 90 wide reaching 165 from the wall (y 415–580)
     const sofa = mat('#cbbfae', { roughness: 1 }), sofaDark = mat('#b9ad9b', { roughness: 1 });
@@ -798,6 +814,43 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
       tv.apply = () => { tvPivot.rotation.y = Math.PI * tv.frac; };
       register(tv);
     }
+    });
+    mkVariant('B', () => {
+    // ---- Variant B: sofa with its back to the dining area, chaise along the unit, TV on the bedroom wall
+    {
+      const sofa = mat('#cbbfae', { roughness: 1 }), sofaDark = mat('#b9ad9b', { roughness: 1 });
+      const SN = 330;
+      b(440, SN, 621, SN + 95, 4, 40, sofa);                          // main base
+      b(531, SN + 95, 621, SN + 230, 4, 40, sofa);                    // chaise base
+      b(455, SN, 606, SN + 21, 40, 84, sofaDark);                     // back towards the dining table
+      b(440, SN, 455, SN + 95, 40, 62, sofa);                         // arm (balcony-door side)
+      b(606, SN, 621, SN + 230, 40, 62, sofa);                        // low side along the unit
+      b(457, SN + 21, 530, SN + 93, 40, 50, sofa);
+      b(531, SN + 21, 605, SN + 228, 40, 50, sofa);                   // chaise cushion
+      for (let k = 0; k < 2; k++) b(458 + k * 74, SN + 19, 528 + k * 74, SN + 33, 50, 82, sofaDark);
+      quiet(b(462, SN + 32, 500, SN + 42, 50, 82, C.sage));
+      quiet(b(560, SN + 32, 598, SN + 42, 50, 82, mat('#c7a98a')));
+      quiet(b(545, SN + 140, 600, SN + 200, 50, 53, mat('#8e9c86', { roughness: 1 })));
+      block([440, SN, 621, SN + 95]);
+      block([531, SN + 95, 621, SN + 230]);
+      quiet(b(400, 410, 615, 575, 0, 1, mat('#e2d9cb', { roughness: 1 })));
+      cylinder(475, 482, 34, 38, 30, C.walnut);
+      cylinder(475, 482, 0, 34, 11, C.walnut);
+      quiet(cylinder(466, 474, 38, 50, 5, mat('#d8cbb6')));
+      block([445, 452, 505, 512]);
+      // floating walnut TV console (150 x 35) with fluted push drawers, TV 65" on the wall above
+      const nT = [0, -1], fT = 545, frT = frame(nT, fT);
+      shell(nT, fT, 380, 530, 35, 25, 55, C.walnut);
+      for (let i = 0; i < 3; i++) drawer({ n: nT, f: fT, u1: 380 + i * 50, u2: 430 + i * 50, z0: 26.8, z1: 53.2, depth: 33, front: fluted(49),
+        fill: (a) => smalls(a, 3, 2, ['#2a2a2a', '#d9d4cc', '#6d7f99'], 6) });
+      block([380, 545, 530, 580]);
+      b(386, 575, 530, 578, 76, 159, mat('#111214', { roughness: 0.25, metalness: 0.3 }));
+      quiet(b(389, 574.7, 527, 575, 79, 156, mat('#1d2a33', { roughness: 0.15 })));
+      quiet(b(400, 552, 425, 572, 55, 70, mat('#d8cbb6')));
+      quiet(cylinder(505, 562, 55, 75, 4, mat('#8f9a8a')));
+    }
+    });
+
   }
 
   // ======================= KITCHEN (U-shape) + DINING =======================
@@ -1041,7 +1094,9 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
   addDoor(door);
 
   // ======================= ELECTRICAL PLATES =======================
+  const realGroupAll = group;
   for (const p of ELECTRIC) {
+    group = p.variant ? variants[p.variant].g : realGroupAll;
     if (p.floor) { quiet(b(p.x - 7, p.y - 7, p.x + 7, p.y + 7, 0, 0.6, C.metal)); continue; }
     if (p.ceil || p.plate === false) continue;
     const w = p.w || 8, [nx, ny] = p.n;
@@ -1051,4 +1106,15 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     const m = b(...r, p.h - 4, p.h + 4, C.plate);
     m.castShadow = false;
   }
+  group = realGroupAll;
+
+  // living-room layout variants: A = sofa against the bedroom wall, TV on the pole; B = swapped
+  const setVariant = (key) => {
+    for (const [k, v] of Object.entries(variants)) {
+      v.g.visible = k === key;
+      for (const c of v.cols) { const i = colliders.indexOf(c); if (k === key && i < 0) colliders.push(c); if (k !== key && i >= 0) colliders.splice(i, 1); }
+    }
+  };
+  setVariant('A');
+  return { setVariant };
 }

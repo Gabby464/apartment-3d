@@ -289,7 +289,8 @@ scene.add(ground);
 // ---------------------------------------------------------------- interior (furniture, electrics)
 const furniture = new THREE.Group();
 scene.add(furniture);
-buildInterior({ box, M, group: furniture, colliders, pickables, H, addDoor: (d) => doors.push(d) });
+const interior = buildInterior({ box, M, group: furniture, colliders, pickables, H, addDoor: (d) => doors.push(d) });
+let layoutVariant = 'A';
 const roomLights = [[546, 751, 1.4], [850, 813, 0.9], [705, 470, 0.8], [500, 450, 1.2]].map(([x, y, i]) => {
   const l = new THREE.PointLight(0xffe7c4, i, 4.5, 1.6);
   l.position.set(M(x), M(H - 25), M(y));
@@ -312,6 +313,7 @@ for (const p of ELECTRIC) {
   div.title = p.bg;
   const obj = new CSS2DObject(div);
   obj.userData.room = p.room;
+  obj.userData.variant = p.variant;
   const [nx, ny] = p.n || [0, 0];
   obj.position.set(M(p.x + nx * 6), M(p.ceil ? H - 8 : p.h), M(p.y + ny * 6));
   elecLabels.add(obj);
@@ -469,10 +471,14 @@ $('#open-all').addEventListener('click', () => {
   parts.forEach((d) => { d.target = open ? 1 : 0; });
   $('#open-all').textContent = open ? 'Затвори всички мебели' : 'Отвори всички мебели';
 });
+document.querySelectorAll('#variant button').forEach((btn) => btn.addEventListener('click', () => {
+  layoutVariant = btn.dataset.v;
+  interior.setVariant(layoutVariant);
+  document.querySelectorAll('#variant button').forEach((x) => x.classList.toggle('active', x === btn));
+}));
 $('#show-furniture').addEventListener('change', (e) => { furniture.visible = e.target.checked; });
 $('#show-elec').addEventListener('change', (e) => {
   elecOn = e.target.checked;
-  showGroup(elecLabels, elecOn);
   document.body.classList.toggle('show-elec', e.target.checked);
 });
 document.body.classList.add('show-elec');
@@ -568,7 +574,8 @@ function look(dx, dy, s) {
 function clickDoor(x, y, maxDist) {
   ndc.set(x, y);
   raycaster.setFromCamera(ndc, mode === 'plan' ? ortho : persp);
-  const hit = raycaster.intersectObjects(pickables, false)[0];
+  const shown = (o) => { for (; o; o = o.parent) if (!o.visible) return false; return true; };
+  const hit = raycaster.intersectObjects(pickables, false).find((h) => shown(h.object));
   if (hit && hit.distance <= maxDist) toggleDoor(hit.object.userData.door);
 }
 
@@ -667,18 +674,18 @@ function frame() {
     {
       const here = { bed2: ['Спалня', 'Дрешник'], closet: ['Спалня', 'Дрешник'], hall: ['Антре'], living: ['Дневна', 'Кухня'], kitchen: ['Кухня', 'Дневна'] }[room?.id] || [];
       elecLabels.visible = elecOn;
-      elecLabels.children.forEach((c) => { c.visible = elecOn && here.includes(c.userData.room); });
+      elecLabels.children.forEach((c) => { c.visible = elecOn && here.includes(c.userData.room) && (!c.userData.variant || c.userData.variant === layoutVariant); });
     }
     minimap.draw(player, room?.id);
     renderer.render(scene, persp);
     labelRenderer.render(scene, persp);
   } else if (mode === 'orbit') {
-    showGroup(elecLabels, elecOn);
+    elecLabels.children.forEach((c) => { c.visible = elecOn && (!c.userData.variant || c.userData.variant === layoutVariant); });
     orbit.update();
     renderer.render(scene, persp);
     labelRenderer.render(scene, persp);
   } else {
-    showGroup(elecLabels, elecOn);
+    elecLabels.children.forEach((c) => { c.visible = elecOn && (!c.userData.variant || c.userData.variant === layoutVariant); });
     planCtl.update();
     renderer.render(scene, ortho);
     labelRenderer.render(scene, ortho);
@@ -693,4 +700,4 @@ document.body.classList.add('ready');
 frame();
 
 // handy for debugging from the console
-window.__apt = { player, setMode, doors, scene, persp, orbit };
+window.__apt = { player, setMode, doors, scene, persp, orbit, colliders, circleHits, inWalkable };
