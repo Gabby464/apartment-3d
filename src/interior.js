@@ -60,7 +60,7 @@ export const ELECTRIC = [
     bg: 'Контакт в шкафа – зарядна стойка за прахосмукачка' },
   { id: 'Л12', t: 'light', x: 607, y: 480, h: 126, n: [-1, 0], plate: false, room: 'Дневна',
     bg: 'LED ленти под рафта над дивана', note: 'отделно от Л11, с димер – уютна светлина вечер' },
-  { id: 'Т7', t: 'socket', x: 500, y: 580, h: 30, n: [0, -1], w: 15, room: 'Дневна',
+  { id: 'Т7', t: 'socket', x: 440, y: 580, h: 30, n: [0, -1], w: 15, room: 'Дневна',
     bg: 'Двоен контакт до дивана (лампион, зарядно)' },
   { id: 'Л11', t: 'light', x: 593, y: 480, h: 174, n: [-1, 0], plate: false, room: 'Дневна',
     bg: 'LED под горните шкафове над дивана', note: 'захранването идва през тавана; ключът – с дневната' },
@@ -89,7 +89,7 @@ export const FURNITURE = [
   { name: '– откъм коридора: портманто', size: '40 дълбоко; коридорът остава 85 см',
     mech: 'ниша 1 м: закачалки, рафт за шапки с LED, пейка с възглавница и 2 чекмеджета за обувки (push); шкаф 1 м: 2 врати (едната огледало) – рафтове за обувки, прахосмукачка с контакт, дъска за гладене' },
   { name: '– откъм дневната: гръб за дивана', size: 'панел от релефни ламели до 175 см, над него шкафове 30 дълбоки до тавана',
-    mech: 'диванът (200 × 95) е облегнат на мебелта; отворен рафт над него на 128 см с LED ленти; горните шкафове с push врати и LED отдолу' },
+    mech: 'ъглов диван с лежанка (200 + лежанка 165 × 90 по стената към спалнята), облегнат на мебелта; отворен рафт над него на 128 см с LED ленти; горните шкафове с push врати и LED отдолу' },
 ];
 
 // ---------------------------------------------------------------- materials
@@ -694,27 +694,32 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
       else { quiet(b(...frL(y, y + 22, -27, -25), 129, 157, pick(['#efe9df', '#d9b8a8', '#3a3a3a']))); y += 30; }
     }
 
-    // ---- sofa against the unit, facing the window / balcony door (3-seater, 200 x 95)
+    // ---- corner sofa with chaise: back against the unit, chaise along the bedroom wall (200 + chaise 165 x 90)
     const sofa = mat('#cbbfae', { roughness: 1 }), sofaDark = mat('#b9ad9b', { roughness: 1 });
-    b(526, Y1, 621, Y2, 4, 40, sofa);                               // base
+    b(526, Y1, 621, Y2, 4, 40, sofa);                               // main base
+    b(456, 490, 526, Y2, 4, 40, sofa);                              // chaise base
     b(600, Y1 + 15, 621, Y2 - 15, 40, 84, sofaDark);               // back
-    b(526, Y1, 621, Y1 + 15, 40, 62, sofa);                        // arms
-    b(526, Y2 - 15, 621, Y2, 40, 62, sofa);
-    for (let k = 0; k < 3; k++) {                                   // seat cushions
+    b(526, Y1, 621, Y1 + 15, 40, 62, sofa);                        // arm (entrance side)
+    b(456, Y2 - 15, 621, Y2, 40, 62, sofa);                        // arm along the bedroom wall, full chaise length
+    b(528, Y1 + 15.5, 600, 489.5, 40, 50, sofa);                   // seat cushions
+    b(528, 430.5, 600, 489.5, 40.2, 50.2, sofa);
+    b(458, 490.5, 600, Y2 - 15.5, 40, 50, sofa);                   // chaise cushion
+    for (let k = 0; k < 3; k++) {
       const y1 = Y1 + 15.5 + k * 56.3;
-      b(528, y1, 600, y1 + 55.5, 40, 50, sofa);
       b(598, y1 + 2, 612, y1 + 53, 50, 82, sofaDark);              // back cushions
     }
     quiet(b(588, 410, 598, 448, 50, 82, C.sage));                   // throw pillows
     quiet(b(588, 512, 598, 550, 50, 82, mat('#c7a98a')));
+    quiet(b(470, 505, 520, 560, 50, 53, mat('#8e9c86', { roughness: 1 })));  // throw on the chaise
     block([526, Y1, 621, Y2]);
-    // rug + round walnut coffee table
-    quiet(b(400, 395, 600, 568, 0, 1, mat('#e2d9cb', { roughness: 1 })));
-    cylinder(452, 480, 34, 38, 40, C.walnut);
-    cylinder(452, 480, 0, 34, 14, C.walnut);
-    quiet(cylinder(440, 470, 38, 50, 5, mat('#d8cbb6')));
-    quiet(b(458, 482, 482, 500, 38, 41, mat('#8a5a4a')));
-    block([412, 440, 492, 520]);
+    block([456, 490, 526, Y2]);
+    // rug + round walnut coffee table in front of the seats
+    quiet(b(395, 388, 600, 578, 0, 1, mat('#e2d9cb', { roughness: 1 })));
+    cylinder(475, 437, 34, 38, 34, C.walnut);
+    cylinder(475, 437, 0, 34, 12, C.walnut);
+    quiet(cylinder(465, 428, 38, 50, 5, mat('#d8cbb6')));
+    quiet(b(478, 440, 500, 456, 38, 41, mat('#8a5a4a')));
+    block([443, 405, 507, 469]);
   }
 
   // closet ceiling light + sensor
