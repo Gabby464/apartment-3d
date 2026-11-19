@@ -36,10 +36,11 @@ export const ROOMS = [
     rects: [[650, 280, 780, 408], [650, 408, 750, 580]], label: [705, 360], dims: '130 / 100 × 313' },
   { id: 'bath', en: 'Bathroom', bg: 'Баня-WC', area: 4.04, floor: 'bath',
     rects: [[762, 433, 900, 606], [762, 606, 963, 698]], label: [835, 560], dims: '138 / 201 × 265' },
-  { id: 'closet', en: 'Walk-in closet', bg: 'Дрешник', area: 3.72, floor: 'wood',
-    rects: [[762, 710, 963, 897]], dims: '201 × 187' },
-  { id: 'bed2', en: 'Bedroom 2', bg: 'Спалня', area: 11.73, floor: 'wood',
-    rects: [[343, 605, 750, 897]], dims: '407 × 292' },
+  // Walk-in closet: the 12 cm wall to the bedroom is removed (was 3.72 m², 201 × 187)
+  { id: 'closet', en: 'Walk-in closet', bg: 'Дрешник', area: 3.98, floor: 'wood',
+    rects: [[750, 710, 963, 897]], label: [840, 813], dims: '213 × 187' },
+  { id: 'bed2', en: 'Master bedroom', bg: 'Родителска спалня', area: 11.73, floor: 'wood',
+    rects: [[343, 605, 750, 897]], label: [528, 660], dims: '407 × 292' },
   { id: 'balc1', en: 'Balcony', bg: 'Балкон', area: 8.49, floor: 'outdoor', outdoor: true,
     rects: [[-37, -145, 830, -37]] },
   { id: 'balc2', en: 'Balcony', bg: 'Балкон', area: 6.72, floor: 'outdoor', outdoor: true,
@@ -86,9 +87,8 @@ export const WALLS = [
   { r: [343, 580, 750, 605], openings: [                 // living + hall / bedroom 2
     { type: 'door', from: 660, to: 745, head: 200, hinge: 'to', swing: 1, kind: 'interior' },    // B2 85/200
   ] },
-  { r: [750, 433, 762, 897], openings: [                 // hall + bedroom 2 / bathroom + closet
+  { r: [750, 433, 762, 710], openings: [                 // hall / bathroom (wall to the closet removed)
     { type: 'door', from: 438, to: 523, head: 200, hinge: 'to', swing: 1, kind: 'interior' },    // bathroom
-    { type: 'door', from: 805, to: 890, head: 200, hinge: 'to', swing: 1, kind: 'interior' },    // closet
   ] },
   { r: [762, 698, 963, 710] },                           // bathroom / closet
 ];

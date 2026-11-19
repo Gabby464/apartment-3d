@@ -22,10 +22,16 @@ Keys `1` / `2` / `3` switch modes. `?mode=walk` in the URL opens straight into w
 | Kitchenette (Кухненски бокс) | 4.03 m² | ~150 × 268 |
 | Entrance hall (Антре) | 3.53 m² | 130 / 100 × 313 |
 | Bathroom (Баня-WC) | 4.04 m² | 138 / 201 × 265 |
-| Walk-in closet (Дрешник) | 3.72 m² | 201 × 187 |
-| Bedroom 2 (Спалня) | 11.73 m² | 407 × 292 |
+| Walk-in closet (Дрешник) – wall to bedroom removed | 3.98 m² | 213 × 187 |
+| Master bedroom (Родителска спалня) | 11.73 m² | 407 × 292 |
 | Balcony (north) | 8.49 m² | |
 | Balcony (west) | 6.72 m² | |
+
+## Interior (in progress)
+
+Furnished so far: the master bedroom and its open, U-shaped walk-in closet with fluted-glass sliding
+doors, plus all electrical points (switches, sockets, lights, sensor) with heights. Furniture and the
+electrical layer can be toggled in the side panel. Interior lives in [`src/interior.js`](src/interior.js).
 
 ## Editing the geometry
 

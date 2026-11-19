@@ -35,7 +35,13 @@
       <div class="toggles">
         <label class="only-orbit"><input type="checkbox" id="cutaway" checked> Cut-away walls</label>
         <label class="not-walk"><input type="checkbox" id="show-labels" checked> Room labels</label>
+        <label><input type="checkbox" id="show-furniture" checked> Furniture</label>
+        <label><input type="checkbox" id="show-elec" checked> Ел. точки (ключове, контакти, лампи)</label>
       </div>
+      <details id="elec-box">
+        <summary>Ел. точки – родителска спалня</summary>
+        <ul id="elec-list"></ul>
+      </details>
       <p class="help only-orbit">Drag to rotate · right-drag to pan · scroll to zoom · click a door to open/close it.</p>
       <p class="help only-plan">Drag to pan · scroll to zoom. Plan is cut at 1.3 m, like an architect's drawing.</p>
       <p class="help only-walk">WASD / arrows to move · mouse to look · <kbd>Shift</kbd> to run · <kbd>E</kbd> or click to open/close doors · <kbd>Esc</kbd> to release the mouse · click the mini-map to jump.</p>

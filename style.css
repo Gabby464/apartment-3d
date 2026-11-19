@@ -14,7 +14,7 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #dfe8f0; }
 #app, #app canvas, .labels { position: fixed; inset: 0; }
 #app canvas { display: block; touch-action: none; }
 .labels { pointer-events: none; }
-body[data-mode="walk"] .labels { display: none !important; }
+body.hide-room-labels .room-label { display: none !important; }
 
 button { font: inherit; color: inherit; cursor: pointer; }
 
@@ -104,3 +104,19 @@ body.touch[data-mode="walk"] #joystick, body.touch[data-mode="walk"] #door-btn {
   #minimap { width: 150px; height: 156px; }
   #door-btn { bottom: 184px; }
 }
+
+/* electrical points */
+.elec { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 18px; padding: 0 4px;
+  border-radius: 9px; font: 600 10px/1 system-ui, sans-serif; color: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.3); }
+.labels .elec { opacity: .92; }
+.elec-switch { background: #d9822b; }
+.elec-socket { background: #2f6fb5; }
+.elec-light { background: #c9a21a; }
+.elec-sensor { background: #3f8f5a; }
+body:not(.show-elec) #elec-box { display: none; }
+#elec-box { border-top: 1px solid var(--line); padding-top: 8px; }
+#elec-box summary { cursor: pointer; font-weight: 600; }
+#elec-list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+#elec-list li { display: flex; gap: 8px; align-items: flex-start; line-height: 1.35; }
+#elec-list li .elec { flex: none; margin-top: 1px; }
+#elec-list small { display: block; color: var(--muted); font-size: 11px; }

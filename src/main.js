@@ -4,6 +4,7 @@ import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer
 import { H, INFO, ROOMS, WALLS, RAILINGS, LANDING, LANDING_LIMITS } from './plan.js';
 import { woodTexture, tileTexture } from './textures.js';
 import { Minimap } from './minimap.js';
+import { buildInterior, ELECTRIC } from './interior.js';
 
 const M = (v) => v / 100; // cm -> m
 const EYE = 1.6;
@@ -231,6 +232,7 @@ function makeLeaf(kind, w, h, door) {
 }
 
 function setDoorAngle(door) {
+  if (door.apply) return door.apply();
   for (const p of door.pivots) p.pivot.rotation.y = p.t0 + p.d * door.frac;
 }
 
@@ -283,6 +285,37 @@ ground.rotation.x = -Math.PI / 2;
 ground.position.set(CENTER.x, -3.05, CENTER.z);
 ground.receiveShadow = true;
 scene.add(ground);
+
+// ---------------------------------------------------------------- interior (furniture, electrics)
+const furniture = new THREE.Group();
+scene.add(furniture);
+buildInterior({ box, M, group: furniture, colliders, pickables, H, addDoor: (d) => doors.push(d) });
+const roomLights = [[546, 751, 0.9], [850, 813, 0.5]].map(([x, y, i]) => {
+  const l = new THREE.PointLight(0xffe7c4, i, 4.5, 1.6);
+  l.position.set(M(x), M(H - 25), M(y));
+  furniture.add(l);
+  return l;
+});
+
+let elecOn = true;
+// CSS2DRenderer only checks each label's own .visible, so toggle the children too
+function showGroup(g, v) {
+  if (g.visible === v) return;
+  g.visible = v;
+  g.children.forEach((c) => { c.visible = v; });
+}
+const elecLabels = new THREE.Group();
+scene.add(elecLabels);
+for (const p of ELECTRIC) {
+  const div = document.createElement('div');
+  div.className = `elec elec-${p.t}`;
+  div.textContent = p.id;
+  div.title = p.bg;
+  const obj = new CSS2DObject(div);
+  const [nx, ny] = p.n || [0, 0];
+  obj.position.set(M(p.x + nx * 6), M(p.ceil ? H - 8 : p.h), M(p.y + ny * 6));
+  elecLabels.add(obj);
+}
 
 // ---------------------------------------------------------------- cameras & controls
 const persp = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.05, 400);
@@ -402,7 +435,8 @@ function setMode(m) {
   orbit.enabled = m === 'orbit';
   planCtl.enabled = m === 'plan';
   ceilings.visible = m === 'walk';
-  labels.visible = m !== 'walk';
+  showGroup(labels, m !== 'walk');
+  roomLights.forEach((l) => { l.visible = m === 'walk'; });
   hemi.intensity = m === 'walk' ? 2.1 : 1.25;
   sun.castShadow = m !== 'plan';
   if (m === 'walk') $('#panel').removeAttribute('open');
@@ -427,7 +461,20 @@ function applyClipping() {
 document.querySelectorAll('#modes button').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
 
 $('#cutaway').addEventListener('change', (e) => { cutaway = e.target.checked; applyClipping(); });
-$('#show-labels').addEventListener('change', (e) => { labelRenderer.domElement.style.display = e.target.checked ? '' : 'none'; });
+$('#show-labels').addEventListener('change', (e) => { document.body.classList.toggle('hide-room-labels', !e.target.checked); });
+$('#show-furniture').addEventListener('change', (e) => { furniture.visible = e.target.checked; });
+$('#show-elec').addEventListener('change', (e) => {
+  elecOn = e.target.checked;
+  showGroup(elecLabels, elecOn);
+  document.body.classList.toggle('show-elec', e.target.checked);
+});
+document.body.classList.add('show-elec');
+{
+  const typeName = { switch: 'Ключ', socket: 'Контакт', light: 'Осветление', sensor: 'Датчик' };
+  const rows = ELECTRIC.map((p) => `<li><span class="elec elec-${p.t}">${p.id}</span><div>${p.bg}`
+    + `<small>${typeName[p.t]}${p.ceil ? ' · таван' : ` · h ${p.h} см`}${p.note ? ` · ${p.note}` : ''}</small></div></li>`);
+  $('#elec-list').innerHTML = rows.join('');
+}
 
 // facts + room list
 $('#facts').innerHTML = `<div>${INFO.floor}</div><div>Built-up area <b>${INFO.builtArea.toFixed(2)} m²</b></div><div>Incl. common parts <b>${INFO.totalArea.toFixed(2)} m²</b></div>`;
@@ -607,13 +654,17 @@ function frame() {
       lastRoom = room;
       hud.innerHTML = room ? `<b>${room.en}</b> <span>${room.bg}</span>${room.area ? ` · ${room.area.toFixed(2)} m²` : ''}` : '';
     }
+    showGroup(elecLabels, elecOn && (room?.id === 'bed2' || room?.id === 'closet'));
     minimap.draw(player, room?.id);
     renderer.render(scene, persp);
+    labelRenderer.render(scene, persp);
   } else if (mode === 'orbit') {
+    showGroup(elecLabels, elecOn);
     orbit.update();
     renderer.render(scene, persp);
     labelRenderer.render(scene, persp);
   } else {
+    showGroup(elecLabels, elecOn);
     planCtl.update();
     renderer.render(scene, ortho);
     labelRenderer.render(scene, ortho);
