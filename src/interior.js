@@ -45,13 +45,15 @@ export const ELECTRIC = [
     bg: 'Лампа до огледалото, ляво', note: 'неутрална светлина 4000K, CRI 90+ – вярни цветове за грим' },
   { id: 'Л8', t: 'light', x: 436, y: 605, h: 140, n: [0, 1], plate: false, room: 'Спалня',
     bg: 'Лампа до огледалото, дясно', note: 'на ключ К4' },
-  { id: 'К5', t: 'switch', x: 765, y: 408, h: 110, n: [0, -1], w: 8, room: 'Антре',
+  { id: 'К5', t: 'switch', x: 768, y: 280, h: 110, n: [0, 1], w: 8, room: 'Антре',
     bg: 'Ключ – осветление антре, до входната врата', note: 'девиатор с К6' },
-  { id: 'В1', t: 'intercom', x: 765, y: 408, h: 150, n: [0, -1], w: 12, room: 'Антре',
+  { id: 'В1', t: 'intercom', x: 768, y: 280, h: 150, n: [0, 1], w: 12, room: 'Антре',
     bg: 'Видеодомофон до входната врата' },
   { id: 'К6', t: 'switch', x: 750, y: 565, h: 110, n: [-1, 0], w: 8, room: 'Антре',
     bg: 'Ключ – осветление антре, при спалнята', note: 'светва/гаси от двата края' },
   { id: 'Л9', t: 'light', x: 708, y: 470, ceil: true, room: 'Антре', bg: 'Луни (спотове) на тавана в антрето' },
+  { id: 'Л16', t: 'light', x: 715, y: 280, h: 205, n: [0, 1], plate: false, room: 'Антре',
+    bg: 'Захранване за LED огледалото (подсветка отзад)', note: 'на ключ К5 или със сензорен бутон; топла светлина 2700–3000K, CRI 90+ за снимки' },
   { id: 'Д2', t: 'sensor', x: 750, y: 470, h: 30, n: [-1, 0], room: 'Антре',
     bg: 'Нощна LED светлина ниско, със сензор за движение', note: 'пътят спалня → баня нощем' },
   { id: 'Л10', t: 'light', x: 665, y: 432, h: 186, n: [1, 0], plate: false, room: 'Антре',
@@ -110,6 +112,8 @@ export const FURNITURE = [
     mech: 'ниша 1 м: закачалки, рафт за шапки с LED, пейка с възглавница и 2 чекмеджета за обувки (push); шкаф 1 м: 2 врати (едната огледало) – рафтове за обувки, прахосмукачка с контакт, дъска за гладене' },
   { name: '– откъм дневната: гръб за дивана', size: 'панел от релефни ламели до 175 см, над него шкафове 30 дълбоки до тавана',
     mech: 'ъглов диван 250 см с гръб към стената на спалнята, лежанката (165 × 90) е по мебелта; срещу него колона от пода до тавана с TV 65" (върти се към трапезарията) и няколко въртящи се рафтчета; отворен рафт над него на 128 см с LED ленти; горните шкафове с push врати и LED отдолу' },
+  { name: 'Антре – огледало срещу входа', size: 'овално (капсула) 70 × 180, LED подсветка отзад; висяща конзола от орех 60 × 18 с заоблени краища',
+    mech: 'конзолата има чекмедже с push и кадифе – ключове, портмонета, поща; отгоре керамична купичка за ключове. Входната врата е обърната да се отваря към банята' },
   { name: 'Кухня – П-образна, долу орех, горе топло бежово (не бяло)', size: 'мивка под прозореца, котлон на дясната стена, високи колони по стената към антрето',
     mech: 'без дръжки: чекмеджета с вдлъбнат профил, горни шкафове с вдигащи се нагоре врати (тип Aventos); вградена техника' },
   { name: '– под прозореца', size: 'съдомиялна 45 см + мивка 45 с кошчета за разделно',
@@ -1062,6 +1066,51 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     const bowl = new THREE.Mesh(new THREE.SphereGeometry(M(11), 24, 12, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), mat('#8a5a4a', { roughness: 0.5 }));
     bowl.position.set(M(505), M(86), M(170));
     group.add(bowl);
+  }
+
+  // ======================= HALL: capsule mirror with halo light + floating key console =======================
+  {
+    const capsule = (w, h) => {                                        // stadium shape, rounded on the short sides
+      const r = Math.min(w, h) / 2, x = w / 2 - r, y = h / 2 - r, sh = new THREE.Shape();
+      sh.moveTo(-x, -h / 2);
+      sh.lineTo(x, -h / 2);
+      sh.absarc(x, -y, r, -Math.PI / 2, 0, false);
+      sh.lineTo(w / 2, y);
+      sh.absarc(x, y, r, 0, Math.PI / 2, false);
+      sh.lineTo(-x, h / 2);
+      sh.absarc(-x, y, r, Math.PI / 2, Math.PI, false);
+      sh.lineTo(-w / 2, -y);
+      sh.absarc(-x, -y, r, Math.PI, Math.PI * 1.5, false);
+      return sh;
+    };
+    const MX = 715, MZ = 112;                                          // centre of the mirror (plan x, height)
+    const halo = new THREE.Mesh(new THREE.ShapeGeometry(capsule(M(78), M(188)), 48),
+      new THREE.MeshStandardMaterial({ color: '#fff3dc', emissive: '#ffe2b0', emissiveIntensity: 1.3 }));
+    halo.position.set(M(MX), M(MZ), M(280.6));
+    group.add(halo);
+    const mirror = new THREE.Mesh(new THREE.ExtrudeGeometry(capsule(M(70), M(180)), { depth: M(1.2), bevelEnabled: false, curveSegments: 48 }),
+      mat('#c9d5da', { roughness: 0.05, metalness: 0.2 }));
+    mirror.position.set(M(MX), M(MZ), M(281.2));
+    mirror.castShadow = false;
+    group.add(mirror);
+    // floating capsule-shaped walnut console in front of the mirror (60 x 18 x 12) with a push drawer
+    const con = new THREE.Mesh(new THREE.ExtrudeGeometry(capsule(M(60), M(18)), { depth: M(12), bevelEnabled: true, bevelSize: M(0.6), bevelThickness: M(0.6), bevelSegments: 2, curveSegments: 32 }), C.walnut);
+    con.rotation.x = Math.PI / 2;
+    con.position.set(M(MX), M(100), M(291));
+    con.castShadow = true;
+    group.add(con);
+    const keyDrawer = drawer({ n: [0, 1], f: 300.4, u1: MX - 18, u2: MX + 18, z0: 89.5, z1: 99, depth: 15, front: fluted(36), fill: (a) => {
+      a.add(a.u1, a.u2, a.v1, a.v2, a.z, a.z + 0.5, C.velvet);
+      a.add(a.u1 + 2, a.u1 + 14, a.v1 + 2, a.v2 - 2, a.z + 0.5, a.z + 2.5, mat('#3b2a20'));          // wallet
+      a.add(a.u1 + 16, a.u1 + 24, a.v1 + 3, a.v2 - 3, a.z + 0.5, a.z + 3, mat('#2a2a2a'));          // sunglasses case
+      a.add(a.u1 + 27, a.u2 - 3, a.v1 + 3, a.v2 - 4, a.z + 0.5, a.z + 1, mat('#e9e3d8'));          // letters
+    } });
+    tag(con, keyDrawer);                                               // the whole console body opens the hidden push drawer
+    // on top: ceramic key tray, small vase
+    quiet(cylinder(MX - 14, 291, 100.6, 102, 7, mat('#d8cbb6', { roughness: 0.5 })));
+    quiet(b(MX - 17, 289, MX - 10, 292, 102, 102.6, C.metal));
+    quiet(cylinder(MX + 18, 291, 100.6, 114, 3, mat('#8f9a8a', { roughness: 0.4 })));
+    block([MX - 31, 280, MX + 31, 301]);
   }
 
   // closet ceiling light + sensor

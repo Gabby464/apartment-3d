@@ -78,7 +78,7 @@ export const WALLS = [
   { r: [900, 433, 925, 581], ext: true },
   { r: [750, 408, 925, 433] },                           // bathroom north
   { r: [780, 280, 805, 408], openings: [                 // front door to corridor
-    { type: 'door', from: 295, to: 395, head: 210, hinge: 'from', swing: -1, kind: 'entrance', open: false }, // B1 100/210
+    { type: 'door', from: 295, to: 395, head: 210, hinge: 'to', swing: -1, kind: 'entrance', open: false }, // B1 100/210 – hinged on the bathroom side so it opens against the bathroom wall, freeing the wall opposite
   ] },
   { r: [638, 268, 780, 280] },                           // kitchen / hall
   // hall / living wall (with door B4) removed – replaced by a two-sided unit (see interior.js)
