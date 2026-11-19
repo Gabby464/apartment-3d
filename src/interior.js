@@ -35,9 +35,9 @@ export const ELECTRIC = [
   { id: 'Л4', t: 'light', x: 850, y: 813, ceil: true, room: 'Дрешник', bg: 'Лампа – таван дрешник' },
   { id: 'Л5', t: 'light', x: 860, y: 768, h: 203, n: [0, 1], plate: false, room: 'Дрешник',
     bg: 'LED лента над закачалките', note: 'на същия датчик Д1' },
-  { id: 'Л6', t: 'light', x: 960, y: 813, h: 190, n: [-1, 0], plate: false, room: 'Дрешник',
-    bg: 'Осветление над огледалото на тоалетката' },
-  { id: 'Т6', t: 'socket', x: 963, y: 852, h: 95, n: [-1, 0], w: 8, room: 'Дрешник',
+  { id: 'Л6', t: 'light', x: 393, y: 605, h: 140, n: [0, 1], plate: false, room: 'Спалня',
+    bg: 'Захранване за LED огледалото на тоалетката', note: 'огледало със сензорен бутон – без отделен ключ' },
+  { id: 'Т6', t: 'socket', x: 343, y: 625, h: 95, n: [1, 0], w: 8, room: 'Спалня',
     bg: 'Контакт на тоалетката (сешоар, преса)' },
 ];
 
@@ -140,22 +140,43 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
   }
 
   // chest of drawers opposite the bed – floating, 160 x 25
-  b(448, 605, 608, 630, 40, 90, C.oak);
+  b(450, 605, 608, 630, 35, 75, C.oak);
   for (let i = 0; i < 3; i++) {
-    const x1 = 450 + i * 52.3, x2 = x1 + 51.7;
-    b(x1, 630, x2, 631, 42, 88, C.front);
-    b((x1 + x2) / 2 - 8, 631, (x1 + x2) / 2 + 8, 632, 80, 81.5, C.black);
+    const x1 = 452 + i * 51.7, x2 = x1 + 51.1;
+    b(x1, 630, x2, 631, 37, 73, C.front);
+    b((x1 + x2) / 2 - 8, 631, (x1 + x2) / 2 + 8, 632, 66, 67.5, C.black);
   }
-  b(470, 610, 490, 625, 90, 118, mat('#d6c7b0'));   // vase
-  b(560, 606, 600, 610, 105, 160, mat('#6f7d6b'));  // framed print
-  block([448, 605, 608, 630]);
+  b(575, 610, 595, 625, 75, 103, mat('#d6c7b0'));   // vase
+  b(500, 606, 560, 610, 105, 165, mat('#6f7d6b'));  // framed print
+  block([450, 605, 608, 630]);
+
+  // dressing table in the north-west corner, next to the window (daylight from the side)
+  b(343, 605, 445, 647, 72, 76, C.oak);                // top, 100 x 42
+  b(345, 605, 443, 645, 58, 72, C.white);              // drawer box
+  b(346, 645, 442, 646, 59, 71, C.front);              // drawer front
+  b(386, 646, 400, 647, 64, 65.5, C.black);
+  {
+    const glow = new THREE.Mesh(new THREE.CylinderGeometry(M(37), M(37), M(1), 48), C.lightGlow);
+    glow.rotation.x = Math.PI / 2;
+    glow.position.set(M(394), M(140), M(605.6));
+    group.add(glow);
+    const mirror = new THREE.Mesh(new THREE.CylinderGeometry(M(35), M(35), M(1.5), 48), C.mirror);
+    mirror.rotation.x = Math.PI / 2;
+    mirror.position.set(M(394), M(140), M(607));
+    group.add(mirror);
+  }
+  b(355, 615, 375, 635, 76, 79, C.oakDark);             // tray
+  cylinder(420, 625, 76, 90, 3, mat('#e3c9a8', { roughness: 0.2 }));
+  cylinder(394, 672, 0, 45, 17, C.sage);                // stool
+  block([343, 605, 445, 647]);
+  block([377, 655, 411, 689]);
 
   // main ceiling light
   cylinder(546, 751, H - 3, H, 22, C.lightGlow).castShadow = false;
 
   // curtains on the west window (pulled to the sides)
-  b(347, 636, 349, 894, 246, 248, C.black).castShadow = false;
-  for (const [y1, y2] of [[640, 688], [842, 890]]) {
+  b(347, 650, 349, 894, 246, 248, C.black).castShadow = false;
+  for (const [y1, y2] of [[652, 694], [842, 890]]) {
     for (let k = 0; k < 6; k++) {
       const y = y1 + k * ((y2 - y1) / 6);
       b(348 + (k % 2) * 3, y, 352 + (k % 2) * 3, y + (y2 - y1) / 6 + 1, 4, 244, C.curtain).castShadow = false;
@@ -215,19 +236,25 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
   cylinder(850, 884, 98, 108, 2.5, mat('#9fb3c2', { roughness: 0.2 }));
   block([754, 857, 963, 897]);
 
-  // --- dressing table at the end of the closet (east wall), 87 x 40
-  b(923, 770, 963, 857, 73, 76, C.oak);               // top
-  b(925, 772, 963, 855, 58, 73, C.white);             // drawer box
-  b(924, 773, 925, 854, 59, 72, C.front);             // drawer front
-  b(923.5, 805, 924, 821, 68, 69.5, C.black);
-  b(961, 778, 963, 848, 90, 186, C.mirror).castShadow = false;
-  b(957, 783, 963, 843, 188, 192, C.lightGlow).castShadow = false;
-  b(923, 770, 963, 857, 205, 207, C.oak);             // shelves above
-  b(923, 770, 963, 857, 232, 234, C.oak);
-  for (let y = 776; y < 850; y += 26) b(930, y, 958, y + 22, 207, 228, C.box);
-  cylinder(893, 813, 0, 44, 17, C.sage);              // stool
+  // --- end of the closet (east wall), 87 x 40: drawers below, open shelves for bags above
+  b(925, 770, 963, 857, 0, 95, C.white);
+  for (let i = 0; i < 4; i++) {
+    const z0 = 6 + i * 22.2;
+    b(924, 772, 925, 855, z0, z0 + 21.6, C.front);
+    b(923, 803, 924, 823, z0 + 17, z0 + 18.5, C.black);
+  }
+  b(923, 770, 963, 857, 95, 98, C.oak);
+  b(925, 770, 963, 772, 98, 258, C.white);            // side panels
+  b(925, 855, 963, 857, 98, 258, C.white);
+  for (const z of [140, 182, 220]) b(925, 772, 963, 855, z, z + 2, C.oak);
+  const bagCols = ['#7a5a43', '#2d2d2d', '#c8b49a', '#8e3b36', '#a7b1a0'];
+  [[100, 128], [142, 170], [184, 212], [222, 250]].forEach(([z0, z1], k) => {
+    for (let y = 778; y < 848; y += 25) {
+      const m = mat(bagCols[(k * 3 + y) % bagCols.length], { roughness: 0.6 });
+      b(935, y, 955, y + 20, z0, z0 + (z1 - z0) * (0.6 + ((y + k) % 3) * 0.12), m).castShadow = false;
+    }
+  });
   block([923, 770, 963, 857]);
-  block([876, 796, 910, 830]);
 
   // closet ceiling light + sensor
   cylinder(850, 813, H - 3, H, 14, C.lightGlow).castShadow = false;
