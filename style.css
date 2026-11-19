@@ -129,3 +129,4 @@ body:not(.show-elec) #elec-box { display: none; }
 #furn-list small { display: block; color: var(--muted); font-size: 11px; line-height: 1.4; }
 .elec-intercom { background: #7a4fa8; }
 #elec-list li.elec-room { font-weight: 700; margin-top: 6px; color: var(--ink); }
+.elec-water { background: #2a8f8f; }

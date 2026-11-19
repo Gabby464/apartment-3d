@@ -477,9 +477,9 @@ $('#show-elec').addEventListener('change', (e) => {
 });
 document.body.classList.add('show-elec');
 {
-  const typeName = { switch: 'Ключ', socket: 'Контакт', light: 'Осветление', sensor: 'Датчик', intercom: 'Домофон' };
+  const typeName = { switch: 'Ключ', socket: 'Контакт', light: 'Осветление', sensor: 'Датчик', intercom: 'Домофон', water: 'Вода/канал' };
   let lastRoom = '';
-  const order = ['Спалня', 'Дрешник', 'Антре', 'Дневна'];
+  const order = ['Спалня', 'Дрешник', 'Антре', 'Дневна', 'Кухня'];
   const rows = [...ELECTRIC].sort((x, y) => order.indexOf(x.room) - order.indexOf(y.room)).map((p) => `${p.room !== lastRoom ? `<li class="elec-room">${(lastRoom = p.room)}</li>` : ''}<li><span class="elec elec-${p.t}">${p.id}</span><div>${p.bg}`
     + `<small>${typeName[p.t]}${p.ceil ? ' · таван' : p.floor ? ' · в пода' : ` · h ${p.h} см`}${p.note ? ` · ${p.note}` : ''}</small></div></li>`);
   $('#elec-list').innerHTML = rows.join('');
@@ -665,7 +665,7 @@ function frame() {
       hud.innerHTML = room ? `<b>${room.en}</b> <span>${room.bg}</span>${room.area ? ` · ${room.area.toFixed(2)} m²` : ''}` : '';
     }
     {
-      const here = { bed2: ['Спалня', 'Дрешник'], closet: ['Спалня', 'Дрешник'], hall: ['Антре'], living: ['Дневна'] }[room?.id] || [];
+      const here = { bed2: ['Спалня', 'Дрешник'], closet: ['Спалня', 'Дрешник'], hall: ['Антре'], living: ['Дневна', 'Кухня'], kitchen: ['Кухня', 'Дневна'] }[room?.id] || [];
       elecLabels.visible = elecOn;
       elecLabels.children.forEach((c) => { c.visible = elecOn && here.includes(c.userData.room); });
     }
