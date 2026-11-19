@@ -1,0 +1,106 @@
+:root {
+  --ink: #1f2328;
+  --muted: #646b73;
+  --panel: rgba(255, 255, 255, 0.9);
+  --line: rgba(31, 35, 40, 0.12);
+  --accent: #e85d3f;
+  --radius: 12px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--ink);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #dfe8f0; }
+#app, #app canvas, .labels { position: fixed; inset: 0; }
+#app canvas { display: block; touch-action: none; }
+.labels { pointer-events: none; }
+body[data-mode="walk"] .labels { display: none !important; }
+
+button { font: inherit; color: inherit; cursor: pointer; }
+
+/* mode switcher */
+#topbar { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 5; }
+#modes { display: flex; gap: 2px; padding: 4px; background: var(--panel); border-radius: 999px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.12); backdrop-filter: blur(8px); }
+#modes button { border: 0; background: none; padding: 8px 18px; border-radius: 999px; font-weight: 600; font-size: 14px; }
+#modes button.active { background: var(--ink); color: #fff; }
+
+/* side panel */
+#panel { position: fixed; top: 16px; left: 16px; z-index: 6; width: 290px; max-height: calc(100% - 32px);
+  overflow: auto; background: var(--panel); border-radius: var(--radius); box-shadow: 0 4px 18px rgba(0,0,0,.12);
+  backdrop-filter: blur(8px); font-size: 13px; }
+#panel summary { list-style: none; cursor: pointer; padding: 12px 14px; display: flex; align-items: baseline;
+  justify-content: space-between; gap: 8px; }
+#panel summary::-webkit-details-marker { display: none; }
+#panel summary .title { font-weight: 700; font-size: 15px; }
+#panel summary .sub { color: var(--muted); }
+#panel summary::after { content: "▾"; color: var(--muted); margin-left: auto; padding-left: 8px; }
+#panel:not([open]) summary::after { content: "▸"; }
+#panel .body { padding: 0 14px 14px; }
+#facts { color: var(--muted); line-height: 1.6; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+#facts b { color: var(--ink); }
+#rooms { list-style: none; margin: 6px 0; padding: 0; }
+#rooms li { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; margin: 0 -8px;
+  border-radius: 8px; cursor: pointer; }
+#rooms li:hover { background: rgba(0,0,0,.05); }
+#rooms li small { display: block; color: var(--muted); font-size: 11px; }
+#rooms li b { font-variant-numeric: tabular-nums; font-weight: 600; }
+.toggles { display: flex; flex-direction: column; gap: 6px; padding: 8px 0; border-top: 1px solid var(--line); }
+.help, .note { color: var(--muted); line-height: 1.5; margin: 6px 0 0; }
+.note { font-size: 11px; }
+kbd { font: 11px ui-monospace, monospace; border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; background: #fff; }
+
+body:not([data-mode="orbit"]) .only-orbit,
+body:not([data-mode="plan"]) .only-plan,
+body:not([data-mode="walk"]) .only-walk,
+body[data-mode="walk"] .not-walk { display: none; }
+
+/* room labels */
+.room-label { text-align: center; background: rgba(255,255,255,.88); border-radius: 8px; padding: 4px 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.12); line-height: 1.25; white-space: nowrap; font-size: 12px; }
+.room-label b { display: block; font-size: 12px; }
+.room-label span { display: block; color: var(--muted); font-size: 10px; }
+.room-label em { font-style: normal; font-weight: 600; font-size: 11px; }
+.room-label i { display: none; font-style: normal; color: var(--muted); font-size: 10px; }
+body[data-mode="plan"] .room-label i { display: block; }
+.room-label.outdoor { background: rgba(232,240,246,.9); }
+
+/* walk mode HUD */
+#hud { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 4; background: var(--panel);
+  padding: 6px 14px; border-radius: 999px; font-size: 13px; box-shadow: 0 2px 10px rgba(0,0,0,.12); white-space: nowrap; }
+#hud span { color: var(--muted); }
+#hud:empty, body:not([data-mode="walk"]) #hud { display: none; }
+#crosshair { position: fixed; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 0 1.5px rgba(0,0,0,.5); z-index: 3; display: none; }
+body.locked #crosshair { display: block; }
+#lock-hint { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); background: rgba(31,35,40,.82);
+  color: #fff; padding: 8px 16px; border-radius: 999px; font-size: 13px; z-index: 3; pointer-events: none; display: none; }
+body[data-mode="walk"]:not(.locked):not(.touch) #lock-hint { display: block; }
+
+#minimap { position: fixed; right: 16px; bottom: 16px; width: 220px; height: 228px; z-index: 4;
+  background: rgba(255,255,255,.85); border-radius: var(--radius); box-shadow: 0 4px 18px rgba(0,0,0,.15);
+  cursor: crosshair; display: none; }
+body[data-mode="walk"] #minimap { display: block; }
+
+#joystick { position: fixed; left: 24px; bottom: 24px; width: 120px; height: 120px; border-radius: 50%;
+  background: rgba(255,255,255,.35); border: 2px solid rgba(255,255,255,.7); z-index: 5; touch-action: none; display: none; }
+#joystick .knob { position: absolute; left: 50%; top: 50%; width: 48px; height: 48px; margin: -24px 0 0 -24px;
+  border-radius: 50%; background: rgba(255,255,255,.9); box-shadow: 0 2px 8px rgba(0,0,0,.2); pointer-events: none; }
+#door-btn { position: fixed; right: 16px; bottom: 260px; z-index: 5; border: 0; background: var(--panel);
+  padding: 10px 16px; border-radius: 999px; font-weight: 600; box-shadow: 0 2px 10px rgba(0,0,0,.15); display: none; }
+body.touch[data-mode="walk"] #joystick, body.touch[data-mode="walk"] #door-btn { display: block; }
+
+#toast { position: fixed; left: 50%; top: 116px; transform: translateX(-50%); background: rgba(31,35,40,.85); color: #fff;
+  padding: 6px 14px; border-radius: 999px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 8; }
+#toast.show { opacity: 1; }
+
+@media (max-width: 760px) {
+  #topbar { top: auto; bottom: 16px; }
+  body[data-mode="walk"] #topbar { bottom: auto; top: 12px; }
+  #panel { width: calc(100% - 32px); max-height: 60%; top: 12px; }
+  body[data-mode="walk"] #panel { top: 64px; }
+  #panel:not([open]) { width: auto; }
+  #hud { top: 128px; }
+  #minimap { width: 150px; height: 156px; }
+  #door-btn { bottom: 184px; }
+}

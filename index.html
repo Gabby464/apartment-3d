@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Apartment № 3 · 3D</title>
+  <meta name="description" content="3D floor plan and walkthrough of Apartment No. 3">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='3' y='3' width='26' height='26' rx='4' fill='%232f343b'/><path d='M9 9h8v8H9zM19 9h4v14h-4zM9 19h8v4H9z' fill='%23f4f1eb'/></svg>">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./lib/three.module.min.js",
+      "three/addons/": "./lib/addons/"
+    }
+  }
+  </script>
+</head>
+<body data-mode="orbit">
+  <div id="app"></div>
+
+  <header id="topbar">
+    <nav id="modes" aria-label="View mode">
+      <button data-mode="orbit" class="active" title="3D overview (1)">3D</button>
+      <button data-mode="plan" title="Floor plan (2)">Plan</button>
+      <button data-mode="walk" title="Walk through (3)">Walk</button>
+    </nav>
+  </header>
+
+  <details id="panel" open>
+    <summary><span class="title">Apartment № 3</span><span class="sub">82.93 m²</span></summary>
+    <div class="body">
+      <div id="facts"></div>
+      <ul id="rooms"></ul>
+      <div class="toggles">
+        <label class="only-orbit"><input type="checkbox" id="cutaway" checked> Cut-away walls</label>
+        <label class="not-walk"><input type="checkbox" id="show-labels" checked> Room labels</label>
+      </div>
+      <p class="help only-orbit">Drag to rotate · right-drag to pan · scroll to zoom · click a door to open/close it.</p>
+      <p class="help only-plan">Drag to pan · scroll to zoom. Plan is cut at 1.3 m, like an architect's drawing.</p>
+      <p class="help only-walk">WASD / arrows to move · mouse to look · <kbd>Shift</kbd> to run · <kbd>E</kbd> or click to open/close doors · <kbd>Esc</kbd> to release the mouse · click the mini-map to jump.</p>
+      <p class="note">Dimensions in cm, from the architect's plan. Ceiling height (2.65 m) is assumed.</p>
+    </div>
+  </details>
+
+  <div id="hud"></div>
+  <div id="crosshair"></div>
+  <div id="lock-hint">Click to look around</div>
+  <canvas id="minimap"></canvas>
+  <div id="joystick"><div class="knob"></div></div>
+  <button id="door-btn">Door</button>
+  <div id="toast"></div>
+  <noscript>This page needs JavaScript and WebGL.</noscript>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
