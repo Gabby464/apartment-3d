@@ -51,7 +51,7 @@ export const ELECTRIC = [
 export const FURNITURE = [
   { name: 'Легло 160 × 200 с повдигащ механизъм', size: 'тапицирано, табла 180 × 120',
     mech: 'газови амортисьори – матракът се вдига, отдолу ракла за спално бельо и куфари' },
-  { name: 'Нощни шкафчета (2 бр.)', size: '45 × 37 × 30, висящи, орех; откъм прозореца плотът продължава с дъска до 78 см и по-малко рафтче отдолу',
+  { name: 'Нощни шкафчета (2 бр.)', size: '45 × 37 × 30, висящи, орех; откъм прозореца плотът продължава с дъска до 78 см',
     mech: '1 чекмедже, пълно изтегляне, push-to-open (Tip-On), плавно затваряне; дъската е за часовници и парфюми' },
   { name: 'Бюфет срещу леглото', size: '183 × 30 × 75, орех с релефни фронтове',
     mech: 'ляво и дясно: врати с push-to-open (кърпи, хавлии); средата: 3 чекмеджета – бижута (кадифе с отделения), парфюми, дребни неща' },
@@ -364,11 +364,6 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     quiet(cylinder(x, 884, 55, 55 + hh, 2.8, mat(c, { roughness: 0.1, transparent: true, opacity: 0.85 })));
     quiet(cylinder(x, 884, 55 + hh, 57 + hh, 1.3, mat('#1f1f1f', { roughness: 0.3 })));
   }
-  // smaller open shelf underneath (26 deep instead of 37)
-  b(358, 866, 391, 892, 29, 30.8, C.walnut);
-  quiet(b(362, 870, 384, 888, 30.8, 39, mat('#3b2a20', { roughness: 0.5 })));   // watch box
-  quiet(b(361.5, 869.5, 384.5, 888.5, 39, 39.6, mat('#2a1d16', { roughness: 0.4 })));
-  quiet(cylinder(388, 879, 30.8, 41, 2.2, mat('#cfd6da', { roughness: 0.1, transparent: true, opacity: 0.85 })));
   block([358, 855, 391, 892]);
 
   // ======================= SIDEBOARD (fluted walnut, 183 x 30 x 75) =======================
