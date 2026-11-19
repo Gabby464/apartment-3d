@@ -80,7 +80,7 @@ export const ELECTRIC = [
   { id: 'Т14', t: 'socket', x: 780, y: 90, h: 20, n: [-1, 0], w: 10, room: 'Кухня', bg: 'Котлон – 380V / отделен кръг', note: 'зад чекмеджетата под котлона' },
   { id: 'Т15', t: 'socket', x: 705, y: 0, h: 30, n: [0, 1], w: 8, room: 'Кухня', bg: 'Контакт за съдомиялната', note: 'под мивката, не зад машината' },
   { id: 'Т16', t: 'socket', x: 660, y: 268, h: 210, n: [0, -1], w: 8, room: 'Кухня', bg: 'Контакт за хладилника', note: 'над хладилника, в шкафа' },
-  { id: 'Т18', t: 'socket', x: 720, y: 268, h: 190, n: [0, -1], w: 15, room: 'Кухня', bg: 'Фурна + микровълнова – отделен кръг', note: 'в шкафа над микровълновата' },
+  { id: 'Т18', t: 'socket', x: 780, y: 178, h: 190, n: [-1, 0], w: 15, room: 'Кухня', bg: 'Фурна + микровълнова – отделен кръг', note: 'в шкафа над микровълновата' },
   { id: 'Т17', t: 'socket', x: 780, y: 90, h: 200, n: [-1, 0], w: 8, plate: false, room: 'Кухня', bg: 'Контакт за абсорбатора', note: 'в шкафа над котлона' },
   { id: 'Л13', t: 'light', x: 690, y: 120, ceil: true, room: 'Кухня', bg: 'Луни на тавана в кухнята' },
   { id: 'Л14', t: 'light', x: 745, y: 75, h: 144, n: [-1, 0], plate: false, room: 'Кухня', bg: 'LED под горните шкафове', note: 'осветява плота и котлона' },
@@ -116,7 +116,7 @@ export const FURNITURE = [
     mech: 'нисък смесител – прозорецът се отваря навътре; ъгълът е сляп (отгоре кафемашина)' },
   { name: '– дясната стена', size: 'котлон 60 с 60 см плот вляво + тясна колона 28 за олио и подправки',
     mech: 'под котлона 3 чекмеджета: прибори, пособия, тенджери; над него вграден абсорбатор' },
-  { name: '– високи колони (до тавана)', size: 'хладилник 60 | фурна + микровълнова 60 | шкаф за продукти 30',
+  { name: '– високи колони (до тавана)', size: 'на дясната стена след котлона: фурна + микровълнова 60; към антрето: хладилник 60 + шкаф за продукти 30',
     mech: 'фурната е на височината на очите (80–140 см), микровълновата над нея; отдолу 2 чекмеджета за тави и тенджери; тесният шкаф се изтегля изцяло' },
   { name: '– горни шкафове', size: '35 дълбоки, 2 реда до тавана над дясната стена',
     mech: 'чаши, чинии, подправки, горе кутии; LED отдолу; гръб от зелени zellige плочки' },
@@ -893,7 +893,7 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     // north leg (under the window, faces +y, front y 60): slim dishwasher 45 | sink 45
     // corner x 720–780 y 0–60: blind, worktop above (coffee machine)
     // east run (faces -x, front x 720): hob y 60–120 with drawers below | narrow pull-out y 120–148
-    // tall wall (faces -y, front y 208): fridge x 630–690 | oven + microwave x 690–750 | pantry pull-out x 750–780
+    // east run continues with a tall oven + microwave column y 148–208; tall wall (front y 208): fridge | pantry 30
     const nN = [0, 1], fN = 60, frN = frame(nN, fN);
     const nE = [-1, 0], fE = 720, frE = frame(nE, fE);
     const nS = [0, -1], fS = 208, frS = frame(nS, fS);
@@ -960,30 +960,33 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     b(...frS(632, 688, -58, -2), 182, 183.8, C.walnut);
     quiet(b(...frS(636, 684, -50, -10), 184, 205, C.box));
     hingeDoor({ n: nS, f: fS, u1: 630, u2: 690, z0: 182, z1: 263, hinge: 'u1', front: C.walnut });
-    // oven + microwave column x 690–750: 2 drawers | oven at eye level | microwave | cabinet
-    shell(nS, fS, 690, 750, 60, 10, 263, C.walnut);
-    drawer({ n: nS, f: fS, u1: 690, u2: 750, z0: 10, z1: 45, depth: 56, front: C.walnut, grip: 'top', fill: (a) => {
+    // oven + microwave column on the east wall after the hob (y 148–208, front x 720) – closes the U
+    quiet(b(722, 148, 780, 208, 0, 10, C.black));
+    shell(nE, fE, 148, 208, 60, 10, 263, C.walnut);
+    drawer({ n: nE, f: fE, u1: 148, u2: 208, z0: 10, z1: 45, depth: 56, front: C.walnut, grip: 'top', fill: (a) => {
       for (let k = 0; k < 4; k++) a.add(a.u1 + 2, a.u2 - 2, a.v1 + 2, a.v2 - 2, a.z + k * 2.2, a.z + k * 2.2 + 1, steel); } });
-    drawer({ n: nS, f: fS, u1: 690, u2: 750, z0: 45, z1: 80, depth: 56, front: C.walnut, grip: 'top', fill: (a) => {
+    drawer({ n: nE, f: fE, u1: 148, u2: 208, z0: 45, z1: 80, depth: 56, front: C.walnut, grip: 'top', fill: (a) => {
       for (const [pu, r] of [[0.25, 10], [0.7, 12]]) a.cyl(a.u1 + pu * (a.u2 - a.u1), (a.v1 + a.v2) / 2, a.z, a.z + 10, r, pick(['#2a2a2a', '#7a4a3a', '#c8c8c4'])); } });
-    quiet(b(...frS(692, 748, -56, -4), 82, 138, mat('#2a2a2a')));      // oven cavity
-    quiet(b(...frS(694, 746, -54, -6), 100, 101, steel));
-    flap({ n: nS, f: fS, u1: 690, u2: 750, z0: 80, z1: 140, front: blackGlass, mode: 'down' });
-    quiet(b(...frS(692, 748, -40, -4), 142, 176, mat('#2a2a2a')));     // microwave cavity
-    quiet(cylinder(...frS(720, 720, -22, -22).slice(0, 2), 142, 143, 13, mat('#e9e9e6', { roughness: 0.2 })));
-    hingeDoor({ n: nS, f: fS, u1: 690, u2: 750, z0: 140, z1: 178, hinge: 'u1', front: blackGlass });
-    b(...frS(692, 748, -58, -2), 178, 179.8, C.walnut);
-    quiet(b(...frS(694, 746, -50, -10), 179.8, 200, C.box));
-    b(...frS(692, 748, -58, -2), 220, 221.8, C.inner);
-    quiet(b(...frS(694, 746, -50, -10), 221.8, 238, mat('#c8b49a')));
-    flap({ n: nS, f: fS, u1: 690, u2: 750, z0: 178, z1: 263, front: C.walnut, mode: 'up' });
-    // pantry pull-out x 750–780 (30 cm, full height): jars, cans, pasta
-    shell(nS, fS, 750, 780, 60, 10, 263, C.walnut);
-    drawer({ n: nS, f: fS, u1: 750, u2: 780, z0: 10, z1: 255, depth: 56, front: C.walnut, grip: 'top', fill: (a) => {
+    quiet(b(...frE(150, 206, -56, -4), 82, 138, mat('#2a2a2a')));      // oven cavity
+    quiet(b(...frE(152, 204, -54, -6), 100, 101, steel));
+    flap({ n: nE, f: fE, u1: 148, u2: 208, z0: 80, z1: 140, front: blackGlass, mode: 'down' });
+    quiet(b(...frE(150, 206, -40, -4), 142, 176, mat('#2a2a2a')));     // microwave cavity
+    quiet(cylinder(...frE(178, 178, -22, -22).slice(0, 2), 142, 143, 13, mat('#e9e9e6', { roughness: 0.2 })));
+    hingeDoor({ n: nE, f: fE, u1: 148, u2: 208, z0: 140, z1: 178, hinge: 'u1', front: blackGlass });
+    b(...frE(150, 206, -58, -2), 178, 179.8, C.walnut);
+    quiet(b(...frE(152, 204, -50, -10), 179.8, 200, C.box));
+    b(...frE(150, 206, -58, -2), 220, 221.8, C.inner);
+    quiet(b(...frE(152, 204, -50, -10), 221.8, 238, mat('#c8b49a')));
+    flap({ n: nE, f: fE, u1: 148, u2: 208, z0: 178, z1: 263, front: C.walnut, mode: 'up' });
+    block([720, 148, 780, 208]);
+    // pantry pull-out next to the fridge x 690–720 (30 cm, full height): jars, cans, pasta
+    shell(nS, fS, 690, 720, 60, 10, 263, C.walnut);
+    drawer({ n: nS, f: fS, u1: 690, u2: 720, z0: 10, z1: 255, depth: 56, front: C.walnut, grip: 'top', fill: (a) => {
       for (let zz = 0; zz < 225; zz += 32) {
         a.add(a.u1, a.u2, a.v1, a.v2, a.z + zz, a.z + zz + 0.8, C.inner);
         for (let v = a.v1 + 4; v < a.v2 - 4; v += 9) a.cyl((a.u1 + a.u2) / 2, v, a.z + zz + 0.8, a.z + zz + 12 + rnd() * 10, 3.5, pick(['#e9d6b8', '#c9a65a', '#efebe4', '#8a5a4a', '#b84a2a', '#cfe0e6']));
       } } });
+    b(720, 208, 780, 268, 10, 263, C.walnut);                          // corner behind the oven column (blind – risers/vent)
     block([628, 208, 780, 270]);
 
     // ---------- upper cabinets over the east run (y 0–148), two rows to the ceiling, lift-up fronts
