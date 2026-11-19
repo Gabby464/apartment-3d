@@ -58,7 +58,7 @@ export const ELECTRIC = [
     bg: 'LED лента в нишата за палта' },
   { id: 'Т9', t: 'socket', x: 625, y: 555, h: 120, n: [1, 0], w: 8, room: 'Антре',
     bg: 'Контакт в шкафа – зарядна стойка за прахосмукачка' },
-  { id: 'Т10', t: 'socket', x: 470, y: 330, h: 3, floor: true, room: 'Дневна',
+  { id: 'Т10', t: 'socket', x: 470, y: 303, h: 3, floor: true, room: 'Дневна',
     bg: 'Подов контакт до колоната на телевизора (ток + антена + интернет)', note: 'кабелът влиза в колоната; да се заложи в замазката СЕГА' },
   { id: 'Л12', t: 'light', x: 607, y: 480, h: 126, n: [-1, 0], plate: false, room: 'Дневна',
     bg: 'LED ленти под рафта над дивана', note: 'отделно от Л11, с димер – уютна светлина вечер' },
@@ -91,7 +91,7 @@ export const FURNITURE = [
   { name: '– откъм коридора: портманто', size: '40 дълбоко; коридорът остава 85 см',
     mech: 'ниша 1 м: закачалки, рафт за шапки с LED, пейка с възглавница и 2 чекмеджета за обувки (push); шкаф 1 м: 2 врати (едната огледало) – рафтове за обувки, прахосмукачка с контакт, дъска за гладене' },
   { name: '– откъм дневната: гръб за дивана', size: 'панел от релефни ламели до 175 см, над него шкафове 30 дълбоки до тавана',
-    mech: 'ъглов диван 250 см с гръб към стената на спалнята, лежанката (165 × 90) е по мебелта; срещу него 2 колони от пода до тавана: на едната TV 55" (върти се към трапезарията), по двете въртящи се рафтчета; отворен рафт над него на 128 см с LED ленти; горните шкафове с push врати и LED отдолу' },
+    mech: 'ъглов диван 250 см с гръб към стената на спалнята, лежанката (165 × 90) е по мебелта; срещу него колона от пода до тавана с TV 65" (върти се към трапезарията) и няколко въртящи се рафтчета; отворен рафт над него на 128 см с LED ленти; горните шкафове с push врати и LED отдолу' },
 ];
 
 // ---------------------------------------------------------------- materials
@@ -725,11 +725,11 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     quiet(b(470, 422, 492, 438, 38, 41, mat('#8a5a4a')));
     block([436, 388, 500, 452]);
 
-    // ---- floor-to-ceiling pole system: TV swivels on the first pole, small swivelling shelves on both poles
+    // ---- floor-to-ceiling pole: TV swivels on it, a few small swivelling shelves above and below
     {
-      const cy = 312, poleA = 470, poleB = 580;
+      const cy = 285, poleA = 470;
       const metalBlack = mat('#1c1c1c', { roughness: 0.35, metalness: 0.5 });
-      for (const x of [poleA, poleB]) {
+      for (const x of [poleA]) {
         cylinder(x, cy, 0, H, 2.2, metalBlack);
         cylinder(x, cy, 0, 1.5, 5, metalBlack);                          // floor and ceiling fixings
         cylinder(x, cy, H - 1.5, H, 5, metalBlack);
@@ -739,8 +739,6 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
       const shelfMat = mat('#2a2a2a', { roughness: 0.4, metalness: 0.4 });
       const shelves = [
         [poleA, 30, 200, 'books'], [poleA, 168, 160, 'vase'], [poleA, 198, 20, 'books'], [poleA, 228, 190, 'none'],
-        [poleB, 25, 10, 'books'], [poleB, 52, 150, 'vase'], [poleB, 80, 30, 'books'], [poleB, 108, 200, 'none'],
-        [poleB, 136, 340, 'books'], [poleB, 164, 170, 'vase'], [poleB, 192, 20, 'books'], [poleB, 220, 160, 'none'], [poleB, 246, 0, 'books'],
       ];
       for (const [x, z, deg, what] of shelves) {
         const g = new THREE.Group();
@@ -767,8 +765,8 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
       const tv = { kind: 'tv' };
       const tb = (...a) => tag(b(...a, tvIn), tv);
       tb(poleA - 12, cy + 2, poleA + 12, cy + 5, 100, 130, metalBlack);       // swivel mount
-      tb(poleA - 61.5, cy + 5, poleA + 61.5, cy + 8, 82, 153, mat('#111214', { roughness: 0.25, metalness: 0.3 }));  // 55" TV
-      quiet(b(poleA - 58, cy + 8, poleA + 58, cy + 8.3, 85.5, 149.5, mat('#1d2a33', { roughness: 0.15 }), tvIn));
+      tb(poleA - 72, cy + 5, poleA + 72, cy + 8, 76, 159, mat('#111214', { roughness: 0.25, metalness: 0.3 }));  // 65" TV (144 x 83)
+      quiet(b(poleA - 69, cy + 8, poleA + 69, cy + 8.3, 79, 156, mat('#1d2a33', { roughness: 0.15 }), tvIn));
       tag(cylinder(poleA, cy, 100, 130, 3.2, metalBlack, tvIn), tv);           // clamp on the pole
       tv.center = new THREE.Vector2(M(poleA), M(cy));
       tv.apply = () => { tvPivot.rotation.y = Math.PI * tv.frac; };
