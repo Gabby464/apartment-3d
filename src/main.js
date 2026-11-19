@@ -687,4 +687,4 @@ document.body.classList.add('ready');
 frame();
 
 // handy for debugging from the console
-window.__apt = { player, setMode, doors, scene };
+window.__apt = { player, setMode, doors, scene, persp, orbit };
