@@ -481,7 +481,7 @@ document.body.classList.add('show-elec');
   let lastRoom = '';
   const order = ['Спалня', 'Дрешник', 'Антре', 'Дневна'];
   const rows = [...ELECTRIC].sort((x, y) => order.indexOf(x.room) - order.indexOf(y.room)).map((p) => `${p.room !== lastRoom ? `<li class="elec-room">${(lastRoom = p.room)}</li>` : ''}<li><span class="elec elec-${p.t}">${p.id}</span><div>${p.bg}`
-    + `<small>${typeName[p.t]}${p.ceil ? ' · таван' : ` · h ${p.h} см`}${p.note ? ` · ${p.note}` : ''}</small></div></li>`);
+    + `<small>${typeName[p.t]}${p.ceil ? ' · таван' : p.floor ? ' · в пода' : ` · h ${p.h} см`}${p.note ? ` · ${p.note}` : ''}</small></div></li>`);
   $('#elec-list').innerHTML = rows.join('');
   $('#furn-list').innerHTML = FURNITURE.map((f) => `<li><div><b>${f.name}</b><small>${f.size}</small><small>${f.mech}</small></div></li>`).join('');
 }

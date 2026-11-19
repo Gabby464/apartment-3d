@@ -58,6 +58,8 @@ export const ELECTRIC = [
     bg: 'LED лента в нишата за палта' },
   { id: 'Т9', t: 'socket', x: 625, y: 555, h: 120, n: [1, 0], w: 8, room: 'Антре',
     bg: 'Контакт в шкафа – зарядна стойка за прахосмукачка' },
+  { id: 'Т10', t: 'socket', x: 470, y: 334, h: 3, floor: true, room: 'Дневна',
+    bg: 'Подов контакт за телевизора (ток + антена + интернет)', note: 'под стойката – да се заложи в замазката СЕГА, иначе кабели по пода' },
   { id: 'Л12', t: 'light', x: 607, y: 480, h: 126, n: [-1, 0], plate: false, room: 'Дневна',
     bg: 'LED ленти под рафта над дивана', note: 'отделно от Л11, с димер – уютна светлина вечер' },
   { id: 'Т7', t: 'socket', x: 357, y: 580, h: 30, n: [0, -1], w: 15, room: 'Дневна',
@@ -89,7 +91,7 @@ export const FURNITURE = [
   { name: '– откъм коридора: портманто', size: '40 дълбоко; коридорът остава 85 см',
     mech: 'ниша 1 м: закачалки, рафт за шапки с LED, пейка с възглавница и 2 чекмеджета за обувки (push); шкаф 1 м: 2 врати (едната огледало) – рафтове за обувки, прахосмукачка с контакт, дъска за гладене' },
   { name: '– откъм дневната: гръб за дивана', size: 'панел от релефни ламели до 175 см, над него шкафове 30 дълбоки до тавана',
-    mech: 'ъглов диван 250 см с гръб към стената на спалнята, лежанката (165 × 90) е по мебелта; отворен рафт над него на 128 см с LED ленти; горните шкафове с push врати и LED отдолу' },
+    mech: 'ъглов диван 250 см с гръб към стената на спалнята, лежанката (165 × 90) е по мебелта; срещу него TV 55" на подова стойка (въртяща се към трапезарията); отворен рафт над него на 128 см с LED ленти; горните шкафове с push врати и LED отдолу' },
 ];
 
 // ---------------------------------------------------------------- materials
@@ -722,6 +724,28 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     quiet(cylinder(458, 412, 38, 50, 5, mat('#d8cbb6')));
     quiet(b(470, 422, 492, 438, 38, 41, mat('#8a5a4a')));
     block([436, 388, 500, 452]);
+
+    // ---- TV on a floor stand facing the sofa; click turns it towards the dining table
+    {
+      const cx = 470, cy = 312;
+      const tvPivot = new THREE.Group();
+      tvPivot.position.set(M(cx), 0, M(cy));
+      group.add(tvPivot);
+      const tvIn = new THREE.Group();
+      tvIn.position.set(-M(cx), 0, -M(cy));
+      tvPivot.add(tvIn);
+      const tv = { kind: 'tv' };
+      const tb = (...a) => tag(b(...a, tvIn), tv);
+      tb(cx - 30, cy - 20, cx + 30, cy + 20, 0, 2.5, C.black);                 // base plate
+      tb(cx - 3, cy - 3, cx + 3, cy + 3, 2.5, 150, C.black);                   // column (cable inside)
+      tb(cx - 20, cy - 1, cx + 20, cy + 3, 95, 125, C.black);                  // mount
+      tb(cx - 61.5, cy + 3, cx + 61.5, cy + 6, 80, 151, mat('#111214', { roughness: 0.25, metalness: 0.3 }));  // 55" TV
+      quiet(b(cx - 58, cy + 6, cx + 58, cy + 6.3, 83.5, 147.5, mat('#1d2a33', { roughness: 0.15 }), tvIn));    // screen
+      tv.center = new THREE.Vector2(M(cx), M(cy));
+      tv.apply = () => { tvPivot.rotation.y = Math.PI * tv.frac; };
+      register(tv);
+      block([cx - 30, cy - 20, cx + 30, cy + 20]);
+    }
   }
 
   // closet ceiling light + sensor
@@ -758,6 +782,7 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
 
   // ======================= ELECTRICAL PLATES =======================
   for (const p of ELECTRIC) {
+    if (p.floor) { quiet(b(p.x - 7, p.y - 7, p.x + 7, p.y + 7, 0, 0.6, C.metal)); continue; }
     if (p.ceil || p.plate === false) continue;
     const w = p.w || 8, [nx, ny] = p.n;
     let r;
