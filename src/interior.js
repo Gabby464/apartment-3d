@@ -60,7 +60,7 @@ export const ELECTRIC = [
     bg: 'Контакт в шкафа – зарядна стойка за прахосмукачка' },
   { id: 'Л12', t: 'light', x: 607, y: 480, h: 126, n: [-1, 0], plate: false, room: 'Дневна',
     bg: 'LED ленти под рафта над дивана', note: 'отделно от Л11, с димер – уютна светлина вечер' },
-  { id: 'Т7', t: 'socket', x: 440, y: 580, h: 30, n: [0, -1], w: 15, room: 'Дневна',
+  { id: 'Т7', t: 'socket', x: 357, y: 580, h: 30, n: [0, -1], w: 15, room: 'Дневна',
     bg: 'Двоен контакт до дивана (лампион, зарядно)' },
   { id: 'Л11', t: 'light', x: 593, y: 480, h: 174, n: [-1, 0], plate: false, room: 'Дневна',
     bg: 'LED под горните шкафове над дивана', note: 'захранването идва през тавана; ключът – с дневната' },
@@ -89,7 +89,7 @@ export const FURNITURE = [
   { name: '– откъм коридора: портманто', size: '40 дълбоко; коридорът остава 85 см',
     mech: 'ниша 1 м: закачалки, рафт за шапки с LED, пейка с възглавница и 2 чекмеджета за обувки (push); шкаф 1 м: 2 врати (едната огледало) – рафтове за обувки, прахосмукачка с контакт, дъска за гладене' },
   { name: '– откъм дневната: гръб за дивана', size: 'панел от релефни ламели до 175 см, над него шкафове 30 дълбоки до тавана',
-    mech: 'ъглов диван с лежанка (200 + лежанка 165 × 90 по стената към спалнята), облегнат на мебелта; отворен рафт над него на 128 см с LED ленти; горните шкафове с push врати и LED отдолу' },
+    mech: 'ъглов диван 250 см с гръб към стената на спалнята, лежанката (165 × 90) е по мебелта; отворен рафт над него на 128 см с LED ленти; горните шкафове с push врати и LED отдолу' },
 ];
 
 // ---------------------------------------------------------------- materials
@@ -694,32 +694,34 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
       else { quiet(b(...frL(y, y + 22, -27, -25), 129, 157, pick(['#efe9df', '#d9b8a8', '#3a3a3a']))); y += 30; }
     }
 
-    // ---- corner sofa with chaise: back against the unit, chaise along the bedroom wall (200 + chaise 165 x 90)
+    // ---- corner sofa with chaise: back against the bedroom wall (y 580), chaise along the unit
+    //      main part 250 x 95 (x 371–621), chaise 90 wide reaching 165 from the wall (y 415–580)
     const sofa = mat('#cbbfae', { roughness: 1 }), sofaDark = mat('#b9ad9b', { roughness: 1 });
-    b(526, Y1, 621, Y2, 4, 40, sofa);                               // main base
-    b(456, 490, 526, Y2, 4, 40, sofa);                              // chaise base
-    b(600, Y1 + 15, 621, Y2 - 15, 40, 84, sofaDark);               // back
-    b(526, Y1, 621, Y1 + 15, 40, 62, sofa);                        // arm (entrance side)
-    b(456, Y2 - 15, 621, Y2, 40, 62, sofa);                        // arm along the bedroom wall, full chaise length
-    b(528, Y1 + 15.5, 600, 489.5, 40, 50, sofa);                   // seat cushions
-    b(528, 430.5, 600, 489.5, 40.2, 50.2, sofa);
-    b(458, 490.5, 600, Y2 - 15.5, 40, 50, sofa);                   // chaise cushion
+    const SW = 580;
+    b(371, SW - 95, 621, SW, 4, 40, sofa);                          // main base
+    b(531, SW - 165, 621, SW - 95, 4, 40, sofa);                    // chaise base
+    b(386, SW - 21, 621, SW, 40, 84, sofaDark);                     // back along the wall
+    b(371, SW - 95, 386, SW, 40, 62, sofa);                         // arm (window side)
+    b(606, SW - 165, 621, SW - 21, 40, 62, sofa);                   // low side along the unit
+    b(388, SW - 93, 459, SW - 21, 40, 50, sofa);                    // seat cushions
+    b(459.5, SW - 93, 530.5, SW - 21, 40.2, 50.2, sofa);
+    b(531, SW - 163, 605.5, SW - 21, 40, 50, sofa);                 // chaise cushion
     for (let k = 0; k < 3; k++) {
-      const y1 = Y1 + 15.5 + k * 56.3;
-      b(598, y1 + 2, 612, y1 + 53, 50, 82, sofaDark);              // back cushions
+      const x1 = 388 + k * 72.5;
+      b(x1 + 2, SW - 33, x1 + 70, SW - 19, 50, 82, sofaDark);       // back cushions
     }
-    quiet(b(588, 410, 598, 448, 50, 82, C.sage));                   // throw pillows
-    quiet(b(588, 512, 598, 550, 50, 82, mat('#c7a98a')));
-    quiet(b(470, 505, 520, 560, 50, 53, mat('#8e9c86', { roughness: 1 })));  // throw on the chaise
-    block([526, Y1, 621, Y2]);
-    block([456, 490, 526, Y2]);
-    // rug + round walnut coffee table in front of the seats
-    quiet(b(395, 388, 600, 578, 0, 1, mat('#e2d9cb', { roughness: 1 })));
-    cylinder(475, 437, 34, 38, 34, C.walnut);
-    cylinder(475, 437, 0, 34, 12, C.walnut);
-    quiet(cylinder(465, 428, 38, 50, 5, mat('#d8cbb6')));
-    quiet(b(478, 440, 500, 456, 38, 41, mat('#8a5a4a')));
-    block([443, 405, 507, 469]);
+    quiet(b(400, SW - 42, 438, SW - 32, 50, 82, C.sage));           // throw pillows
+    quiet(b(560, SW - 42, 598, SW - 32, 50, 82, mat('#c7a98a')));
+    quiet(b(545, SW - 150, 600, SW - 100, 50, 53, mat('#8e9c86', { roughness: 1 })));  // throw on the chaise
+    block([371, SW - 95, 621, SW]);
+    block([531, SW - 165, 621, SW - 95]);
+    // rug + round walnut coffee table in front of the seats (clear of the balcony door swing)
+    quiet(b(380, 385, 612, 575, 0, 1, mat('#e2d9cb', { roughness: 1 })));
+    cylinder(468, 420, 34, 38, 32, C.walnut);
+    cylinder(468, 420, 0, 34, 12, C.walnut);
+    quiet(cylinder(458, 412, 38, 50, 5, mat('#d8cbb6')));
+    quiet(b(470, 422, 492, 438, 38, 41, mat('#8a5a4a')));
+    block([436, 388, 500, 452]);
   }
 
   // closet ceiling light + sensor
