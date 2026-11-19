@@ -90,6 +90,23 @@ export const ELECTRIC = [
   { id: 'Л14', t: 'light', x: 745, y: 75, h: 144, n: [-1, 0], plate: false, room: 'Кухня', bg: 'LED под горните шкафове', note: 'осветява плота и котлона' },
   { id: 'Л15', t: 'light', x: 490, y: 165, ceil: true, room: 'Дневна', bg: 'Две висящи лампи над масата' },
   { id: 'К7', t: 'switch', x: 385, y: 300, h: 110, n: [1, 0], w: 15, room: 'Дневна', bg: 'Ключове: луни кухня, LED под шкафовете, лампи над масата' },
+  { id: 'К8', t: 'switch', x: 750, y: 518, h: 110, n: [-1, 0], w: 15, room: 'Антре',
+    bg: 'Двоен ключ за банята (до вратата, отвън): лампи + огледало', note: 'вентилаторът тръгва с лампата и работи с таймер' },
+  { id: 'В3', t: 'water', x: 900, y: 466, h: 45, n: [-1, 0], w: 12, room: 'Баня',
+    bg: 'Вода + сифон за пералнята', note: 'сушилнята (с термопомпа) източва в същия сифон' },
+  { id: 'Т21', t: 'socket', x: 900, y: 512, h: 110, n: [-1, 0], w: 8, room: 'Баня', bg: 'Контакт за пералнята – отделен кръг, IP44', note: 'в колоната с кошовете, достъпен' },
+  { id: 'Т22', t: 'socket', x: 900, y: 532, h: 110, n: [-1, 0], w: 8, room: 'Баня', bg: 'Контакт за сушилнята – отделен кръг, IP44' },
+  { id: 'В4', t: 'water', x: 900, y: 577, h: 55, n: [-1, 0], w: 12, room: 'Баня', bg: 'Вода + канал за умивалника', note: 'смесителят е вграден в стената на 105 см' },
+  { id: 'Т23', t: 'socket', x: 900, y: 554, h: 112, n: [-1, 0], w: 8, room: 'Баня', bg: 'Контакт до огледалото (сешоар, четка) – IP44' },
+  { id: 'Л17', t: 'light', x: 900, y: 577, h: 178, n: [-1, 0], plate: false, room: 'Баня', bg: 'Захранване за кръглото LED огледало' },
+  { id: 'В5', t: 'water', x: 795, y: 698, h: 20, n: [0, -1], w: 12, room: 'Баня',
+    bg: 'Висяща тоалетна: канал Ø110 + вода за вграденото казанче', note: 'инсталационна рамка – „полицата“ е 20 см дълбока и 110 см висока' },
+  { id: 'В6', t: 'water', x: 963, y: 652, h: 105, n: [-1, 0], w: 12, room: 'Баня',
+    bg: 'Душ: вграден смесител + таванен душ + ръчен душ', note: 'подът без праг, с наклон 1–2% към линейния сифон по стената; хидроизолация на пода и стените' },
+  { id: 'Т24', t: 'socket', x: 762, y: 573, h: 40, n: [1, 0], w: 8, plate: false, room: 'Баня', bg: 'Скрито захранване за електрическата лира', note: 'с таймер' },
+  { id: 'Л18', t: 'light', x: 798, y: 535, ceil: true, room: 'Баня', bg: 'Луни на тавана (IP44), едната над душа (IP65)' },
+  { id: 'Д3', t: 'fan', x: 845, y: 640, ceil: true, room: 'Баня', bg: 'Вентилатор с таймер и датчик за влажност', note: 'банята е без прозорец – задължително' },
+  { id: 'Л19', t: 'light', x: 920, y: 698, h: 144, n: [0, -1], plate: false, room: 'Баня', bg: 'LED в нишата на душа (IP65, 12V)' },
 ];
 
 // ---------------------------------------------------------------- furniture list (shown in the side panel)
@@ -130,6 +147,16 @@ export const FURNITURE = [
     mech: 'Б: диванът е отместен към телевизора, проходът от антрето (1 м) е свободен; висящ ТВ шкаф 150 × 35 с 3 чекмеджета (push), ТВ 55" на стената, ~1,6 м от очите' },
   { name: 'Трапезария', size: 'овална маса 140 × 90 от орех на един крак + 4 заоблени тапицирани стола',
     mech: '2 висящи лампи-сфери над масата' },
+  { name: 'Баня – шкаф за пералня и сушилня', size: '113 × 65, от пода до тавана, на дясната стена',
+    mech: 'пералня + сушилня една върху друга (с рафт-поставка), врата пред тях; до тях 3 издърпващи се коша за пране – бяло, тъмно, цветно; над тях рафтове за препарати; горе кърпи' },
+  { name: '– умивалник', size: 'висящ шкаф 55 × 48 с чекмедже (push) + купа отгоре, смесител от стената',
+    mech: 'кръгло LED огледало' },
+  { name: '– висяща тоалетна', size: 'вградено казанче в облицована „полица“ 20 × 110 см',
+    mech: 'бутонът е в черно, отгоре полица от орех' },
+  { name: '– душ 90 × 92 на нивото на плочките', size: 'линеен сифон по стената, без праг',
+    mech: 'стъклена врата + неподвижни стъкла с тънък черен профил; таванен душ, ръчен душ, ниша с LED' },
+  { name: '– облицовка', size: 'плочки 60 × 120 с вид на камък, до тавана',
+    mech: 'черна електрическа лира за кърпи на лявата стена; вратата на банята е 70 см и се отваря плътно към горната стена' },
 ];
 
 // ---------------------------------------------------------------- materials
@@ -1110,6 +1137,125 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     quiet(b(MX - 17, 289, MX - 10, 292, 102, 102.6, C.metal));
     quiet(cylinder(MX + 18, 291, 100.6, 114, 3, mat('#8f9a8a', { roughness: 0.4 })));
     block([MX - 31, 280, MX + 31, 301]);
+  }
+
+  // ======================= BATHROOM =======================
+  // upper part x 762–900 / y 433–606, lower part x 762–963 / y 606–698; door 70 cm on the west wall (y 438–508)
+  {
+    const tileTex = (() => {
+      const c = document.createElement('canvas'); c.width = 256; c.height = 512;
+      const g = c.getContext('2d'); g.fillStyle = '#b9b1a6'; g.fillRect(0, 0, 256, 512);
+      g.fillStyle = '#d9d1c5'; g.fillRect(1.5, 1.5, 253, 509);
+      for (let k = 0; k < 60; k++) { g.fillStyle = `rgba(150,135,120,${0.04 + rnd() * 0.05})`; g.beginPath(); g.ellipse(rnd() * 256, rnd() * 512, 10 + rnd() * 40, 3 + rnd() * 8, rnd() * 3, 0, 7); g.fill(); }
+      const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace; return t;
+    })();
+    const tileMat = (w, h) => { const t = tileTex.clone(); t.needsUpdate = true; t.repeat.set(w / 60, h / 120); return new THREE.MeshStandardMaterial({ map: t, roughness: 0.35 }); };
+    const clad = (x1, y1, x2, y2, z0 = 0, z1 = H) => quiet(b(x1, y1, x2, y2, z0, z1, tileMat(Math.max(x2 - x1, y2 - y1), z1 - z0)));
+    // stone-look 60 x 120 tiles to the ceiling
+    clad(762, 433, 835, 433.6);
+    clad(762, 433, 762.6, 438); clad(762, 508, 762.6, 698); clad(762, 438, 762.6, 508, 200, H);
+    clad(762, 697.4, 963, 698);
+    clad(899.4, 546, 900, 606);
+    clad(900, 606, 963, 606.6);
+    clad(962.4, 606, 963, 698);
+    const white = mat('#f4f3f0', { roughness: 0.25 });
+    const showerGlass = new THREE.MeshPhysicalMaterial({ color: '#dfeef2', transparent: true, opacity: 0.22, roughness: 0.05, depthWrite: false, side: THREE.DoubleSide });
+    const blackMetal = mat('#1f1f1f', { roughness: 0.4, metalness: 0.5 });
+
+    // ---------- laundry tower on the east wall (front x 835, 65 deep), floor to ceiling
+    const nA = [-1, 0], fA = 835, frA = frame(nA, fA);
+    shell(nA, fA, 433, 498, 65, 4, 263, C.walnut);                     // washer + dryer column
+    quiet(b(835, 433, 900, 546, 0, 4, C.black));
+    const appl = mat('#ecebe8', { roughness: 0.5 });
+    const porthole = (z) => {
+      const ring = new THREE.Mesh(new THREE.CylinderGeometry(M(16), M(16), M(1.5), 40), mat('#9aa0a6', { metalness: 0.6, roughness: 0.3 }));
+      ring.rotation.z = Math.PI / 2; ring.position.set(M(839.2), M(z), M(465.5)); group.add(ring);
+      const glassD = new THREE.Mesh(new THREE.CylinderGeometry(M(12.5), M(12.5), M(1.6), 40), mat('#2b3338', { roughness: 0.1 }));
+      glassD.rotation.z = Math.PI / 2; glassD.position.set(M(838.9), M(z), M(465.5)); group.add(glassD);
+    };
+    quiet(b(840, 435.5, 898, 495.5, 4, 89, appl)); porthole(48);       // washing machine
+    quiet(b(...frA(436, 495, -63, -3), 89, 90.5, C.inner));            // stacking shelf with pull-out tray
+    quiet(b(840, 435.5, 898, 495.5, 90.5, 175, appl)); porthole(134);  // dryer on top
+    quiet(b(840.5, 437, 842, 494, 165, 172, mat('#3a3a3a')));          // control panels
+    quiet(b(840.5, 437, 842, 494, 79, 86, mat('#3a3a3a')));
+    b(...frA(435, 496, -63, -2), 177, 178.8, C.walnut);
+    quiet(b(...frA(438, 493, -55, -8), 178.8, 200, pick(linenCols)));
+    quiet(b(...frA(438, 493, -55, -8), 200, 215, mat('#cfc4b3')));
+    hingeDoor({ n: nA, f: fA, u1: 433, u2: 498, z0: 4, z1: 177, hinge: 'u1', front: C.walnut });
+    hingeDoor({ n: nA, f: fA, u1: 433, u2: 498, z0: 177, z1: 263, hinge: 'u1', front: C.walnut });
+    // laundry column: 3 pull-out baskets (white / dark / colour) + detergent shelves + towels
+    shell(nA, fA, 498, 546, 65, 4, 263, C.walnut);
+    const bag = (col, label) => (a) => {
+      a.add(a.u1 + 1, a.u2 - 1, a.v1 + 1, a.v2 - 1, a.z, a.z + a.h - 2, mat(col, { roughness: 1 }));
+      for (let k = 0; k < 5; k++) a.add(a.u1 + 4 + rnd() * 20, a.u1 + 14 + rnd() * 20, a.v1 + 5 + rnd() * 30, a.v1 + 15 + rnd() * 30, a.z + a.h - 2, a.z + a.h + 1, pick(label));
+    };
+    drawer({ n: nA, f: fA, u1: 498, u2: 546, z0: 66, z1: 100, depth: 62, front: C.walnut, grip: 'top', fill: bag('#efede8', ['#ffffff', '#efe9df', '#e3e6ea']) });   // whites
+    drawer({ n: nA, f: fA, u1: 498, u2: 546, z0: 35, z1: 66, depth: 62, front: C.walnut, grip: 'top', fill: bag('#3a3a3a', ['#222222', '#2f3a4a', '#3d3d3d']) });   // darks
+    drawer({ n: nA, f: fA, u1: 498, u2: 546, z0: 4, z1: 35, depth: 62, front: C.walnut, grip: 'top', fill: bag('#8e9c86', ['#9e3f3a', '#6d7f99', '#c7a98a']) });   // colours
+    for (const z of [100, 128, 154]) quiet(b(...frA(500, 544, -63, -3), z, z + 1.6, C.inner));
+    for (let k = 0; k < 4; k++) quiet(cylinder(...frA(505 + k * 10, 505 + k * 10, -20, -20).slice(0, 2), 101.6, 120 + (k % 2) * 4, 3.5, pick(['#e6eef0', '#9fc3d0', '#f0e2b6', '#c7d6c0'])));
+    for (let k = 0; k < 4; k++) quiet(b(...frA(503 + k * 10, 511 + k * 10, -40, -8), 129.6, 140 + (k % 2) * 5, pick(['#f2f2f2', '#e8d8c4', '#cfe0e6'])));
+    quiet(b(...frA(502, 542, -50, -10), 155.6, 170, mat('#9aa7ad')));  // clothes pegs / softener box
+    b(...frA(500, 544, -63, -2), 177, 178.8, C.walnut);
+    folded({ u1: 501, u2: 543, v1: -60, v2: -4, z: 178.8, h: 60, add: (a1, a2, c1, c2, za, zb, m) => quiet(b(...frA(a1, a2, c1, c2), za, zb, m)) }, 1, linenCols, 6);
+    hingeDoor({ n: nA, f: fA, u1: 498, u2: 546, z0: 100, z1: 177, hinge: 'u2', front: C.walnut });
+    hingeDoor({ n: nA, f: fA, u1: 498, u2: 546, z0: 177, z1: 263, hinge: 'u2', front: C.walnut });
+    block([835, 433, 900, 546]);
+
+    // ---------- vanity on the east wall (55 x 48, floating) with vessel basin and round lit mirror
+    const nV = [-1, 0], fV = 852, frV = frame(nV, fV);
+    shell(nV, fV, 551, 604, 48, 48, 80, C.walnut);
+    drawer({ n: nV, f: fV, u1: 551, u2: 604, z0: 48, z1: 80, depth: 46, front: fluted(53), fill: (a) => smalls(a, 4, 3, ['#efe9df', '#c58b7a', '#9fb3c2', '#2a2a2a'], 8) });
+    b(850, 549, 900, 606, 80, 83, stone);
+    const basin = new THREE.Mesh(new THREE.SphereGeometry(M(19), 32, 16, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), white);
+    basin.scale.set(1, 0.6, 1); basin.position.set(M(874), M(83 + 11.4), M(577.5)); basin.rotation.x = Math.PI;
+    basin.material = white.clone(); basin.material.side = THREE.DoubleSide; group.add(basin);
+    quiet(b(895, 575, 900, 580, 105, 108, blackMetal)); quiet(b(882, 576.5, 899, 578.5, 106, 107.5, blackMetal));   // wall spout
+    const mirrorDisc = new THREE.Mesh(new THREE.CircleGeometry(M(24), 48), mat('#c9d5da', { roughness: 0.05, metalness: 0.2 }));
+    mirrorDisc.rotation.y = -Math.PI / 2; mirrorDisc.position.set(M(898.8), M(150), M(577.5)); group.add(mirrorDisc);
+    const halo = new THREE.Mesh(new THREE.CircleGeometry(M(27), 48), new THREE.MeshStandardMaterial({ color: '#fff3dc', emissive: '#ffe2b0', emissiveIntensity: 1.3 }));
+    halo.rotation.y = -Math.PI / 2; halo.position.set(M(899.2), M(150), M(577.5)); group.add(halo);
+    block([850, 549, 900, 606]);
+
+    // ---------- wall-hung WC with concealed cistern in a tiled ledge (shelf on top) on the south wall
+    quiet(b(762.6, 678, 865, 697.4, 0, 110, tileMat(102, 110)));
+    b(762.6, 676, 865, 697.4, 110, 112, C.walnut);                    // shelf
+    quiet(b(785, 677.4, 805, 678, 92, 106, blackMetal));               // flush plate
+    const oval = (cx, cy, rx, ry, z0, z1, m) => { const o = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, M(z1 - z0), 40), m); o.scale.set(M(rx), 1, M(ry)); o.position.set(M(cx), M((z0 + z1) / 2), M(cy)); o.castShadow = true; group.add(o); return o; };
+    oval(795, 651, 18, 27, 26, 40, white);                             // bowl
+    oval(795, 651, 18.5, 27.5, 40, 42.5, white);                       // seat
+    quiet(b(785, 672, 805, 678, 28, 41, white));
+    quiet(b(762.6, 630, 766, 646, 68, 71, blackMetal)); quiet(cylinder(768, 638, 62, 72, 5, white));   // paper holder
+    quiet(cylinder(820, 688, 112, 128, 4, mat('#8f9a8a'))); quiet(b(835, 683, 855, 692, 112, 114, mat('#e9e3d8')));
+    block([762, 624, 815, 698]);
+    block([762, 676, 865, 698]);
+
+    // ---------- walk-in level shower 90 x 92: linear drain, glass hinged door + fixed panels, rain head, lit niche
+    quiet(b(951, 612, 957, 692, 0, 0.35, steel));                      // linear drain along the east wall
+    quiet(b(951.5, 613, 956.5, 691, 0.35, 0.45, mat('#2a2a2a')));
+    b(871, 666, 873, 698, 0, 200, showerGlass);                       // fixed panel (WC side)
+    b(873, 604.4, 900, 606, 0, 200, showerGlass);                     // fixed return
+    quiet(b(871, 604.4, 873, 698, 199, 200.5, blackMetal));            // thin black frame top
+    quiet(b(873, 604.4, 900, 606, 199, 200.5, blackMetal));
+    hingeDoor({ n: [-1, 0], f: 873, u1: 606, u2: 666, z0: 0.5, z1: 200, hinge: 'u1', front: showerGlass });
+    block([871, 666, 873, 698]); block([873, 604, 900, 606]);
+    quiet(cylinder(918, 652, 213, 215, 15, steel));                    // rain shower head
+    quiet(b(916, 650, 963, 654, 215, 218, steel));                     // arm from the wall
+    quiet(b(961.5, 640, 962.4, 664, 98, 116, steel));                  // concealed mixer plate
+    quiet(b(961, 680, 962.4, 684, 100, 160, steel));                   // hand shower rail
+    quiet(b(890, 696, 950, 697.4, 110, 145, mat('#bdb3a6')));          // wall niche (recessed look)
+    quiet(b(890, 695.5, 950, 697.4, 144, 145, C.lightGlow));
+    for (const [x, c] of [[898, '#e9d6b8'], [908, '#8f9a8a'], [918, '#efe9df']]) quiet(cylinder(x, 692, 110, 128, 3, mat(c, { roughness: 0.3 })));
+
+    // ---------- heated towel rail (black) on the west wall between the door and the WC
+    for (const y of [548, 598]) quiet(b(763, y - 1.2, 766, y + 1.2, 60, 165, blackMetal));
+    for (let z = 66; z < 165; z += 12) quiet(b(763.6, 548, 765.6, 598, z, z + 1.6, blackMetal));
+    quiet(b(766, 551, 769, 595, 120, 158, mat('#cfc4b3', { roughness: 1 })));   // towel
+    block([762, 544, 770, 602]);
+
+    // ceiling lights + fan
+    for (const [x, y] of [[798, 500], [798, 570], [918, 652]]) quiet(cylinder(x, y, H - 1, H, 4.5, C.lightGlow));
+    quiet(cylinder(845, 640, H - 1, H, 10, mat('#efefec')));
   }
 
   // closet ceiling light + sensor

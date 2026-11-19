@@ -35,7 +35,7 @@ export const ROOMS = [
   { id: 'hall', en: 'Entrance hall', bg: 'Антре', area: 3.53, floor: 'tile',
     rects: [[650, 280, 780, 408], [650, 408, 750, 580], [638, 280, 650, 580]], label: [715, 345], dims: '130 / 100 × 313' },
   { id: 'bath', en: 'Bathroom', bg: 'Баня-WC', area: 4.04, floor: 'bath',
-    rects: [[762, 433, 900, 606], [762, 606, 963, 698]], label: [835, 560], dims: '138 / 201 × 265' },
+    rects: [[762, 433, 900, 606], [762, 606, 963, 698]], label: [798, 560], dims: '138 / 201 × 265' },
   // Walk-in closet: the 12 cm wall to the bedroom is removed (was 3.72 m², 201 × 187)
   { id: 'closet', en: 'Walk-in closet', bg: 'Дрешник', area: 3.98, floor: 'wood',
     rects: [[750, 710, 963, 897]], label: [840, 813], dims: '213 × 187' },
@@ -86,7 +86,7 @@ export const WALLS = [
     { type: 'door', from: 660, to: 745, head: 200, hinge: 'to', swing: 1, kind: 'interior' },    // B2 85/200
   ] },
   { r: [750, 433, 762, 710], openings: [                 // hall / bathroom (wall to the closet removed)
-    { type: 'door', from: 438, to: 523, head: 200, hinge: 'to', swing: 1, kind: 'interior' },    // bathroom
+    { type: 'door', from: 438, to: 508, head: 200, hinge: 'from', swing: 1, kind: 'interior' },  // bathroom – 70 cm (was 85), opens flat against the north wall, clears the laundry tower
   ] },
   { r: [762, 698, 963, 710] },                           // bathroom / closet
 ];

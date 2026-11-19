@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { H, INFO, ROOMS, WALLS, RAILINGS, LANDING, LANDING_LIMITS } from './plan.js?v=20261119143801';
-import { woodTexture, tileTexture } from './textures.js?v=20261119143801';
-import { Minimap } from './minimap.js?v=20261119143801';
-import { buildInterior, ELECTRIC, FURNITURE } from './interior.js?v=20261119143801';
+import { H, INFO, ROOMS, WALLS, RAILINGS, LANDING, LANDING_LIMITS } from './plan.js?v=20261119145041';
+import { woodTexture, tileTexture } from './textures.js?v=20261119145041';
+import { Minimap } from './minimap.js?v=20261119145041';
+import { buildInterior, ELECTRIC, FURNITURE } from './interior.js?v=20261119145041';
 
 const M = (v) => v / 100; // cm -> m
 const EYE = 1.6;
@@ -483,9 +483,9 @@ $('#show-elec').addEventListener('change', (e) => {
 });
 document.body.classList.add('show-elec');
 {
-  const typeName = { switch: 'Ключ', socket: 'Контакт', light: 'Осветление', sensor: 'Датчик', intercom: 'Домофон', water: 'Вода/канал' };
+  const typeName = { switch: 'Ключ', socket: 'Контакт', light: 'Осветление', sensor: 'Датчик', intercom: 'Домофон', water: 'Вода/канал', fan: 'Вентилатор' };
   let lastRoom = '';
-  const order = ['Спалня', 'Дрешник', 'Антре', 'Дневна', 'Кухня'];
+  const order = ['Спалня', 'Дрешник', 'Антре', 'Баня', 'Дневна', 'Кухня'];
   const rows = [...ELECTRIC].sort((x, y) => order.indexOf(x.room) - order.indexOf(y.room)).map((p) => `${p.room !== lastRoom ? `<li class="elec-room">${(lastRoom = p.room)}</li>` : ''}<li><span class="elec elec-${p.t}">${p.id}</span><div>${p.bg}`
     + `<small>${typeName[p.t]}${p.ceil ? ' · таван' : p.floor ? ' · в пода' : ` · h ${p.h} см`}${p.note ? ` · ${p.note}` : ''}</small></div></li>`);
   $('#elec-list').innerHTML = rows.join('');
@@ -672,7 +672,7 @@ function frame() {
       hud.innerHTML = room ? `<b>${room.en}</b> <span>${room.bg}</span>${room.area ? ` · ${room.area.toFixed(2)} m²` : ''}` : '';
     }
     {
-      const here = { bed2: ['Спалня', 'Дрешник'], closet: ['Спалня', 'Дрешник'], hall: ['Антре'], living: ['Дневна', 'Кухня'], kitchen: ['Кухня', 'Дневна'] }[room?.id] || [];
+      const here = { bed2: ['Спалня', 'Дрешник'], closet: ['Спалня', 'Дрешник'], hall: ['Антре'], bath: ['Баня'], living: ['Дневна', 'Кухня'], kitchen: ['Кухня', 'Дневна'] }[room?.id] || [];
       elecLabels.visible = elecOn;
       elecLabels.children.forEach((c) => { c.visible = elecOn && here.includes(c.userData.room) && (!c.userData.variant || c.userData.variant === layoutVariant); });
     }
