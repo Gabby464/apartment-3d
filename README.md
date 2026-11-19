@@ -48,6 +48,8 @@ balcony doors swing.
 Plain HTML + ES modules, [three.js](https://threejs.org) r160 vendored in `lib/` (MIT licence), no build
 step. Floor textures are generated procedurally at load time.
 
+Before committing, run `./bump-version.sh` so browsers load the new files instead of cached ones.
+
 Run locally:
 
 ```bash
