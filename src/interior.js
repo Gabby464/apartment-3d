@@ -58,8 +58,8 @@ export const ELECTRIC = [
     bg: 'LED лента в нишата за палта' },
   { id: 'Т9', t: 'socket', x: 625, y: 555, h: 120, n: [1, 0], w: 8, room: 'Антре',
     bg: 'Контакт в шкафа – зарядна стойка за прахосмукачка' },
-  { id: 'Т10', t: 'socket', x: 470, y: 334, h: 3, floor: true, room: 'Дневна',
-    bg: 'Подов контакт за телевизора (ток + антена + интернет)', note: 'под стойката – да се заложи в замазката СЕГА, иначе кабели по пода' },
+  { id: 'Т10', t: 'socket', x: 470, y: 330, h: 3, floor: true, room: 'Дневна',
+    bg: 'Подов контакт до колоната на телевизора (ток + антена + интернет)', note: 'кабелът влиза в колоната; да се заложи в замазката СЕГА' },
   { id: 'Л12', t: 'light', x: 607, y: 480, h: 126, n: [-1, 0], plate: false, room: 'Дневна',
     bg: 'LED ленти под рафта над дивана', note: 'отделно от Л11, с димер – уютна светлина вечер' },
   { id: 'Т7', t: 'socket', x: 357, y: 580, h: 30, n: [0, -1], w: 15, room: 'Дневна',
@@ -91,7 +91,7 @@ export const FURNITURE = [
   { name: '– откъм коридора: портманто', size: '40 дълбоко; коридорът остава 85 см',
     mech: 'ниша 1 м: закачалки, рафт за шапки с LED, пейка с възглавница и 2 чекмеджета за обувки (push); шкаф 1 м: 2 врати (едната огледало) – рафтове за обувки, прахосмукачка с контакт, дъска за гладене' },
   { name: '– откъм дневната: гръб за дивана', size: 'панел от релефни ламели до 175 см, над него шкафове 30 дълбоки до тавана',
-    mech: 'ъглов диван 250 см с гръб към стената на спалнята, лежанката (165 × 90) е по мебелта; срещу него TV 55" на подова стойка (въртяща се към трапезарията); отворен рафт над него на 128 см с LED ленти; горните шкафове с push врати и LED отдолу' },
+    mech: 'ъглов диван 250 см с гръб към стената на спалнята, лежанката (165 × 90) е по мебелта; срещу него 2 колони от пода до тавана: на едната TV 55" (върти се към трапезарията), по двете въртящи се рафтчета; отворен рафт над него на 128 см с LED ленти; горните шкафове с push врати и LED отдолу' },
 ];
 
 // ---------------------------------------------------------------- materials
@@ -725,26 +725,54 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     quiet(b(470, 422, 492, 438, 38, 41, mat('#8a5a4a')));
     block([436, 388, 500, 452]);
 
-    // ---- TV on a floor stand facing the sofa; click turns it towards the dining table
+    // ---- floor-to-ceiling pole system: TV swivels on the first pole, small swivelling shelves on both poles
     {
-      const cx = 470, cy = 312;
+      const cy = 312, poleA = 470, poleB = 580;
+      const metalBlack = mat('#1c1c1c', { roughness: 0.35, metalness: 0.5 });
+      for (const x of [poleA, poleB]) {
+        cylinder(x, cy, 0, H, 2.2, metalBlack);
+        cylinder(x, cy, 0, 1.5, 5, metalBlack);                          // floor and ceiling fixings
+        cylinder(x, cy, H - 1.5, H, 5, metalBlack);
+        block([x - 4, cy - 4, x + 4, cy + 4]);
+      }
+      // swivelling shelves: [pole, height, angle (deg), contents]
+      const shelfMat = mat('#2a2a2a', { roughness: 0.4, metalness: 0.4 });
+      const shelves = [
+        [poleA, 30, 200, 'books'], [poleA, 168, 160, 'vase'], [poleA, 198, 20, 'books'], [poleA, 228, 190, 'none'],
+        [poleB, 25, 10, 'books'], [poleB, 52, 150, 'vase'], [poleB, 80, 30, 'books'], [poleB, 108, 200, 'none'],
+        [poleB, 136, 340, 'books'], [poleB, 164, 170, 'vase'], [poleB, 192, 20, 'books'], [poleB, 220, 160, 'none'], [poleB, 246, 0, 'books'],
+      ];
+      for (const [x, z, deg, what] of shelves) {
+        const g = new THREE.Group();
+        g.position.set(M(x), 0, M(cy));
+        g.rotation.y = (deg * Math.PI) / 180;
+        group.add(g);
+        const sb = (x1, y1, x2, y2, z0, z1, m) => quiet(b(x + x1, cy + y1, x + x2, cy + y2, z0, z1, m, g));
+        const inner = new THREE.Group();
+        inner.position.set(-M(x), 0, -M(cy));
+        g.add(inner);
+        const ib = (x1, y1, x2, y2, z0, z1, m) => quiet(b(x + x1, cy + y1, x + x2, cy + y2, z0, z1, m, inner));
+        ib(2, -11, 34, 11, z, z + 1, shelfMat);
+        if (what === 'books') for (let k = 0; k < 4; k++) ib(6, -9, 28, 9, z + 1 + k * 2.6, z + 3.4 + k * 2.6, pick(['#8a5a4a', '#cfc6b8', '#2f3a4a', '#6f7d6b', '#efe9df']));
+        if (what === 'vase') { const pt = [x + 20, cy]; const v = cylinder(pt[0], pt[1], z + 1, z + 16, 3.5, pick(['#d8cbb6', '#8f9a8a', '#e9e3d8']), inner); v.castShadow = false; }
+        void sb;
+      }
+      // TV on the first pole – click to turn it towards the dining table
       const tvPivot = new THREE.Group();
-      tvPivot.position.set(M(cx), 0, M(cy));
+      tvPivot.position.set(M(poleA), 0, M(cy));
       group.add(tvPivot);
       const tvIn = new THREE.Group();
-      tvIn.position.set(-M(cx), 0, -M(cy));
+      tvIn.position.set(-M(poleA), 0, -M(cy));
       tvPivot.add(tvIn);
       const tv = { kind: 'tv' };
       const tb = (...a) => tag(b(...a, tvIn), tv);
-      tb(cx - 30, cy - 20, cx + 30, cy + 20, 0, 2.5, C.black);                 // base plate
-      tb(cx - 3, cy - 3, cx + 3, cy + 3, 2.5, 150, C.black);                   // column (cable inside)
-      tb(cx - 20, cy - 1, cx + 20, cy + 3, 95, 125, C.black);                  // mount
-      tb(cx - 61.5, cy + 3, cx + 61.5, cy + 6, 80, 151, mat('#111214', { roughness: 0.25, metalness: 0.3 }));  // 55" TV
-      quiet(b(cx - 58, cy + 6, cx + 58, cy + 6.3, 83.5, 147.5, mat('#1d2a33', { roughness: 0.15 }), tvIn));    // screen
-      tv.center = new THREE.Vector2(M(cx), M(cy));
+      tb(poleA - 12, cy + 2, poleA + 12, cy + 5, 100, 130, metalBlack);       // swivel mount
+      tb(poleA - 61.5, cy + 5, poleA + 61.5, cy + 8, 82, 153, mat('#111214', { roughness: 0.25, metalness: 0.3 }));  // 55" TV
+      quiet(b(poleA - 58, cy + 8, poleA + 58, cy + 8.3, 85.5, 149.5, mat('#1d2a33', { roughness: 0.15 }), tvIn));
+      tag(cylinder(poleA, cy, 100, 130, 3.2, metalBlack, tvIn), tv);           // clamp on the pole
+      tv.center = new THREE.Vector2(M(poleA), M(cy));
       tv.apply = () => { tvPivot.rotation.y = Math.PI * tv.frac; };
       register(tv);
-      block([cx - 30, cy - 20, cx + 30, cy + 20]);
     }
   }
 
