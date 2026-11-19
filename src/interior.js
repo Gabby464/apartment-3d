@@ -26,8 +26,8 @@ export const ELECTRIC = [
     bg: 'Двоен контакт с USB, дясно нощно шкафче' },
   { id: 'Л3', t: 'light', x: 643, y: 897, h: 150, n: [0, -1], plate: false, room: 'Спалня',
     bg: 'Аплик – нощна лампа, дясно' },
-  { id: 'Т4', t: 'socket', x: 528, y: 605, h: 115, n: [0, 1], w: 15, room: 'Спалня',
-    bg: 'Двоен контакт + TV/интернет над скрина', note: 'ако по-късно решите телевизор на стената' },
+  { id: 'Т4', t: 'socket', x: 590, y: 605, h: 85, n: [0, 1], w: 15, room: 'Спалня',
+    bg: 'Двоен контакт над бюфета – настолна лампа', note: 'точно над плота, скрит зад лампата' },
   { id: 'Т5', t: 'socket', x: 343, y: 880, h: 30, n: [1, 0], w: 15, room: 'Спалня',
     bg: 'Двоен контакт до прозореца (лампион, уреди)' },
   { id: 'Д1', t: 'sensor', x: 772, y: 813, ceil: true, room: 'Дрешник',
@@ -37,8 +37,14 @@ export const ELECTRIC = [
     bg: 'LED лента над закачалките', note: 'на същия датчик Д1' },
   { id: 'Л6', t: 'light', x: 393, y: 605, h: 140, n: [0, 1], plate: false, room: 'Спалня',
     bg: 'Захранване за LED огледалото на тоалетката', note: 'огледало със сензорен бутон – без отделен ключ' },
-  { id: 'Т6', t: 'socket', x: 343, y: 625, h: 95, n: [1, 0], w: 8, room: 'Спалня',
+  { id: 'Т6', t: 'socket', x: 343, y: 617, h: 95, n: [1, 0], w: 8, room: 'Спалня',
     bg: 'Контакт на тоалетката (сешоар, преса)' },
+  { id: 'К4', t: 'switch', x: 343, y: 637, h: 95, n: [1, 0], w: 8, room: 'Спалня',
+    bg: 'Ключ – лампите от двете страни на огледалото' },
+  { id: 'Л7', t: 'light', x: 352, y: 605, h: 140, n: [0, 1], plate: false, room: 'Спалня',
+    bg: 'Лампа до огледалото, ляво', note: 'неутрална светлина 4000K, CRI 90+ – вярни цветове за грим' },
+  { id: 'Л8', t: 'light', x: 436, y: 605, h: 140, n: [0, 1], plate: false, room: 'Спалня',
+    bg: 'Лампа до огледалото, дясно', note: 'на ключ К4' },
 ];
 
 // ---------------------------------------------------------------- materials
@@ -46,6 +52,7 @@ const mat = (color, opts = {}) => new THREE.MeshStandardMaterial({ color, roughn
 const C = {
   oak: mat('#c9a77c', { roughness: 0.6 }),
   oakDark: mat('#a9875f', { roughness: 0.6 }),
+  walnut: mat('#5b3d2b', { roughness: 0.55 }),
   white: mat('#f1ede6', { roughness: 0.5 }),
   front: mat('#ece7de', { roughness: 0.45 }),
   black: mat('#232323', { roughness: 0.4, metalness: 0.4 }),
@@ -61,6 +68,25 @@ const C = {
   plate: mat('#fbfbfa', { roughness: 0.4 }),
   box: mat('#d9cdb9', { roughness: 0.9 }),
 };
+
+function flutedWood() {
+  const c = document.createElement('canvas');
+  c.width = 32;
+  c.height = 4;
+  const g = c.getContext('2d');
+  const grad = g.createLinearGradient(0, 0, 32, 0);
+  grad.addColorStop(0, '#3b2619');
+  grad.addColorStop(0.2, '#6a4732');
+  grad.addColorStop(0.6, '#5a3b29');
+  grad.addColorStop(1, '#3b2619');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 32, 4);
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(24, 1);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return new THREE.MeshStandardMaterial({ map: t, roughness: 0.6 });
+}
 
 function flutedGlass() {
   const c = document.createElement('canvas');
@@ -139,31 +165,63 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     b(cx - 10, 862, cx + 8, 882, 55, 58, mat('#7a8a99'));          // book
   }
 
-  // chest of drawers opposite the bed – floating, 160 x 25
-  b(450, 605, 608, 630, 35, 75, C.oak);
-  for (let i = 0; i < 3; i++) {
-    const x1 = 452 + i * 51.7, x2 = x1 + 51.1;
-    b(x1, 630, x2, 631, 37, 73, C.front);
-    b((x1 + x2) / 2 - 8, 631, (x1 + x2) / 2 + 8, 632, 66, 67.5, C.black);
+  // low sideboard opposite the bed (fluted walnut, 183 x 30 x 75) with two picture shelves above
+  const walnut = C.walnut;
+  b(452, 605, 635, 627, 0, 8, C.black).castShadow = false;          // recessed plinth
+  b(452, 605, 635, 633, 8, 72, walnut);                             // body
+  b(450, 605, 637, 635, 72, 75, walnut);                            // top
+  const fluted = flutedWood();
+  for (let i = 0; i < 3; i++) {                                     // 3 push-to-open doors
+    const x1 = 452.5 + i * 61, x2 = x1 + 60.5;
+    b(x1, 633, x2, 635, 9, 71.5, fluted);
   }
-  b(575, 610, 595, 625, 75, 103, mat('#d6c7b0'));   // vase
-  b(500, 606, 560, 610, 105, 165, mat('#6f7d6b'));  // framed print
-  block([450, 605, 608, 630]);
+  for (const z of [125, 162]) b(462, 605, 628, 620, z, z + 3, walnut);
+  // leaning frames on the shelves
+  const art = ['#efe9df', '#3a3a3a', '#d9b8a8', '#cfc6b8', '#8a5a4a', '#f4efe6', '#6f7d6b'];
+  [[125, [[466, 30, 36], [500, 26, 30], [530, 34, 40], [570, 24, 28], [598, 28, 32]]],
+   [162, [[470, 26, 30], [502, 30, 38], [540, 34, 42], [584, 26, 30]]]].forEach(([z, items], k) => {
+    items.forEach(([x, w, h], j) => {
+      b(x, 608, x + w, 610.5, z + 3, z + 3 + h, mat(art[(j + k * 2) % art.length], { roughness: 0.9 })).castShadow = false;
+    });
+  });
+  // on top: globe table lamp, vase with branches, books
+  cylinder(608, 620, 75, 79, 6, C.oakDark);
+  {
+    const globe = new THREE.Mesh(new THREE.SphereGeometry(M(14), 32, 20), C.lampShade);
+    globe.position.set(M(608), M(93), M(620));
+    group.add(globe);
+  }
+  cylinder(572, 620, 75, 100, 6, mat('#d8cbb6', { roughness: 0.8 }));
+  for (let k = 0; k < 7; k++) {
+    const twig = new THREE.Mesh(new THREE.CylinderGeometry(M(0.4), M(0.4), M(40), 4), mat('#6b4a3a'));
+    twig.position.set(M(572 + (k - 3) * 3), M(118), M(620 + ((k % 3) - 1) * 2));
+    twig.rotation.z = (k - 3) * 0.12;
+    group.add(twig);
+  }
+  b(470, 612, 500, 630, 75, 78, mat('#e9e2d4'));
+  b(472, 613, 498, 629, 78, 80, mat('#b9a58c'));
+  b(512, 612, 540, 630, 80, 83, mat('#6b4a3a', { roughness: 0.4 }));  // bowl
+  block([450, 605, 637, 635]);
 
   // dressing table in the north-west corner, next to the window (daylight from the side)
-  b(343, 605, 445, 647, 72, 76, C.oak);                // top, 100 x 42
+  b(343, 605, 445, 647, 72, 76, C.walnut);                // top, 100 x 42
   b(345, 605, 443, 645, 58, 72, C.white);              // drawer box
   b(346, 645, 442, 646, 59, 71, C.front);              // drawer front
   b(386, 646, 400, 647, 64, 65.5, C.black);
   {
-    const glow = new THREE.Mesh(new THREE.CylinderGeometry(M(37), M(37), M(1), 48), C.lightGlow);
+    const glow = new THREE.Mesh(new THREE.CylinderGeometry(M(32), M(32), M(1), 48), C.lightGlow);
     glow.rotation.x = Math.PI / 2;
     glow.position.set(M(394), M(140), M(605.6));
     group.add(glow);
-    const mirror = new THREE.Mesh(new THREE.CylinderGeometry(M(35), M(35), M(1.5), 48), C.mirror);
+    const mirror = new THREE.Mesh(new THREE.CylinderGeometry(M(30), M(30), M(1.5), 48), C.mirror);
     mirror.rotation.x = Math.PI / 2;
     mirror.position.set(M(394), M(140), M(607));
     group.add(mirror);
+  }
+  // slim vertical lights either side of the mirror, at face height
+  for (const x of [352, 436]) {
+    b(x - 3, 605, x + 3, 607, 112, 168, C.black);
+    b(x - 2, 607, x + 2, 610, 114, 166, C.lightGlow).castShadow = false;
   }
   b(355, 615, 375, 635, 76, 79, C.oakDark);             // tray
   cylinder(420, 625, 76, 90, 3, mat('#e3c9a8', { roughness: 0.2 }));
