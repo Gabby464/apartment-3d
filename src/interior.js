@@ -94,17 +94,11 @@ export const ELECTRIC = [
     bg: 'Двоен ключ за банята (до вратата, отвън): лампи + огледало', note: 'вентилаторът тръгва с лампата и работи с таймер' },
   { id: 'В3', variant: 'bA', t: 'water', x: 900, y: 466, h: 45, n: [-1, 0], w: 12, room: 'Баня',
     bg: 'Вода + сифон за пералнята', note: 'сушилнята (с термопомпа) източва в същия сифон' },
-  { id: 'Т21', variant: 'bA', t: 'socket', x: 900, y: 512, h: 110, n: [-1, 0], w: 8, room: 'Баня', bg: 'Контакт за пералнята – отделен кръг, IP44', note: 'в колоната с кошовете, достъпен' },
-  { id: 'Т22', variant: 'bA', t: 'socket', x: 900, y: 532, h: 110, n: [-1, 0], w: 8, room: 'Баня', bg: 'Контакт за сушилнята – отделен кръг, IP44' },
-  { id: 'В4', variant: 'bA', t: 'water', x: 900, y: 577, h: 55, n: [-1, 0], w: 12, room: 'Баня', bg: 'Вода + канал за умивалника', note: 'смесителят е вграден в стената на 105 см' },
-  { id: 'Т23', variant: 'bA', t: 'socket', x: 900, y: 554, h: 112, n: [-1, 0], w: 8, room: 'Баня', bg: 'Контакт до огледалото (сешоар, четка) – IP44' },
-  { id: 'Л17', variant: 'bA', t: 'light', x: 900, y: 577, h: 178, n: [-1, 0], plate: false, room: 'Баня', bg: 'Захранване за кръглото LED огледало' },
-  { id: 'В3', variant: 'bB', t: 'water', x: 900, y: 556, h: 45, n: [-1, 0], w: 12, room: 'Баня', bg: 'Вариант Б: вода + сифон за пералнята' },
-  { id: 'Т21', variant: 'bB', t: 'socket', x: 900, y: 596, h: 110, n: [-1, 0], w: 8, room: 'Баня', bg: 'Вариант Б: контакт за пералнята – отделен кръг, IP44', note: 'в тясната колона' },
-  { id: 'Т22', variant: 'bB', t: 'socket', x: 900, y: 596, h: 150, n: [-1, 0], w: 8, room: 'Баня', bg: 'Вариант Б: контакт за сушилнята – отделен кръг, IP44' },
-  { id: 'В4', variant: 'bB', t: 'water', x: 900, y: 470, h: 55, n: [-1, 0], w: 12, room: 'Баня', bg: 'Вариант Б: вода + канал за умивалника в ъгъла до вратата' },
-  { id: 'Т23', variant: 'bB', t: 'socket', x: 900, y: 512, h: 112, n: [-1, 0], w: 8, room: 'Баня', bg: 'Вариант Б: контакт до огледалото – IP44' },
-  { id: 'Л17', variant: 'bB', t: 'light', x: 900, y: 470, h: 180, n: [-1, 0], plate: false, room: 'Баня', bg: 'Вариант Б: захранване за кръглото LED огледало' },
+  { id: 'Т21', variant: 'bA', t: 'socket', x: 900, y: 450, h: 225, n: [-1, 0], w: 8, room: 'Баня', bg: 'Контакт за пералнята – отделен кръг, IP44', note: 'в шкафа над сушилнята – достъпен' },
+  { id: 'Т22', variant: 'bA', t: 'socket', x: 900, y: 480, h: 225, n: [-1, 0], w: 8, room: 'Баня', bg: 'Контакт за сушилнята – отделен кръг, IP44', note: 'в шкафа над сушилнята' },
+  { id: 'В4', variant: 'bA', t: 'water', x: 900, y: 552, h: 55, n: [-1, 0], w: 12, room: 'Баня', bg: 'Вода + канал за умивалника', note: 'смесителят е вграден в стената на 105 см; сифонът минава зад горното чекмедже' },
+  { id: 'Т23', variant: 'bA', t: 'socket', x: 900, y: 590, h: 150, n: [-1, 0], w: 8, plate: false, room: 'Баня', bg: 'Контакт в огледалния шкаф (четка за зъби, самобръсначка) – IP44', note: '+ още един до него за сешоар' },
+  { id: 'Л17', variant: 'bA', t: 'light', x: 900, y: 551, h: 114, n: [-1, 0], plate: false, room: 'Баня', bg: 'LED под огледалния шкаф' },
   { id: 'В5', t: 'water', x: 795, y: 698, h: 20, n: [0, -1], w: 12, room: 'Баня',
     bg: 'Висяща тоалетна: канал Ø110 + вода за вграденото казанче', note: 'инсталационна рамка – „полицата“ е 20 см дълбока и 110 см висока' },
   { id: 'В6', t: 'water', x: 963, y: 652, h: 105, n: [-1, 0], w: 12, room: 'Баня',
@@ -153,16 +147,14 @@ export const FURNITURE = [
     mech: 'Б: диванът е отместен към телевизора, проходът от антрето (1 м) е свободен; висящ ТВ шкаф 150 × 35 с 3 чекмеджета (push), ТВ 55" на стената, ~1,6 м от очите' },
   { name: 'Трапезария', size: 'овална маса 140 × 90 от орех на един крак + 4 заоблени тапицирани стола',
     mech: '2 висящи лампи-сфери над масата' },
-  { name: 'Баня – шкаф за пералня и сушилня', size: '113 × 65, от пода до тавана, на дясната стена',
-    mech: 'пералня + сушилня една върху друга (с рафт-поставка), врата пред тях; до тях 3 издърпващи се коша за пране – бяло, тъмно, цветно; над тях рафтове за препарати; горе кърпи' },
-  { name: '– умивалник', size: 'висящ шкаф 55 × 48 с чекмедже (push) + купа отгоре, смесител от стената',
-    mech: 'кръгло LED огледало' },
+  { name: 'Баня – шкаф за пералня и сушилня', size: '65 × 65, от пода до тавана, на дясната стена',
+    mech: 'пералня + сушилня една върху друга с рафт-поставка между тях, врата пред тях (push); горе препарати и кърпи' },
+  { name: '– умивалник 100 см', size: 'каменен плот с вградена мивка, висящ шкаф 48 дълбок',
+    mech: 'горно чекмедже за козметика; отдолу 3 издърпващи се коша за пране – бяло, тъмно, цветно; над него огледален шкаф 100 × 70 с LED и рафт за кърпи' },
   { name: '– висяща тоалетна', size: 'вградено казанче в облицована „полица“ 20 × 110 см',
     mech: 'бутонът е в черно, отгоре полица от орех' },
   { name: '– душ 90 × 92 на нивото на плочките', size: 'линеен сифон по стената, без праг',
     mech: 'стъклена врата + неподвижни стъкла с тънък черен профил; таванен душ, ръчен душ, ниша с LED' },
-  { name: 'Баня – вариант Б (вратата остава 85 см)', size: 'умивалник 60 в ъгъла до вратата, под него 2 коша за пране (бяло / тъмно); шкафът за пералнята и сушилнята е след вратата',
-    mech: 'до пералнята тясна колона 16 см за препарати (изтегля се); кошовете са 2 вместо 3; вратата се отваря плътно към горната стена' },
   { name: '– облицовка', size: 'плочки 60 × 120 с вид на камък, до тавана',
     mech: 'черна електрическа лира за кърпи на лявата стена; вратата на банята е 70 см и се отваря плътно към горната стена' },
 ];
@@ -1172,113 +1164,59 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
 
     mkVariant('bA', () => {
       clad(762, 508, 762.6, 698); clad(762, 438, 762.6, 508, 200, H);
-    // ---------- laundry tower on the east wall (front x 835, 65 deep), floor to ceiling
-    const nA = [-1, 0], fA = 835, frA = frame(nA, fA);
-    shell(nA, fA, 433, 498, 65, 4, 263, C.walnut);                     // washer + dryer column
-    quiet(b(835, 433, 900, 546, 0, 4, C.black));
-    const appl = mat('#ecebe8', { roughness: 0.5 });
-    const porthole = (z) => {
-      const ring = new THREE.Mesh(new THREE.CylinderGeometry(M(16), M(16), M(1.5), 40), mat('#9aa0a6', { metalness: 0.6, roughness: 0.3 }));
-      ring.rotation.z = Math.PI / 2; ring.position.set(M(839.2), M(z), M(465.5)); group.add(ring);
-      const glassD = new THREE.Mesh(new THREE.CylinderGeometry(M(12.5), M(12.5), M(1.6), 40), mat('#2b3338', { roughness: 0.1 }));
-      glassD.rotation.z = Math.PI / 2; glassD.position.set(M(838.9), M(z), M(465.5)); group.add(glassD);
-    };
-    quiet(b(840, 435.5, 898, 495.5, 4, 89, appl)); porthole(48);       // washing machine
-    quiet(b(...frA(436, 495, -63, -3), 89, 90.5, C.inner));            // stacking shelf with pull-out tray
-    quiet(b(840, 435.5, 898, 495.5, 90.5, 175, appl)); porthole(134);  // dryer on top
-    quiet(b(840.5, 437, 842, 494, 165, 172, mat('#3a3a3a')));          // control panels
-    quiet(b(840.5, 437, 842, 494, 79, 86, mat('#3a3a3a')));
-    b(...frA(435, 496, -63, -2), 177, 178.8, C.walnut);
-    quiet(b(...frA(438, 493, -55, -8), 178.8, 200, pick(linenCols)));
-    quiet(b(...frA(438, 493, -55, -8), 200, 215, mat('#cfc4b3')));
-    hingeDoor({ n: nA, f: fA, u1: 433, u2: 498, z0: 4, z1: 177, hinge: 'u1', front: C.walnut });
-    hingeDoor({ n: nA, f: fA, u1: 433, u2: 498, z0: 177, z1: 263, hinge: 'u1', front: C.walnut });
-    // laundry column: 3 pull-out baskets (white / dark / colour) + detergent shelves + towels
-    shell(nA, fA, 498, 546, 65, 4, 263, C.walnut);
-    const bag = (col, label) => (a) => {
-      a.add(a.u1 + 1, a.u2 - 1, a.v1 + 1, a.v2 - 1, a.z, a.z + a.h - 2, mat(col, { roughness: 1 }));
-      for (let k = 0; k < 5; k++) a.add(a.u1 + 4 + rnd() * 20, a.u1 + 14 + rnd() * 20, a.v1 + 5 + rnd() * 30, a.v1 + 15 + rnd() * 30, a.z + a.h - 2, a.z + a.h + 1, pick(label));
-    };
-    drawer({ n: nA, f: fA, u1: 498, u2: 546, z0: 66, z1: 100, depth: 62, front: C.walnut, grip: 'top', fill: bag('#efede8', ['#ffffff', '#efe9df', '#e3e6ea']) });   // whites
-    drawer({ n: nA, f: fA, u1: 498, u2: 546, z0: 35, z1: 66, depth: 62, front: C.walnut, grip: 'top', fill: bag('#3a3a3a', ['#222222', '#2f3a4a', '#3d3d3d']) });   // darks
-    drawer({ n: nA, f: fA, u1: 498, u2: 546, z0: 4, z1: 35, depth: 62, front: C.walnut, grip: 'top', fill: bag('#8e9c86', ['#9e3f3a', '#6d7f99', '#c7a98a']) });   // colours
-    for (const z of [100, 128, 154]) quiet(b(...frA(500, 544, -63, -3), z, z + 1.6, C.inner));
-    for (let k = 0; k < 4; k++) quiet(cylinder(...frA(505 + k * 10, 505 + k * 10, -20, -20).slice(0, 2), 101.6, 120 + (k % 2) * 4, 3.5, pick(['#e6eef0', '#9fc3d0', '#f0e2b6', '#c7d6c0'])));
-    for (let k = 0; k < 4; k++) quiet(b(...frA(503 + k * 10, 511 + k * 10, -40, -8), 129.6, 140 + (k % 2) * 5, pick(['#f2f2f2', '#e8d8c4', '#cfe0e6'])));
-    quiet(b(...frA(502, 542, -50, -10), 155.6, 170, mat('#9aa7ad')));  // clothes pegs / softener box
-    b(...frA(500, 544, -63, -2), 177, 178.8, C.walnut);
-    folded({ u1: 501, u2: 543, v1: -60, v2: -4, z: 178.8, h: 60, add: (a1, a2, c1, c2, za, zb, m) => quiet(b(...frA(a1, a2, c1, c2), za, zb, m)) }, 1, linenCols, 6);
-    hingeDoor({ n: nA, f: fA, u1: 498, u2: 546, z0: 100, z1: 177, hinge: 'u2', front: C.walnut });
-    hingeDoor({ n: nA, f: fA, u1: 498, u2: 546, z0: 177, z1: 263, hinge: 'u2', front: C.walnut });
-    block([835, 433, 900, 546]);
-
-    // ---------- vanity on the east wall (55 x 48, floating) with vessel basin and round lit mirror
-    const nV = [-1, 0], fV = 852, frV = frame(nV, fV);
-    shell(nV, fV, 551, 604, 48, 48, 80, C.walnut);
-    drawer({ n: nV, f: fV, u1: 551, u2: 604, z0: 48, z1: 80, depth: 46, front: fluted(53), fill: (a) => smalls(a, 4, 3, ['#efe9df', '#c58b7a', '#9fb3c2', '#2a2a2a'], 8) });
-    b(850, 549, 900, 606, 80, 83, stone);
-    const basin = new THREE.Mesh(new THREE.SphereGeometry(M(19), 32, 16, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), white);
-    basin.scale.set(1, 0.6, 1); basin.position.set(M(874), M(83 + 11.4), M(577.5)); basin.rotation.x = Math.PI;
-    basin.material = white.clone(); basin.material.side = THREE.DoubleSide; group.add(basin);
-    quiet(b(895, 575, 900, 580, 105, 108, blackMetal)); quiet(b(882, 576.5, 899, 578.5, 106, 107.5, blackMetal));   // wall spout
-    const mirrorDisc = new THREE.Mesh(new THREE.CircleGeometry(M(24), 48), mat('#c9d5da', { roughness: 0.05, metalness: 0.2 }));
-    mirrorDisc.rotation.y = -Math.PI / 2; mirrorDisc.position.set(M(898.8), M(150), M(577.5)); group.add(mirrorDisc);
-    const halo = new THREE.Mesh(new THREE.CircleGeometry(M(27), 48), new THREE.MeshStandardMaterial({ color: '#fff3dc', emissive: '#ffe2b0', emissiveIntensity: 1.3 }));
-    halo.rotation.y = -Math.PI / 2; halo.position.set(M(899.2), M(150), M(577.5)); group.add(halo);
-    block([850, 549, 900, 606]);
-
-    });
-    mkVariant('bB', () => {
-    // ===== variant bB: door stays 85 cm – vanity with laundry baskets in the corner by the door, tower after the door
-    {
-      clad(762, 523, 762.6, 698); clad(762, 438, 762.6, 523, 200, H);
-      // vanity 60 x 48 in the north-east corner, standing on a plinth: 2 laundry basket drawers (whites / darks)
-      const nV = [-1, 0], fV = 852;
-      quiet(b(852, 440, 900, 500, 0, 4, C.black));
-      shell(nV, fV, 440, 500, 48, 4, 82, C.walnut);
-      const bagB = (col, label) => (a) => {
-        a.add(a.u1 + 1, a.u2 - 1, a.v1 + 1, a.v2 - 1, a.z, a.z + a.h - 2, mat(col, { roughness: 1 }));
-        for (let k = 0; k < 5; k++) a.add(a.u1 + 4 + rnd() * 24, a.u1 + 14 + rnd() * 24, a.v1 + 4 + rnd() * 22, a.v1 + 14 + rnd() * 22, a.z + a.h - 2, a.z + a.h + 1, pick(label));
-      };
-      drawer({ n: nV, f: fV, u1: 440, u2: 500, z0: 43, z1: 82, depth: 46, front: fluted(60), fill: bagB('#efede8', ['#ffffff', '#efe9df', '#e3e6ea']) });
-      drawer({ n: nV, f: fV, u1: 440, u2: 500, z0: 4, z1: 43, depth: 46, front: fluted(60), fill: bagB('#3a3a3a', ['#222222', '#2f3a4a', '#3d3d3d']) });
-      b(850, 438, 900, 502, 82, 85, stone);
-      const basinB = new THREE.Mesh(new THREE.SphereGeometry(M(19), 32, 16, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), white.clone());
-      basinB.material.side = THREE.DoubleSide;
-      basinB.scale.set(1, 0.6, 1); basinB.position.set(M(874), M(85 + 11.4), M(470)); basinB.rotation.x = Math.PI; group.add(basinB);
-      quiet(b(895, 467.5, 900, 472.5, 107, 110, blackMetal)); quiet(b(882, 469, 899, 471, 108, 109.5, blackMetal));
-      const mB = new THREE.Mesh(new THREE.CircleGeometry(M(24), 48), mat('#c9d5da', { roughness: 0.05, metalness: 0.2 }));
-      mB.rotation.y = -Math.PI / 2; mB.position.set(M(898.8), M(152), M(470)); group.add(mB);
-      const hB = new THREE.Mesh(new THREE.CircleGeometry(M(27), 48), new THREE.MeshStandardMaterial({ color: '#fff3dc', emissive: '#ffe2b0', emissiveIntensity: 1.3 }));
-      hB.rotation.y = -Math.PI / 2; hB.position.set(M(899.2), M(152), M(470)); group.add(hB);
-      block([850, 438, 900, 502]);
-      // laundry tower after the door swing: washer + dryer column y 523–588, slim 16 cm detergent pull-out y 588–604
+      // ---------- washer + dryer tower on the east wall (front x 835, 65 deep), detergents in the cabinet above
       const nA = [-1, 0], fA = 835, frA = frame(nA, fA);
-      quiet(b(835, 523, 900, 604, 0, 4, C.black));
-      shell(nA, fA, 523, 588, 65, 4, 263, C.walnut);
+      shell(nA, fA, 433, 498, 65, 4, 263, C.walnut);
+      quiet(b(835, 433, 900, 498, 0, 4, C.black));
       const appl = mat('#ecebe8', { roughness: 0.5 });
       const porthole = (z) => {
         const ring = new THREE.Mesh(new THREE.CylinderGeometry(M(16), M(16), M(1.5), 40), mat('#9aa0a6', { metalness: 0.6, roughness: 0.3 }));
-        ring.rotation.z = Math.PI / 2; ring.position.set(M(839.2), M(z), M(555.5)); group.add(ring);
+        ring.rotation.z = Math.PI / 2; ring.position.set(M(839.2), M(z), M(465.5)); group.add(ring);
         const g2 = new THREE.Mesh(new THREE.CylinderGeometry(M(12.5), M(12.5), M(1.6), 40), mat('#2b3338', { roughness: 0.1 }));
-        g2.rotation.z = Math.PI / 2; g2.position.set(M(838.9), M(z), M(555.5)); group.add(g2);
+        g2.rotation.z = Math.PI / 2; g2.position.set(M(838.9), M(z), M(465.5)); group.add(g2);
       };
-      quiet(b(840, 525.5, 898, 585.5, 4, 89, appl)); porthole(48);
-      quiet(b(...frA(526, 585, -63, -3), 89, 90.5, C.inner));
-      quiet(b(840, 525.5, 898, 585.5, 90.5, 175, appl)); porthole(134);
-      quiet(b(840.5, 527, 842, 584, 165, 172, mat('#3a3a3a'))); quiet(b(840.5, 527, 842, 584, 79, 86, mat('#3a3a3a')));
-      b(...frA(525, 586, -63, -2), 177, 178.8, C.walnut);
-      folded({ u1: 527, u2: 584, v1: -60, v2: -4, z: 178.8, h: 60, add: (a1, a2, c1, c2, za, zb, m) => quiet(b(...frA(a1, a2, c1, c2), za, zb, m)) }, 2, linenCols, 6);
-      hingeDoor({ n: nA, f: fA, u1: 523, u2: 588, z0: 4, z1: 177, hinge: 'u2', front: C.walnut });
-      hingeDoor({ n: nA, f: fA, u1: 523, u2: 588, z0: 177, z1: 263, hinge: 'u2', front: C.walnut });
-      shell(nA, fA, 588, 604, 65, 4, 263, C.walnut);
-      drawer({ n: nA, f: fA, u1: 588, u2: 604, z0: 4, z1: 255, depth: 62, front: C.walnut, grip: 'top', fill: (a) => {
-        for (let zz = 0; zz < 230; zz += 34) {
-          a.add(a.u1, a.u2, a.v1, a.v2, a.z + zz, a.z + zz + 0.8, C.inner);
-          for (let v = a.v1 + 4; v < a.v2 - 4; v += 9) a.cyl((a.u1 + a.u2) / 2, v, a.z + zz + 0.8, a.z + zz + 18 + rnd() * 8, 3.2, pick(['#e6eef0', '#9fc3d0', '#f0e2b6', '#c7d6c0', '#f2f2f2']));
-        } } });
-      block([835, 523, 900, 604]);
-    }
+      quiet(b(840, 435.5, 898, 495.5, 4, 89, appl)); porthole(48);
+      quiet(b(...frA(436, 495, -63, -3), 89, 90.5, C.inner));          // pull-out shelf between the machines
+      quiet(b(840, 435.5, 898, 495.5, 90.5, 175, appl)); porthole(134);
+      quiet(b(840.5, 437, 842, 494, 165, 172, mat('#3a3a3a'))); quiet(b(840.5, 437, 842, 494, 79, 86, mat('#3a3a3a')));
+      b(...frA(435, 496, -63, -2), 177, 178.8, C.walnut);
+      for (let k = 0; k < 5; k++) quiet(cylinder(...frA(442 + k * 11, 442 + k * 11, -22, -22).slice(0, 2), 178.8, 198 + (k % 2) * 5, 3.8, pick(['#e6eef0', '#9fc3d0', '#f0e2b6', '#c7d6c0', '#f2f2f2'])));
+      for (let k = 0; k < 4; k++) quiet(b(...frA(440 + k * 13, 450 + k * 13, -50, -34), 178.8, 192, pick(['#f2f2f2', '#e8d8c4', '#cfe0e6'])));
+      b(...frA(437, 494, -63, -3), 215, 216.6, C.inner);
+      folded({ u1: 438, u2: 493, v1: -60, v2: -4, z: 216.6, h: 44, add: (a1, a2, c1, c2, za, zb, m) => quiet(b(...frA(a1, a2, c1, c2), za, zb, m)) }, 2, linenCols, 6);
+      hingeDoor({ n: nA, f: fA, u1: 433, u2: 498, z0: 4, z1: 177, hinge: 'u1', front: C.walnut });
+      hingeDoor({ n: nA, f: fA, u1: 433, u2: 498, z0: 177, z1: 263, hinge: 'u1', front: C.walnut });
+      block([835, 433, 900, 498]);
+
+      // ---------- 100 cm vanity: stone top with undermount basin, toiletry drawer, 3 laundry-basket pull-outs below
+      const nV = [-1, 0], fV = 852, frV = frame(nV, fV);
+      quiet(b(852, 500, 900, 602, 0, 4, C.black));
+      shell(nV, fV, 500, 602, 48, 4, 82, C.walnut);
+      drawer({ n: nV, f: fV, u1: 500, u2: 602, z0: 64, z1: 82, depth: 46, front: fluted(102), fill: (a) => {
+        grid(a, 4, 1, 6); smalls(a, 8, 3, ['#efe9df', '#c58b7a', '#9fb3c2', '#2a2a2a', '#e3c9a8'], 8); } });
+      const bag = (col, label) => (a) => {
+        a.add(a.u1 + 1, a.u2 - 1, a.v1 + 1, a.v2 - 1, a.z, a.z + a.h - 2, mat(col, { roughness: 1 }));
+        for (let k = 0; k < 4; k++) a.add(a.u1 + 3 + rnd() * 14, a.u1 + 10 + rnd() * 14, a.v1 + 5 + rnd() * 26, a.v1 + 14 + rnd() * 26, a.z + a.h - 2, a.z + a.h + 1, pick(label));
+      };
+      [['#efede8', ['#ffffff', '#efe9df', '#e3e6ea']], ['#3a3a3a', ['#222222', '#2f3a4a', '#3d3d3d']], ['#8e9c86', ['#9e3f3a', '#6d7f99', '#c7a98a']]]
+        .forEach(([c, l], k) => drawer({ n: nV, f: fV, u1: 500 + k * 34, u2: 534 + k * 34, z0: 4, z1: 64, depth: 46, front: fluted(34), fill: bag(c, l) }));
+      b(850, 500, 900, 602, 82, 85, stone);                            // stone top
+      quiet(b(860, 532, 894, 572, 84.6, 85.2, mat('#f4f3f0', { roughness: 0.2 })));   // undermount basin rim
+      quiet(b(863, 535, 891, 569, 84.8, 85.3, mat('#d9dcdc', { roughness: 0.15 })));
+      quiet(b(895, 549.5, 900, 554.5, 104, 107, blackMetal)); quiet(b(884, 551, 899, 553, 105, 106.5, blackMetal));   // wall spout
+      // mirror cabinet above (100 x 15 x 70) with mirror doors, LED strip under it, shelves inside
+      const nM = [-1, 0], fM = 885, frM = frame(nM, fM);
+      shell(nM, fM, 502, 600, 15, 115, 185, C.walnut);
+      quiet(b(...frM(504, 598, -4, -2), 113.6, 115, C.lightGlow));
+      for (const z of [138, 161]) quiet(b(...frM(504, 598, -14, -2), z, z + 1.2, mat('#dfe8ea', { roughness: 0.05, transparent: true, opacity: 0.6 })));
+      for (const z0 of [116.8, 139.2, 162.2]) for (let u = 507; u < 594; u += 7 + rnd() * 4) quiet(cylinder(...frM(u, u, -8, -8).slice(0, 2), z0, z0 + 8 + rnd() * 8, 1.6 + rnd() * 1.2, pick(['#efe9df', '#c58b7a', '#9fb3c2', '#2a2a2a', '#e3c9a8', '#8f9a8a'])));
+      const mirrorFront = mat('#c9d5da', { roughness: 0.05, metalness: 0.25 });
+      hingeDoor({ n: nM, f: fM, u1: 502, u2: 551, z0: 115, z1: 185, hinge: 'u1', front: mirrorFront });
+      hingeDoor({ n: nM, f: fM, u1: 551, u2: 600, z0: 115, z1: 185, hinge: 'u2', front: mirrorFront });
+      // open walnut shelf above with towels
+      b(870, 500, 900, 602, 205, 207, C.walnut);
+      folded({ u1: 505, u2: 597, v1: -28, v2: -4, z: 207, h: 26, add: (a1, a2, c1, c2, za, zb, m) => quiet(b(...frame(nV, 900)(a1, a2, c1, c2), za, zb, m)) }, 3, linenCols, 6);
+      block([850, 500, 900, 602]);
     });
 
     // ---------- wall-hung WC with concealed cistern in a tiled ledge (shelf on top) on the south wall

@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { H, INFO, ROOMS, WALLS, RAILINGS, LANDING, LANDING_LIMITS } from './plan.js?v=20261119150429';
-import { woodTexture, tileTexture } from './textures.js?v=20261119150429';
-import { Minimap } from './minimap.js?v=20261119150429';
-import { buildInterior, ELECTRIC, FURNITURE } from './interior.js?v=20261119150429';
+import { H, INFO, ROOMS, WALLS, RAILINGS, LANDING, LANDING_LIMITS } from './plan.js?v=20261119151846';
+import { woodTexture, tileTexture } from './textures.js?v=20261119151846';
+import { Minimap } from './minimap.js?v=20261119151846';
+import { buildInterior, ELECTRIC, FURNITURE } from './interior.js?v=20261119151846';
 
 const M = (v) => v / 100; // cm -> m
 const EYE = 1.6;
@@ -487,10 +487,6 @@ $('#open-all').addEventListener('click', () => {
   parts.forEach((d) => { d.target = open ? 1 : 0; });
   $('#open-all').textContent = open ? 'Затвори всички мебели' : 'Отвори всички мебели';
 });
-document.querySelectorAll('#bath-variant button').forEach((btn) => btn.addEventListener('click', () => {
-  setBath(btn.dataset.v);
-  document.querySelectorAll('#bath-variant button').forEach((x) => x.classList.toggle('active', x === btn));
-}));
 document.querySelectorAll('#variant button').forEach((btn) => btn.addEventListener('click', () => {
   layoutVariant = btn.dataset.v;
   interior.setVariant(layoutVariant);
