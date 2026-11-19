@@ -51,8 +51,8 @@ export const ELECTRIC = [
 export const FURNITURE = [
   { name: 'Легло 160 × 200 с повдигащ механизъм', size: 'тапицирано, табла 180 × 120',
     mech: 'газови амортисьори – матракът се вдига, отдолу ракла за спално бельо и куфари' },
-  { name: 'Нощни шкафчета (2 бр.)', size: '45 × 37 × 30, висящи, орех',
-    mech: '1 чекмедже, пълно изтегляне, push-to-open (Tip-On), плавно затваряне' },
+  { name: 'Нощни шкафчета (2 бр.)', size: '45 × 37 × 30, висящи, орех; откъм прозореца плотът продължава с дъска до 78 см',
+    mech: '1 чекмедже, пълно изтегляне, push-to-open (Tip-On), плавно затваряне; дъската е за часовници и парфюми' },
   { name: 'Бюфет срещу леглото', size: '183 × 30 × 75, орех с релефни фронтове',
     mech: 'ляво и дясно: врати с push-to-open (кърпи, хавлии); средата: 3 чекмеджета – бижута (кадифе с отделения), парфюми, дребни неща' },
   { name: 'Тоалетка (продължение на бюфета)', size: '107 × 40, плот на 75 см',
@@ -351,6 +351,20 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     cylinder(cx, 885, 140, 156, 9, C.lampShade).castShadow = false; // shade
     b(cx - 10, 862, cx + 8, 882, 55, 58, mat('#7a8a99'));          // book on top
   }
+
+  // his side (window side): the nightstand top continues as a floating walnut board – watches, perfume
+  // (stops 15 cm before the wall so the curtain can still hang down)
+  b(358, 855, 391, 892, 53.2, 55, C.walnut);
+  quiet(b(362, 858, 388, 874, 55, 56.2, mat('#3b2a20', { roughness: 0.5 })));   // leather valet tray
+  for (const [x, y] of [[367, 863], [375, 866], [383, 864]]) {                  // watches
+    quiet(b(x - 1.2, y - 4, x + 1.2, y + 4, 56.2, 56.8, mat('#2a2a2a', { roughness: 0.6 })));
+    quiet(cylinder(x, y, 56.2, 57.6, 2.1, C.metal));
+  }
+  for (const [x, c, hh] of [[365, '#e9d6b8', 12], [373, '#cfd6da', 10], [381, '#6b4a3a', 13]]) {   // perfume
+    quiet(cylinder(x, 884, 55, 55 + hh, 2.8, mat(c, { roughness: 0.1, transparent: true, opacity: 0.85 })));
+    quiet(cylinder(x, 884, 55 + hh, 57 + hh, 1.3, mat('#1f1f1f', { roughness: 0.3 })));
+  }
+  block([358, 855, 391, 892]);
 
   // ======================= SIDEBOARD (fluted walnut, 183 x 30 x 75) =======================
   {
