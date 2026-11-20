@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { H, INFO, ROOMS, WALLS, RAILINGS, LANDING, LANDING_LIMITS } from './plan.js?v=20261120104323';
-import { woodTexture, tileTexture } from './textures.js?v=20261120104323';
-import { Minimap } from './minimap.js?v=20261120104323';
-import { buildInterior, ELECTRIC, FURNITURE, variantNote } from './interior.js?v=20261120104323';
+import { H, INFO, ROOMS, WALLS, RAILINGS, LANDING, LANDING_LIMITS } from './plan.js?v=20261120124533';
+import { woodTexture, tileTexture } from './textures.js?v=20261120124533';
+import { Minimap } from './minimap.js?v=20261120124533';
+import { buildInterior, ELECTRIC, FURNITURE, variantNote } from './interior.js?v=20261120124533';
 
 const M = (v) => v / 100; // cm -> m
 const EYE = 1.6;
@@ -489,15 +489,31 @@ $('#open-all').addEventListener('click', () => {
   parts.forEach((d) => { d.target = open ? 1 : 0; });
   $('#open-all').textContent = open ? 'Затвори всички мебели' : 'Отвори всички мебели';
 });
+// layout switches; kitchens K5/K7 sit where the TV pole (A) / screen (C) hang, so those combinations are resolved
+const WALL_KITCHENS = ['k5', 'k7'], POLE_LIVINGS = ['A', 'C'];
+function setLiving(v) {
+  layoutVariant = v;
+  interior.setVariant(v);
+  document.querySelectorAll('#variant button').forEach((x) => x.classList.toggle('active', x.dataset.v === v));
+}
+function setKitchen(v) {
+  kitchenVariant = v;
+  interior.setVariant(v);
+  document.querySelectorAll('#kitchen-variant button').forEach((x) => x.classList.toggle('active', x.dataset.v === v));
+}
 document.querySelectorAll('#variant button').forEach((btn) => btn.addEventListener('click', () => {
-  layoutVariant = btn.dataset.v;
-  interior.setVariant(layoutVariant);
-  document.querySelectorAll('#variant button').forEach((x) => x.classList.toggle('active', x === btn));
+  setLiving(btn.dataset.v);
+  if (POLE_LIVINGS.includes(btn.dataset.v) && WALL_KITCHENS.includes(kitchenVariant)) {
+    setKitchen('k1');
+    flash('Кухня К5/К7 е на мястото на колоната/екрана – кухнята стана К1');
+  }
 }));
 document.querySelectorAll('#kitchen-variant button').forEach((btn) => btn.addEventListener('click', () => {
-  kitchenVariant = btn.dataset.v;
-  interior.setVariant(kitchenVariant);
-  document.querySelectorAll('#kitchen-variant button').forEach((x) => x.classList.toggle('active', x === btn));
+  setKitchen(btn.dataset.v);
+  if (WALL_KITCHENS.includes(btn.dataset.v) && POLE_LIVINGS.includes(layoutVariant)) {
+    setLiving('B');
+    flash('При К5/К7 колоната/екранът няма къде да застане – холът стана Б');
+  }
 }));
 $('#show-furniture').addEventListener('change', (e) => { furniture.visible = e.target.checked; });
 $('#show-elec').addEventListener('change', (e) => {
