@@ -1,6 +1,6 @@
 // "Промени за инвеститора" – construction changes to request from the developer.
 // The electrical / plumbing table is generated from ELECTRIC in interior.js, so it always matches the 3D model.
-import { ELECTRIC } from './interior.js?v=20261120084457';
+import { ELECTRIC, variantNote } from './interior.js?v=20261120104323';
 
 const SECTIONS = [
   {
@@ -25,7 +25,9 @@ const SECTIONS = [
     ],
   },
   {
-    id: 'kitchen', title: 'Кухня (П-образна)', items: [
+    id: 'kitchen', title: 'Кухня', items: [
+      { id: 'k-variant', t: 'Изберете вариант на кухнята (К1 П-образна, К2 + кафе-станция, К3 с остров, К4 Г-образна) – точките по-долу са за К1–К3.',
+        n: 'При К4 мивката е на дясната стена до прозореца и всички точки се местят – вижте таблицата най-долу, отбелязани са с „кухня К4“. При К2 има още контакт за кафе-станцията (Т26), при К3 – подов контакт за острова (Т27).' },
       { id: 'k-sink', t: 'Мивката е под прозореца: вода (топла/студена) и канал там (В2).',
         n: 'Съдомиялна 45 см до мивката, контактът ѝ е под мивката (Т15). Смесителят е нисък, защото прозорецът се отваря навътре.' },
       { id: 'k-hob', t: 'Котлон на дясната стена – 380V / отделен кръг (Т14); фурна под котлона – отделен кръг (Т18).',
@@ -52,7 +54,7 @@ const SECTIONS = [
   {
     id: 'living', title: 'Дневна', items: [
       { id: 'l-tv', t: 'Телевизор – ще потвърдим кой вариант преди замазката:',
-        n: 'Вариант А (ТВ на колона от пода до тавана): подов контакт в замазката – ток + антена + интернет (Т10), анкериране на колоната в пода и тавана. Вариант Б (ТВ на стената към спалнята): контакт + антена + интернет на 50 см (Т10).' },
+        n: 'А: ТВ на колона от пода до тавана – подов контакт в замазката (ток + антена + интернет, Т10) и анкериране в пода и тавана. Б: ТВ на стената към спалнята – контакт + антена + интернет на 50 см (Т10). В: падащ екран и проектор – касета и захранване в тавана (Т30), захранване + HDMI за проектора (Т29). Г: ТВ под прозореца – контакт + антена + интернет на 45 см (Т10). Д: без ТВ в хола – точката е в Спалня 1 (Т28).' },
       { id: 'l-sofa', t: 'LED над дивана: под горните шкафове (Л11) и под рафта (Л12, на димер) – захранване през тавана; контакт до дивана (Т7).' },
       { id: 'l-router', t: 'Рутер: контакт + интернет горе в шкафа откъм антрето (Т8) – по средата на апартамента.' },
     ],
@@ -86,7 +88,6 @@ const SECTIONS = [
 const TYPE = { switch: 'Ключ', socket: 'Контакт', light: 'Осветление', sensor: 'Датчик', intercom: 'Домофон', water: 'Вода/канал', fan: 'Вентилатор' };
 const ROOMS = ['Спалня', 'Дрешник', 'Антре', 'Баня', 'Дневна', 'Кухня', 'Спалня 1'];
 const ROOM_NAME = { Спалня: 'Родителска спалня' };
-const VARIANT = { A: 'само при хол вариант А', B: 'само при хол вариант Б' };
 
 const store = {
   get(k) { try { return localStorage.getItem('apt3-chg-' + k) === '1'; } catch { return false; } },
@@ -114,9 +115,9 @@ for (const room of ROOMS) {
   if (!pts.length) continue;
   html += `<h3>${ROOM_NAME[room] || room}</h3><div class="table-wrap"><table><thead><tr><th></th><th>№</th><th>Вид</th><th>Описание</th><th>Височина</th></tr></thead><tbody>`;
   for (const p of pts) {
-    const key = `pt-${p.id}-${p.variant || ''}`;
+    const key = `pt-${p.id}-${[].concat(p.variant || []).join('')}`;
     const h = p.ceil ? 'таван' : p.floor ? 'в пода' : `${p.h} см`;
-    const notes = [p.note, VARIANT[p.variant]].filter(Boolean).map((n) => `<span class="note">${esc(n)}</span>`).join('');
+    const notes = [p.note, variantNote(p.variant)].filter(Boolean).map((n) => `<span class="note">${esc(n)}</span>`).join('');
     html += `<tr class="${store.get(key) ? 'is-done' : ''}"><td>${check(key)}</td><td><span class="tag t-${p.t}">${p.id}</span></td><td>${TYPE[p.t] || p.t}</td><td>${esc(p.bg)}${notes}</td><td class="h">${h}</td></tr>`;
   }
   html += '</tbody></table></div>';

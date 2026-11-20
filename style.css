@@ -140,3 +140,8 @@ body:not(.show-elec) #elec-box { display: none; }
 #bath-variant button { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 5px 8px; font-size: 12px; }
 #bath-variant button.active { background: var(--ink); color: #fff; border-color: var(--ink); }
 .link-btn { display: block; text-align: center; text-decoration: none; color: var(--ink); background: #f3ece4; }
+#kitchen-variant { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+#kitchen-variant span, #variant span { color: var(--muted); margin-right: 2px; min-width: 46px; }
+#kitchen-variant button { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 5px 9px; font-size: 12px; }
+#kitchen-variant button.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+#variant button { min-width: 34px; }

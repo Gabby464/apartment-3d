@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { H, INFO, ROOMS, WALLS, RAILINGS, LANDING, LANDING_LIMITS } from './plan.js?v=20261120084457';
-import { woodTexture, tileTexture } from './textures.js?v=20261120084457';
-import { Minimap } from './minimap.js?v=20261120084457';
-import { buildInterior, ELECTRIC, FURNITURE } from './interior.js?v=20261120084457';
+import { H, INFO, ROOMS, WALLS, RAILINGS, LANDING, LANDING_LIMITS } from './plan.js?v=20261120104323';
+import { woodTexture, tileTexture } from './textures.js?v=20261120104323';
+import { Minimap } from './minimap.js?v=20261120104323';
+import { buildInterior, ELECTRIC, FURNITURE, variantNote } from './interior.js?v=20261120104323';
 
 const M = (v) => v / 100; // cm -> m
 const EYE = 1.6;
@@ -292,6 +292,8 @@ scene.add(furniture);
 const interior = buildInterior({ box, M, group: furniture, colliders, pickables, H, addDoor: (d) => doors.push(d) });
 let layoutVariant = 'A';
 let bathVariant = 'bA';
+let kitchenVariant = 'k1';
+const variantOn = (v) => !v || [].concat(v).some((k) => k === layoutVariant || k === bathVariant || k === kitchenVariant);
 // bathroom variant A: 70 cm door – a 15 cm filler and a jamb narrow the 85 cm opening, the leaf is shortened
 const bathDoor = doors.find((d) => d.bath);
 const bathFiller = [box(749.8, 508, 762.2, 523, 0, 200, wallMats), box(749.8, 504, 762.2, 508, 0, 200, frameMat)];
@@ -492,6 +494,11 @@ document.querySelectorAll('#variant button').forEach((btn) => btn.addEventListen
   interior.setVariant(layoutVariant);
   document.querySelectorAll('#variant button').forEach((x) => x.classList.toggle('active', x === btn));
 }));
+document.querySelectorAll('#kitchen-variant button').forEach((btn) => btn.addEventListener('click', () => {
+  kitchenVariant = btn.dataset.v;
+  interior.setVariant(kitchenVariant);
+  document.querySelectorAll('#kitchen-variant button').forEach((x) => x.classList.toggle('active', x === btn));
+}));
 $('#show-furniture').addEventListener('change', (e) => { furniture.visible = e.target.checked; });
 $('#show-elec').addEventListener('change', (e) => {
   elecOn = e.target.checked;
@@ -503,7 +510,7 @@ document.body.classList.add('show-elec');
   let lastRoom = '';
   const order = ['Спалня', 'Дрешник', 'Антре', 'Баня', 'Дневна', 'Кухня', 'Спалня 1'];
   const rows = [...ELECTRIC].sort((x, y) => order.indexOf(x.room) - order.indexOf(y.room)).map((p) => `${p.room !== lastRoom ? `<li class="elec-room">${(lastRoom = p.room)}</li>` : ''}<li><span class="elec elec-${p.t}">${p.id}</span><div>${p.bg}`
-    + `<small>${typeName[p.t]}${p.ceil ? ' · таван' : p.floor ? ' · в пода' : ` · h ${p.h} см`}${p.note ? ` · ${p.note}` : ''}</small></div></li>`);
+    + `<small>${typeName[p.t]}${p.ceil ? ' · таван' : p.floor ? ' · в пода' : ` · h ${p.h} см`}${p.note ? ` · ${p.note}` : ''}${p.variant && variantNote(p.variant) ? ` · <b>${variantNote(p.variant)}</b>` : ''}</small></div></li>`);
   $('#elec-list').innerHTML = rows.join('');
   $('#furn-list').innerHTML = FURNITURE.map((f) => `<li><div><b>${f.name}</b><small>${f.size}</small><small>${f.mech}</small></div></li>`).join('');
 }
@@ -690,18 +697,18 @@ function frame() {
     {
       const here = { bed2: ['Спалня', 'Дрешник'], closet: ['Спалня', 'Дрешник'], hall: ['Антре'], bath: ['Баня'], bed1: ['Спалня 1'], living: ['Дневна', 'Кухня'], kitchen: ['Кухня', 'Дневна'] }[room?.id] || [];
       elecLabels.visible = elecOn;
-      elecLabels.children.forEach((c) => { c.visible = elecOn && here.includes(c.userData.room) && (!c.userData.variant || c.userData.variant === layoutVariant || c.userData.variant === bathVariant); });
+      elecLabels.children.forEach((c) => { c.visible = elecOn && here.includes(c.userData.room) && variantOn(c.userData.variant); });
     }
     minimap.draw(player, room?.id);
     renderer.render(scene, persp);
     labelRenderer.render(scene, persp);
   } else if (mode === 'orbit') {
-    elecLabels.children.forEach((c) => { c.visible = elecOn && (!c.userData.variant || c.userData.variant === layoutVariant || c.userData.variant === bathVariant); });
+    elecLabels.children.forEach((c) => { c.visible = elecOn && variantOn(c.userData.variant); });
     orbit.update();
     renderer.render(scene, persp);
     labelRenderer.render(scene, persp);
   } else {
-    elecLabels.children.forEach((c) => { c.visible = elecOn && (!c.userData.variant || c.userData.variant === layoutVariant || c.userData.variant === bathVariant); });
+    elecLabels.children.forEach((c) => { c.visible = elecOn && variantOn(c.userData.variant); });
     planCtl.update();
     renderer.render(scene, ortho);
     labelRenderer.render(scene, ortho);

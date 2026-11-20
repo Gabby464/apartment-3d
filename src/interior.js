@@ -68,27 +68,44 @@ export const ELECTRIC = [
     bg: 'Вариант Б: контакт + антена + интернет зад телевизора на стената', note: 'скрит зад ТВ шкафа' },
   { id: 'Т7', variant: 'B', t: 'socket', x: 610, y: 580, h: 30, n: [0, -1], w: 15, room: 'Дневна',
     bg: 'Вариант Б: двоен контакт до лежанката (лампион, зарядно)' },
-  { id: 'Т7', variant: 'A', t: 'socket', x: 357, y: 580, h: 30, n: [0, -1], w: 15, room: 'Дневна',
+  { id: 'Т7', variant: ['A', 'C', 'E'], t: 'socket', x: 357, y: 580, h: 30, n: [0, -1], w: 15, room: 'Дневна',
     bg: 'Двоен контакт до дивана (лампион, зарядно)' },
   { id: 'Л11', t: 'light', x: 593, y: 480, h: 174, n: [-1, 0], plate: false, room: 'Дневна',
     bg: 'LED под горните шкафове над дивана', note: 'захранването идва през тавана; ключът – с дневната' },
   { id: 'Т8', t: 'socket', x: 625, y: 505, h: 225, n: [1, 0], w: 15, room: 'Антре',
     bg: 'Контакт + интернет за рутера – горе в шкафа в антрето', note: 'по средата на апартамента – добро покритие' },
-  { id: 'В2', t: 'water', x: 698, y: 0, h: 50, n: [0, 1], w: 12, room: 'Кухня',
+  { id: 'В2', variant: ['k1', 'k2', 'k3'], t: 'water', x: 698, y: 0, h: 50, n: [0, 1], w: 12, room: 'Кухня',
     bg: 'Вода (топла/студена) + канал – мивката под прозореца', note: 'оттук и за съдомиялната до нея' },
-  { id: 'Т11', t: 'socket', x: 642, y: 0, h: 112, n: [0, 1], w: 15, room: 'Кухня', bg: 'Двоен контакт над плота до прозореца' },
-  { id: 'Т12', t: 'socket', x: 780, y: 30, h: 112, n: [-1, 0], w: 15, room: 'Кухня', bg: 'Двоен контакт в ъгъла (кафемашина, кана)' },
-  { id: 'Т13', t: 'socket', x: 780, y: 134, h: 112, n: [-1, 0], w: 15, room: 'Кухня', bg: 'Двоен контакт до котлона' },
-  { id: 'Т14', t: 'socket', x: 780, y: 75, h: 20, n: [-1, 0], w: 10, room: 'Кухня', bg: 'Котлон – 380V / отделен кръг', note: 'зад фурната, долу' },
-  { id: 'Т15', t: 'socket', x: 705, y: 0, h: 30, n: [0, 1], w: 8, room: 'Кухня', bg: 'Контакт за съдомиялната', note: 'под мивката, не зад машината' },
+  { id: 'Т11', variant: ['k1', 'k2', 'k3'], t: 'socket', x: 642, y: 0, h: 112, n: [0, 1], w: 15, room: 'Кухня', bg: 'Двоен контакт над плота до прозореца' },
+  { id: 'Т12', variant: ['k1', 'k2', 'k3'], t: 'socket', x: 780, y: 30, h: 112, n: [-1, 0], w: 15, room: 'Кухня', bg: 'Двоен контакт в ъгъла (кафемашина, кана)' },
+  { id: 'Т13', variant: ['k1', 'k2', 'k3'], t: 'socket', x: 780, y: 134, h: 112, n: [-1, 0], w: 15, room: 'Кухня', bg: 'Двоен контакт до котлона' },
+  { id: 'Т14', variant: ['k1', 'k2', 'k3'], t: 'socket', x: 780, y: 75, h: 20, n: [-1, 0], w: 10, room: 'Кухня', bg: 'Котлон – 380V / отделен кръг', note: 'зад фурната, долу' },
+  { id: 'Т15', variant: ['k1', 'k2', 'k3'], t: 'socket', x: 705, y: 0, h: 30, n: [0, 1], w: 8, room: 'Кухня', bg: 'Контакт за съдомиялната', note: 'под мивката, не зад машината' },
   { id: 'Т16', t: 'socket', x: 660, y: 268, h: 210, n: [0, -1], w: 8, room: 'Кухня', bg: 'Контакт за хладилника', note: 'над хладилника, в шкафа' },
-  { id: 'Т18', t: 'socket', x: 780, y: 105, h: 20, n: [-1, 0], w: 8, room: 'Кухня', bg: 'Фурна под котлона – отделен кръг', note: 'зад фурната, долу' },
-  { id: 'Т19', t: 'socket', x: 780, y: 178, h: 195, n: [-1, 0], w: 8, plate: false, room: 'Кухня', bg: 'Контакт за вградената микровълнова', note: 'в горния шкаф над нея' },
-  { id: 'Т20', t: 'socket', x: 780, y: 190, h: 112, n: [-1, 0], w: 15, room: 'Кухня', bg: 'Двоен контакт над новия плот (миксер, тостер)' },
-  { id: 'Т17', t: 'socket', x: 780, y: 90, h: 200, n: [-1, 0], w: 8, plate: false, room: 'Кухня', bg: 'Контакт за абсорбатора', note: 'в шкафа над котлона' },
+  { id: 'Т18', variant: ['k1', 'k2', 'k3'], t: 'socket', x: 780, y: 105, h: 20, n: [-1, 0], w: 8, room: 'Кухня', bg: 'Фурна под котлона – отделен кръг', note: 'зад фурната, долу' },
+  { id: 'Т19', variant: ['k1', 'k2', 'k3'], t: 'socket', x: 780, y: 178, h: 195, n: [-1, 0], w: 8, plate: false, room: 'Кухня', bg: 'Контакт за вградената микровълнова', note: 'в горния шкаф над нея' },
+  { id: 'Т20', variant: ['k1', 'k2', 'k3'], t: 'socket', x: 780, y: 190, h: 112, n: [-1, 0], w: 15, room: 'Кухня', bg: 'Двоен контакт над новия плот (миксер, тостер)' },
+  { id: 'Т17', variant: ['k1', 'k2', 'k3'], t: 'socket', x: 780, y: 90, h: 200, n: [-1, 0], w: 8, plate: false, room: 'Кухня', bg: 'Контакт за абсорбатора', note: 'в шкафа над котлона' },
   { id: 'Л13', t: 'light', x: 690, y: 120, ceil: true, room: 'Кухня', bg: 'Луни на тавана в кухнята' },
   { id: 'Л14', t: 'light', x: 745, y: 75, h: 144, n: [-1, 0], plate: false, room: 'Кухня', bg: 'LED под горните шкафове', note: 'осветява плота и котлона' },
-  { id: 'Л15', t: 'light', x: 490, y: 165, ceil: true, room: 'Дневна', bg: 'Две висящи лампи над масата' },
+  { id: 'Л15', variant: ['k1', 'k2', 'k4'], t: 'light', x: 490, y: 165, ceil: true, room: 'Дневна', bg: 'Две висящи лампи над масата' },
+  { id: 'Л15', variant: 'k3', t: 'light', x: 525, y: 165, ceil: true, room: 'Дневна', bg: 'Две висящи лампи над острова' },
+  { id: 'Т27', variant: 'k3', t: 'socket', x: 560, y: 120, h: 3, floor: true, room: 'Кухня', bg: 'Подов контакт за острова', note: 'в замазката, под острова – контакт отстрани на острова' },
+  { id: 'Т26', variant: 'k2', t: 'socket', x: 607, y: 0, h: 112, n: [0, 1], w: 15, room: 'Кухня', bg: 'Двоен контакт за кафе-станцията', note: 'между кухнята и голямата балконска врата' },
+  { id: 'В2', variant: 'k4', t: 'water', x: 780, y: 30, h: 50, n: [-1, 0], w: 12, room: 'Кухня', bg: 'Вода + канал – мивката е на дясната стена до прозореца', note: 'оттук и за съдомиялната' },
+  { id: 'Т15', variant: 'k4', t: 'socket', x: 780, y: 50, h: 30, n: [-1, 0], w: 8, room: 'Кухня', bg: 'Контакт за съдомиялната', note: 'под мивката, не зад машината' },
+  { id: 'Т11', variant: 'k4', t: 'socket', x: 780, y: 85, h: 112, n: [-1, 0], w: 15, room: 'Кухня', bg: 'Двоен контакт над съдомиялната' },
+  { id: 'Т13', variant: 'k4', t: 'socket', x: 780, y: 134, h: 112, n: [-1, 0], w: 15, room: 'Кухня', bg: 'Двоен контакт до котлона' },
+  { id: 'Т14', variant: 'k4', t: 'socket', x: 780, y: 165, h: 20, n: [-1, 0], w: 10, room: 'Кухня', bg: 'Котлон – 380V / отделен кръг', note: 'зад фурната, долу' },
+  { id: 'Т18', variant: 'k4', t: 'socket', x: 780, y: 195, h: 20, n: [-1, 0], w: 8, room: 'Кухня', bg: 'Фурна под котлона – отделен кръг', note: 'зад фурната, долу' },
+  { id: 'Т17', variant: 'k4', t: 'socket', x: 780, y: 178, h: 200, n: [-1, 0], w: 8, plate: false, room: 'Кухня', bg: 'Контакт за абсорбатора', note: 'в шкафа над котлона' },
+  { id: 'Т19', variant: 'k4', t: 'socket', x: 780, y: 90, h: 195, n: [-1, 0], w: 8, plate: false, room: 'Кухня', bg: 'Контакт за вградената микровълнова', note: 'в горния шкаф над нея' },
+  { id: 'Т20', variant: 'k4', t: 'socket', x: 765, y: 268, h: 112, n: [0, -1], w: 15, room: 'Кухня', bg: 'Двоен контакт над ъгловия плот (кафемашина, тостер)' },
+  { id: 'Т29', variant: 'C', t: 'socket', x: 515, y: 468, ceil: true, room: 'Дневна', bg: 'Таван: захранване + HDMI/интернет за проектора', note: 'тръба за HDMI до мястото на приставката/рутера' },
+  { id: 'Т30', variant: 'C', t: 'socket', x: 509, y: 288, ceil: true, room: 'Дневна', bg: 'Таван: захранване за моторизирания екран (касета в тавана)', note: 'касетата се вгражда в окачения таван' },
+  { id: 'Т10', variant: 'D', t: 'socket', x: 343, y: 518, h: 45, n: [1, 0], w: 22, room: 'Дневна', bg: 'Вариант Г: контакт + антена + интернет под прозореца', note: 'скрит зад ТВ шкафа' },
+  { id: 'Т7', variant: 'D', t: 'socket', x: 440, y: 580, h: 30, n: [0, -1], w: 15, room: 'Дневна', bg: 'Двоен контакт (лампион)' },
+  { id: 'Т28', variant: 'E', t: 'socket', x: 373, y: 225, h: 45, n: [-1, 0], w: 22, room: 'Спалня 1', bg: 'Вариант Д: контакт + антена + интернет за ТВ', note: 'зад ТВ шкафа на стената срещу дивана' },
   { id: 'К7', t: 'switch', x: 385, y: 300, h: 110, n: [1, 0], w: 15, room: 'Дневна', bg: 'Ключове: луни кухня, LED под шкафовете, лампи над масата' },
   { id: 'К8', t: 'switch', x: 750, y: 538, h: 110, n: [-1, 0], w: 15, room: 'Антре',
     bg: 'Двоен ключ за банята (до вратата, отвън): лампи + огледало', note: 'вентилаторът тръгва с лампата и работи с таймер' },
@@ -113,6 +130,13 @@ export const ELECTRIC = [
   { id: 'Л21', t: 'light', x: 215, y: 167, ceil: true, room: 'Спалня 1', bg: 'Основна лампа – таван' },
   { id: 'Т25', t: 'socket', x: 373, y: 300, h: 30, n: [-1, 0], w: 15, room: 'Спалня 1', bg: 'Двоен контакт' },
 ];
+
+// labels for layout variants (living room A–E, kitchen K1–K4)
+export const VARIANT_LABEL = { A: 'хол А', B: 'хол Б', C: 'хол В', D: 'хол Г', E: 'хол Д', k1: 'кухня К1', k2: 'кухня К2', k3: 'кухня К3', k4: 'кухня К4' };
+export const variantNote = (v) => {
+  const l = [].concat(v || []).map((k) => VARIANT_LABEL[k]).filter(Boolean);
+  return l.length ? `само при: ${l.join(', ')}` : '';
+};
 
 // ---------------------------------------------------------------- furniture list (shown in the side panel)
 export const FURNITURE = [
@@ -150,6 +174,10 @@ export const FURNITURE = [
     mech: 'чаши, чинии, подправки, горе кутии; LED отдолу; гръб от зелени zellige плочки' },
   { name: 'Хол – 2 варианта (превключват се в панела)', size: 'А: диван с гръб към спалнята, ТВ на колона | Б: диван с гръб към трапезарията, ТВ на стената към спалнята',
     mech: 'Б: диванът е отместен към телевизора, проходът от антрето (1 м) е свободен; висящ ТВ шкаф 150 × 35 с 3 чекмеджета (push), ТВ 55" на стената, ~1,6 м от очите' },
+  { name: 'Хол – варианти В, Г, Д', size: 'В: падащ екран 100" + проектор на тавана | Г: диван с гръб към мебелта, ТВ 55" на нисък шкаф под прозореца | Д: без ТВ в хола, Спалня 1 става дневна с разтегателен диван и ТВ',
+    mech: 'В: екранът се спуска/прибира с клик, проекторът е с къса прожекция (~1,8 м); Г: шкаф 122 × 38 с 2 чекмеджета (push); Д: ТВ шкаф 120 × 35 в Спалня 1' },
+  { name: 'Кухня – варианти К2, К3, К4', size: 'К2: + кафе-станция 45 × 40 см до голямата балконска врата | К3: остров 130 × 70 с 3 стола вместо масата | К4: Г-образна, без шкафовете под прозореца',
+    mech: 'К2: 2 чекмеджета, рафтове за чаши, горен шкаф; К3: 6 чекмеджета към кухнята, плот с 25 см надвес; К4: мивка до прозореца, съдомиялна, чекмеджета, котлон с фурна, микровълнова в горния шкаф' },
   { name: 'Трапезария', size: 'овална маса 140 × 90 от орех на един крак + 4 заоблени тапицирани стола',
     mech: '2 висящи лампи-сфери над масата' },
   { name: 'Баня – шкаф за пералня и сушилня', size: '65 × 65, от пода до тавана, на дясната стена',
@@ -777,7 +805,7 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
       else { quiet(b(...frL(y, y + 22, -27, -25), 129, 157, pick(['#efe9df', '#d9b8a8', '#3a3a3a']))); y += 30; }
     }
 
-    mkVariant('A', () => {
+    const sofaA = () => {
     // ---- corner sofa with chaise: back against the bedroom wall (y 580), chaise along the unit
     //      main part 250 x 95 (x 371–621), chaise 90 wide reaching 165 from the wall (y 415–580)
     const sofa = mat('#cbbfae', { roughness: 1 }), sofaDark = mat('#b9ad9b', { roughness: 1 });
@@ -807,6 +835,8 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     quiet(b(470, 422, 492, 438, 38, 41, mat('#8a5a4a')));
     block([436, 388, 500, 452]);
 
+    };
+    const tvPole = () => {
     // ---- floor-to-ceiling pole: TV swivels on it, a few small swivelling shelves above and below
     {
       const cy = 285, poleA = 470;
@@ -854,7 +884,96 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
       tv.apply = () => { tvPivot.rotation.y = Math.PI * tv.frac; };
       register(tv);
     }
-    });
+    };
+
+    // ---- C: drop-down 100" screen from a ceiling cassette on the line where the pole was + short-throw projector
+    const projector = () => {
+      const Y = 288, X1 = 400, X2 = 618, TOP = H - 10, BOT = 72;
+      b(X1 - 4, Y - 7, X2 + 3, Y + 7, TOP, H, mat('#ece9e3', { roughness: 0.8 }));        // cassette in the ceiling
+      const part = { kind: 'screen' };
+      const scrMat = mat('#f4f3f0', { roughness: 0.95 });
+      const scr = new THREE.Mesh(new THREE.BoxGeometry(M(X2 - X1), 1, M(0.4)), scrMat);
+      scr.position.set(M((X1 + X2) / 2), 0, M(Y));
+      group.add(scr);
+      const bar = new THREE.Mesh(new THREE.BoxGeometry(M(X2 - X1 + 2), M(3), M(2)), mat('#1f1f1f', { roughness: 0.4, metalness: 0.4 }));
+      bar.position.set(M((X1 + X2) / 2), 0, M(Y));
+      group.add(bar);
+      tag(scr, part); tag(bar, part);
+      part.center = new THREE.Vector2(M((X1 + X2) / 2), M(Y));
+      part.apply = () => {
+        const bottom = TOP - (TOP - BOT) * part.frac;
+        const h = Math.max(0.5, TOP - bottom);
+        scr.scale.y = M(h); scr.position.y = M(bottom + h / 2);
+        bar.position.y = M(bottom - 1.5);
+        scr.visible = part.frac > 0.01;
+      };
+      register(part);
+      part.frac = part.target = 1; part.apply();                       // shown lowered
+      // ceiling short-throw projector above the coffee table (throw ~1.8 m for a 100" picture)
+      quiet(b(513, 466, 517, 470, H - 6, H, C.black));
+      b(495, 455, 535, 482, H - 16, H - 6, mat('#ecebe8', { roughness: 0.5 }));
+      const lens = new THREE.Mesh(new THREE.CylinderGeometry(M(3.5), M(3.5), M(2), 24), mat('#20262b', { roughness: 0.1 }));
+      lens.rotation.x = Math.PI / 2; lens.position.set(M(515), M(H - 11), M(454)); group.add(lens);
+    };
+
+    // ---- D: sofa with its back against the hall unit, facing the west window; 55" TV on a low console under the window
+    const layoutD = () => {
+      const sofa = mat('#cbbfae', { roughness: 1 }), sofaDark = mat('#b9ad9b', { roughness: 1 });
+      const X = 621;
+      b(X - 95, 382, X, 580, 4, 40, sofa);
+      b(X - 21, 397, X, 565, 40, 84, sofaDark);
+      b(X - 95, 382, X, 397, 40, 62, sofa); b(X - 95, 565, X, 580, 40, 62, sofa);
+      b(X - 93, 397.5, X - 21, 480.5, 40, 50, sofa); b(X - 93, 481.5, X - 21, 564.5, 40.2, 50.2, sofa);
+      b(X - 33, 399, X - 19, 479, 50, 82, sofaDark); b(X - 33, 483, X - 19, 563, 50, 82, sofaDark);
+      quiet(b(X - 42, 405, X - 32, 443, 50, 82, C.sage)); quiet(b(X - 42, 520, X - 32, 558, 50, 82, mat('#c7a98a')));
+      block([X - 95, 382, X, 580]);
+      quiet(b(395, 400, 520, 578, 0, 1, mat('#e2d9cb', { roughness: 1 })));
+      cylinder(462, 485, 34, 38, 30, C.walnut); cylinder(462, 485, 0, 34, 11, C.walnut);
+      quiet(cylinder(455, 478, 38, 50, 5, mat('#d8cbb6')));
+      block([432, 455, 492, 515]);
+      // floating console 122 x 38 under the window, 2 push drawers; TV on a small stand
+      const nT = [1, 0], fT = 381, frT = frame(nT, fT);
+      shell(nT, fT, 457, 579, 38, 25, 55, C.walnut);
+      for (let i = 0; i < 2; i++) drawer({ n: nT, f: fT, u1: 457 + i * 61, u2: 518 + i * 61, z0: 26.8, z1: 53.2, depth: 36, front: fluted(60),
+        fill: (a) => smalls(a, 3, 2, ['#2a2a2a', '#d9d4cc', '#6d7f99'], 6) });
+      block([343, 457, 381, 579]);
+      b(358, 500, 372, 536, 55, 57, C.black); b(363, 515, 366, 521, 57, 64, C.black);
+      b(363, 457, 366, 579, 64, 134, mat('#111214', { roughness: 0.25, metalness: 0.3 }));   // 55" = 122 x 70
+      quiet(b(366, 460, 366.3, 576, 67, 131, mat('#1d2a33', { roughness: 0.15 })));
+    };
+
+    // ---- E: no TV in the living room – open sitting area; Bedroom 1 becomes a den with a sofa bed and the TV
+    const den = () => {
+      quiet(cylinder(358, 472, 0, 150, 1.2, C.black)); quiet(cylinder(358, 472, 0, 2, 13, C.black));       // floor lamp by the sofa
+      quiet(cylinder(358, 472, 140, 165, 15, C.lampShade));
+      quiet(cylinder(603, 398, 0, 40, 14, mat('#c9b9a3'))); const plant = new THREE.Mesh(new THREE.SphereGeometry(M(30), 14, 10), mat('#6f8f5a', { roughness: 0.9 }));
+      plant.position.set(M(603), M(80), M(398)); plant.scale.y = 1.4; group.add(plant); block([589, 384, 617, 412]);
+      // Bedroom 1: sofa bed facing the east wall, back towards the wardrobe (90 cm in front of the wardrobe)
+      const sb = mat('#8e9c86', { roughness: 1 }), sbD = mat('#7d8b76', { roughness: 1 });
+      b(150, 125, 245, 325, 4, 42, sb);
+      b(150, 140, 170, 310, 42, 85, sbD);
+      b(150, 125, 245, 140, 42, 60, sb); b(150, 310, 245, 325, 42, 60, sb);
+      b(170, 140.5, 243, 224.5, 42, 52, sb); b(170, 225.5, 243, 309.5, 42.2, 52.2, sb);
+      b(170, 142, 184, 223, 52, 82, sbD); b(170, 227, 184, 308, 52, 82, sbD);
+      quiet(b(184, 150, 194, 185, 52, 80, mat('#e2d9cb'))); quiet(b(184, 270, 194, 305, 52, 80, mat('#c7a98a')));
+      block([150, 125, 245, 325]);
+      quiet(b(160, 110, 340, 330, 0, 1, mat('#d6cdbf', { roughness: 1 })));
+      cylinder(292, 225, 34, 38, 26, C.walnut); cylinder(292, 225, 0, 34, 10, C.walnut);
+      block([266, 199, 318, 251]);
+      const nT = [-1, 0], fT = 338, frT = frame(nT, fT);
+      shell(nT, fT, 165, 285, 35, 25, 55, C.walnut);
+      for (let i = 0; i < 2; i++) drawer({ n: nT, f: fT, u1: 165 + i * 60, u2: 225 + i * 60, z0: 26.8, z1: 53.2, depth: 33, front: fluted(59),
+        fill: (a) => smalls(a, 3, 2, ['#2a2a2a', '#d9d4cc', '#6d7f99'], 6) });
+      block([338, 165, 373, 285]);
+      b(370, 164, 373, 286, 85, 155, mat('#111214', { roughness: 0.25, metalness: 0.3 }));
+      quiet(b(369.7, 167, 370, 283, 88, 152, mat('#1d2a33', { roughness: 0.15 })));
+      quiet(cylinder(140, 110, 0, 150, 1.2, C.black)); quiet(cylinder(140, 110, 140, 165, 15, C.lampShade));
+    };
+
+    mkVariant('A', () => { sofaA(); tvPole(); });
+    mkVariant('C', () => { sofaA(); projector(); });
+    mkVariant('D', () => { layoutD(); });
+    mkVariant('E', () => { sofaA(); den(); });
     mkVariant('B', () => {
     // ---- Variant B: sofa with its back to the dining area, moved south so the whole hall opening (y 280–380)
     //      stays free; chaise along the unit; 55" TV on the bedroom wall over a floating console
@@ -931,7 +1050,7 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
   const appliance = mat('#d9d9d6', { roughness: 0.6 });
   const steel = C.metal;
   const plates = (x, y, z0, z1, r) => { for (let z = z0; z < z1; z += 1.6) quiet(cylinder(x, y, z, z + 1, r, mat('#efebe4', { roughness: 0.3 }))); };
-  {
+  const kitchen = (kind) => {                                       // 'U' (K1–K3) or 'L' (K4)
     // ===== U-shaped kitchen =====
     // north leg (under the window, faces +y, front y 60): slim dishwasher 45 | sink 45
     // corner x 720–780 y 0–60: blind, worktop above (coffee machine)
@@ -941,6 +1060,7 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     const nE = [-1, 0], fE = 720, frE = frame(nE, fE);
     const nS = [0, -1], fS = 208, frS = frame(nS, fS);
 
+    if (kind === 'U') {
     // ---------- north leg
     quiet(b(630, 0, 720, 58, 0, 10, C.black));
     shell(nN, fN, 630, 720, 60, 10, 86, C.walnut);
@@ -992,6 +1112,37 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     quiet(b(704, 5, 713, 7, 110, 112, steel));
     quiet(b(724, 64, 776, 116, 90, 90.5, blackGlass));                            // induction hob, 60 cm worktop on its left
 
+    } else {
+      // ---------- L: no leg under the window; east run y 0–208: sink 60 | dishwasher 45 | drawers 43 | hob + oven 60
+      quiet(b(722, 0, 780, 208, 0, 10, C.black));
+      shell(nE, fE, 0, 208, 60, 10, 86, C.walnut);
+      for (const u of [60, 105, 148]) b(...frE(u - 0.9, u + 0.9, -60, -2), 10, 86, C.walnut);
+      b(...frE(0.2, 59.8, -2, 0), 70, 85.8, C.walnut);                 // false front under the sink
+      drawer({ n: nE, f: fE, u1: 0, u2: 60, z0: 10, z1: 70, depth: 55, front: C.walnut, grip: 'top', fill: (a) => {
+        const w = (a.u2 - a.u1) / 3;
+        ['#3a3a3a', '#5b6b5a', '#c7a98a'].forEach((c, i) => a.add(a.u1 + i * w + 1, a.u1 + (i + 1) * w - 1, a.v1 + 2, a.v2 - 4, a.z, a.z + 38, mat(c, { roughness: 0.6 }))); } });
+      quiet(b(...frE(62, 103, -58, -4), 12, 84, appliance));           // 45 cm dishwasher
+      for (const z of [20, 52]) {
+        quiet(b(...frE(63, 102, -56, -6), z, z + 1.2, steel));
+        for (let u = 66; u < 100; u += 4) quiet(b(...frE(u, u + 0.6, -50, -10), z + 1.2, z + 22 - (z > 30 ? 10 : 0), mat('#efebe4', { roughness: 0.3 })));
+      }
+      flap({ n: nE, f: fE, u1: 60, u2: 105, z0: 10, z1: 86, front: C.walnut, mode: 'down' });
+      drawer({ n: nE, f: fE, u1: 105, u2: 148, z0: 70, z1: 86, depth: 58, front: C.walnut, grip: 'top', fill: (a) => {
+        grid(a, 4, 1, 5); for (let i = 0; i < 4; i++) for (let k = 0; k < 4; k++) a.add(a.u1 + 2 + i * ((a.u2 - a.u1) / 4), a.u1 + 5 + i * ((a.u2 - a.u1) / 4), a.v1 + 4 + k * 3, a.v1 + 5 + k * 3, a.z, a.z + 1, steel); } });
+      drawer({ n: nE, f: fE, u1: 105, u2: 148, z0: 42, z1: 70, depth: 58, front: C.walnut, grip: 'top', fill: (a) => smalls(a, 3, 3, ['#3a3a3a', '#c9a77c', '#8f9a8a', '#d9d4cc'], 10) });
+      drawer({ n: nE, f: fE, u1: 105, u2: 148, z0: 10, z1: 42, depth: 58, front: C.walnut, grip: 'top', fill: (a) => {
+        for (const [pu, pv, r] of [[0.5, 0.3, 11], [0.5, 0.74, 12]]) a.cyl(a.u1 + pu * (a.u2 - a.u1), a.v1 + pv * (a.v2 - a.v1), a.z, a.z + 16, r, pick(['#2a2a2a', '#7a4a3a', '#5b6b5a'])); } });
+      quiet(b(...frE(150, 206, -56, -4), 28, 84, mat('#2a2a2a')));      // oven under the hob
+      quiet(b(...frE(152, 204, -54, -6), 45, 46, steel));
+      flap({ n: nE, f: fE, u1: 148, u2: 208, z0: 26, z1: 86, front: blackGlass, mode: 'down' });
+      drawer({ n: nE, f: fE, u1: 148, u2: 208, z0: 10, z1: 26, depth: 56, front: C.walnut, grip: 'top', fill: (a) => {
+        for (let k = 0; k < 3; k++) a.add(a.u1 + 2, a.u2 - 2, a.v1 + 2, a.v2 - 2, a.z + k * 2.2, a.z + k * 2.2 + 1, steel); } });
+      block([720, 0, 780, 208]);
+      b(718, 0, 780, 208, 86, 90, stone);
+      quiet(b(728, 12, 772, 50, 89.6, 90.2, mat('#3b3d3f', { roughness: 0.4 })));     // sink by the window corner
+      cylinder(776, 31, 90, 118, 1.6, steel); quiet(b(762, 30, 776, 32, 116, 119, steel));
+      quiet(b(724, 152, 776, 204, 90, 90.5, blackGlass));                            // hob, corner worktop on its right
+    }
     // ---------- tall wall
     quiet(b(630, 210, 780, 268, 0, 10, C.black));
     // fridge x 630–690
@@ -1021,32 +1172,35 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     b(718, 208, 780, 268, 86, 90, stone);
     block([628, 208, 780, 270]);
 
-    // ---------- upper cabinets over the east run (y 0–208), two rows to the ceiling, lift-up fronts; microwave built in
-    const nU = [-1, 0], fU = 745, frU = frame(nU, fU);
-    shell(nU, fU, 0, 208, 35, 145, 263, upperMat);
-    b(...frU(0, 208, -35, -2), 204, 205.8, upperMat);
-    for (const u of [60, 120, 148]) b(...frU(u - 0.9, u + 0.9, -35, -2), 145, 263, upperMat);
-    b(745, 208, 780, 268, 145, 263, upperMat);                         // closed corner upper
-    quiet(b(...frU(150, 206, -34, -4), 147, 184, mat('#2a2a2a')));      // microwave cavity
-    quiet(cylinder(...frU(178, 178, -18, -18).slice(0, 2), 147, 148, 12, mat('#e9e9e6', { roughness: 0.2 })));
-    const uAdd = (a1, a2, c1, c2, za, zb, m) => quiet(b(...frU(a1, a2, c1, c2), za, zb, m));
-    for (let u = 4; u < 56; u += 8) for (const vv of [-28, -16, -6]) quiet(cylinder(...frU(u + 3, u + 3, vv, vv).slice(0, 2), 146.8, 158, 3, mat('#dfe8ea', { roughness: 0.05, transparent: true, opacity: 0.6 })));  // glasses
-    for (let u = 4; u < 54; u += 12) { plates(...frU(u + 6, u + 6, -18, -18).slice(0, 2), 165, 175, 9); }
-    // over the hob: built-in slim hood, cabinet above
-    quiet(b(747, 62, 778, 118, 148, 150, mat('#2a2a2a', { roughness: 0.4, metalness: 0.4 })));
-    quiet(b(...frU(62, 118, -33, -4), 151.8, 172, steel));
-    for (let u = 123; u < 146; u += 6) for (const vv of [-28, -18, -8]) quiet(cylinder(...frU(u + 2, u + 2, vv, vv).slice(0, 2), 146.8, 156, 2.3, pick(['#c9a65a', '#8a5a4a', '#b84a2a', '#5b6b5a'])));
-    for (let u = 4; u < 204; u += 30) uAdd(u, Math.min(u + 26, 206), -32, -6, 205.8, 226, pick([C.box, mat('#c8b49a'), mat('#9aa7ad')]));
-    for (const [u1, u2] of [[0, 60], [60, 120], [120, 148], [148, 208]]) {
-      if (u1 === 148) hingeDoor({ n: nU, f: fU, u1, u2, z0: 145, z1: 186, hinge: 'u2', front: blackGlass });   // microwave door
-      else flap({ n: nU, f: fU, u1, u2, z0: 145, z1: 204.5, front: upperMat, mode: 'up' });
-      flap({ n: nU, f: fU, u1, u2, z0: 205, z1: 263, front: upperMat, mode: 'up' });
+    // ---------- upper cabinets over the east run, two rows to the ceiling, lift-up fronts; microwave + hood depend on the layout
+    {
+      const micro = kind === 'U' ? [148, 208] : [60, 120], hood = kind === 'U' ? [60, 120] : [148, 208];
+      const nU = [-1, 0], fU = 745, frU = frame(nU, fU);
+      shell(nU, fU, 0, 208, 35, 145, 263, upperMat);
+      b(...frU(0, 208, -35, -2), 204, 205.8, upperMat);
+      for (const u of [60, 120, 148]) b(...frU(u - 0.9, u + 0.9, -35, -2), 145, 263, upperMat);
+      b(745, 208, 780, 268, 145, 263, upperMat);                       // closed corner upper
+      quiet(b(...frU(micro[0] + 2, micro[1] - 2, -34, -4), 147, 184, mat('#2a2a2a')));
+      quiet(cylinder(...frU((micro[0] + micro[1]) / 2, (micro[0] + micro[1]) / 2, -18, -18).slice(0, 2), 147, 148, 12, mat('#e9e9e6', { roughness: 0.2 })));
+      const uAdd = (a1, a2, c1, c2, za, zb, m) => quiet(b(...frU(a1, a2, c1, c2), za, zb, m));
+      for (let u = 4; u < 56; u += 8) for (const vv of [-28, -16, -6]) quiet(cylinder(...frU(u + 3, u + 3, vv, vv).slice(0, 2), 146.8, 158, 3, mat('#dfe8ea', { roughness: 0.05, transparent: true, opacity: 0.6 })));
+      for (let u = 4; u < 54; u += 12) plates(...frU(u + 6, u + 6, -18, -18).slice(0, 2), 165, 175, 9);
+      quiet(b(747, hood[0] + 2, 778, hood[1] - 2, 148, 150, mat('#2a2a2a', { roughness: 0.4, metalness: 0.4 })));
+      quiet(b(...frU(hood[0] + 2, hood[1] - 2, -33, -4), 151.8, 172, steel));
+      for (let u = 123; u < 146; u += 6) for (const vv of [-28, -18, -8]) quiet(cylinder(...frU(u + 2, u + 2, vv, vv).slice(0, 2), 146.8, 156, 2.3, pick(['#c9a65a', '#8a5a4a', '#b84a2a', '#5b6b5a'])));
+      for (let u = 4; u < 204; u += 30) uAdd(u, Math.min(u + 26, 206), -32, -6, 205.8, 226, pick([C.box, mat('#c8b49a'), mat('#9aa7ad')]));
+      for (const [u1, u2] of [[0, 60], [60, 120], [120, 148], [148, 208]]) {
+        if (u1 === micro[0]) {
+          hingeDoor({ n: nU, f: fU, u1, u2, z0: 145, z1: 186, hinge: 'u2', front: blackGlass });
+          b(...frU(u1 + 0.4, u2 - 0.4, -2, 0), 186.2, 204.3, upperMat);
+        } else flap({ n: nU, f: fU, u1, u2, z0: 145, z1: 204.5, front: upperMat, mode: 'up' });
+        flap({ n: nU, f: fU, u1, u2, z0: 205, z1: 263, front: upperMat, mode: 'up' });
+      }
+      quiet(b(...frU(2, 206, -4, -2), 143.5, 145, C.lightGlow));
     }
-    b(...frU(148.4, 207.6, -2, 0), 186.2, 204.3, upperMat);             // fixed panel above the microwave
-    quiet(b(...frU(2, 206, -4, -2), 143.5, 145, C.lightGlow));          // LED under the uppers
     // backsplash – sage zellige
-    quiet(b(779, 0, 780, 208, 90, 145, zellige(21, 5.5)));
-    quiet(b(630, 0, 720, 1, 90, 104, zellige(9, 1.4)));
+    quiet(b(779, 0, 780, 268, 90, 145, zellige(27, 5.5)));
+    if (kind === 'U') quiet(b(630, 0, 720, 1, 90, 104, zellige(9, 1.4)));
     // open walnut shelf above the window with plants
     b(632, 0, 718, 22, 236, 238.5, C.walnut);
     for (const [x, r, h] of [[642, 6, 14], [668, 4, 10], [700, 7, 16]]) {
@@ -1055,10 +1209,9 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
       leaf.position.set(M(x), M(238.5 + h * 0.6 + r), M(11));
       group.add(leaf);
     }
-  }
+  };
 
-  // ---------- dining: oval walnut table on a pedestal, 4 rounded upholstered chairs
-  {
+  const diningOval = () => {
     const TX = 490, TY = 165, RX = 70, RY = 45;                         // table 140 x 90
     const oval = (rx, ry, z0, z1, m) => {
       const mesh = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, M(z1 - z0), 64), m);
@@ -1099,7 +1252,66 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     const bowl = new THREE.Mesh(new THREE.SphereGeometry(M(11), 24, 12, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), mat('#8a5a4a', { roughness: 0.5 }));
     bowl.position.set(M(505), M(86), M(170));
     group.add(bowl);
-  }
+    };
+
+  // ---------- K2: coffee / breakfast station on the north wall between the kitchen and the big balcony door (60 x 40)
+  const coffee = () => {
+    const n = [0, 1], f = 40, fr = frame(n, f);
+    quiet(b(587, 0, 630, 38, 0, 10, C.black));
+    shell(n, f, 585, 630, 40, 10, 86, C.walnut);
+    drawer({ n, f, u1: 585, u2: 630, z0: 62, z1: 86, depth: 38, front: C.walnut, grip: 'top', fill: (a) => {
+      grid(a, 3, 2, 8); for (let i = 0; i < 9; i++) a.cyl(a.u1 + 5 + (i % 3) * 12, a.v1 + 8 + ((i / 3) | 0) * 16, a.z, a.z + 2.5, 2, pick(['#b84a2a', '#2a2a2a', '#c9a65a', '#5b6b5a'])); } });
+    drawer({ n, f, u1: 585, u2: 630, z0: 10, z1: 62, depth: 38, front: C.walnut, grip: 'top', fill: (a) => {
+      for (const [pu, pv] of [[0.25, 0.3], [0.7, 0.3], [0.3, 0.75], [0.72, 0.72]]) a.cyl(a.u1 + pu * (a.u2 - a.u1), a.v1 + pv * (a.v2 - a.v1), a.z, a.z + 18, 6, pick(['#e9d6b8', '#c9a65a', '#efebe4', '#8a5a4a'])); } });
+    b(583, 0, 630, 42, 86, 90, stone);
+    quiet(b(593, 4, 623, 36, 90, 128, mat('#2a2a2a', { roughness: 0.4, metalness: 0.4 })));   // coffee machine
+    quiet(b(598, 35, 618, 37, 100, 112, steel));
+    for (const z of [132, 165]) {
+      b(585, 0, 630, 24, z, z + 2.5, C.walnut);                          // open shelves with cups
+      for (let x = 590; x < 627; x += 9) quiet(cylinder(x, 12, z + 2.5, z + 11, 3.5, pick([mat('#efebe4'), mat('#c58b7a'), mat('#5b6b5a'), mat('#e3c9a8')])));
+    }
+    const nU2 = [0, 1], fU2 = 30;
+    shell(nU2, fU2, 585, 630, 30, 205, 263, upperMat);
+    flap({ n: nU2, f: fU2, u1: 585, u2: 630, z0: 205, z1: 263, front: upperMat, mode: 'up' });
+    block([583, 0, 630, 42]);
+  };
+
+  // ---------- K3: kitchen island 130 x 70 instead of the dining table – drawers towards the kitchen, 3 stools on the dining side
+  const island = () => {
+    const n = [1, 0], f = 560, fr = frame(n, f);
+    quiet(b(517, 102, 558, 228, 0, 10, C.black));
+    shell(n, f, 100, 230, 45, 10, 88, C.walnut);
+    for (const u of [143.3, 186.7]) b(...fr(u - 0.9, u + 0.9, -45, -2), 10, 88, C.walnut);
+    const fills = [(a) => { for (let k = 0; k < 2; k++) a.cyl((a.u1 + a.u2) / 2, a.v1 + 10 + k * 18, a.z, a.z + 9, 9, mat('#efebe4', { roughness: 0.3 })); },
+      (a) => folded(a, 2, linenCols, 3), (a) => smalls(a, 3, 2, ['#3a3a3a', '#c9a77c', '#8f9a8a'], 10)];
+    [[100, 143.3], [143.3, 186.7], [186.7, 230]].forEach(([u1, u2], i) => {
+      drawer({ n, f, u1, u2, z0: 49, z1: 88, depth: 43, front: C.walnut, grip: 'top', fill: fills[i] });
+      drawer({ n, f, u1, u2, z0: 10, z1: 49, depth: 43, front: C.walnut, grip: 'top', fill: fills[(i + 1) % 3] });
+    });
+    b(513, 100, 515, 230, 10, 88, fluted(130));                        // fluted back towards the stools
+    b(488, 97, 562, 233, 88, 92, stone);                               // top with 25 cm overhang
+    const seat = mat('#d8cdbd', { roughness: 1 });
+    for (const y of [125, 165, 205]) {
+      cylinder(478, y, 63, 67, 17, seat);
+      for (const [dx, dy] of [[-11, -11], [11, -11], [-11, 11], [11, 11]]) cylinder(478 + dx, y + dy, 0, 63, 1.2, C.walnut);
+      quiet(b(466, y - 12, 490, y + 12, 25, 26.5, C.walnut));
+      block([461, y - 17, 495, y + 17]);
+    }
+    block([488, 97, 562, 233]);
+    for (const y of [130, 200]) {
+      quiet(cylinder(525, y, 175, H, 0.3, C.black));
+      const globe = new THREE.Mesh(new THREE.SphereGeometry(M(13), 24, 16), C.lampShade);
+      globe.position.set(M(525), M(165), M(y)); group.add(globe);
+    }
+    quiet(cylinder(530, 150, 92, 104, 4, mat('#d8cbb6')));
+    const bowl = new THREE.Mesh(new THREE.SphereGeometry(M(11), 24, 12, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), mat('#8a5a4a', { roughness: 0.5 }));
+    bowl.position.set(M(525), M(103), M(190)); group.add(bowl);
+  };
+
+  mkVariant('k1', () => { kitchen('U'); diningOval(); });
+  mkVariant('k2', () => { kitchen('U'); coffee(); diningOval(); });
+  mkVariant('k3', () => { kitchen('U'); island(); });
+  mkVariant('k4', () => { kitchen('L'); diningOval(); });
 
   // ======================= HALL: capsule mirror with halo light + floating key console =======================
   {
@@ -1378,8 +1590,8 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
 
   // ======================= ELECTRICAL PLATES =======================
   const realGroupAll = group;
-  for (const p of ELECTRIC) {
-    group = p.variant ? variants[p.variant].g : realGroupAll;
+  for (const p of ELECTRIC) for (const vk of [].concat(p.variant || [null])) {
+    group = vk ? variants[vk].g : realGroupAll;
     if (p.floor) { quiet(b(p.x - 7, p.y - 7, p.x + 7, p.y + 7, 0, 0.6, C.metal)); continue; }
     if (p.ceil || p.plate === false) continue;
     const w = p.w || 8, [nx, ny] = p.n;
@@ -1392,7 +1604,7 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
   group = realGroupAll;
 
   // living-room layout variants: A = sofa against the bedroom wall, TV on the pole; B = swapped
-  const fam = (k) => (k.startsWith('b') ? 'bath' : 'living');
+  const fam = (k) => (k.startsWith('b') ? 'bath' : k.startsWith('k') ? 'kitchen' : 'living');
   const setVariant = (key) => {
     for (const [k, v] of Object.entries(variants)) {
       if (fam(k) !== fam(key)) continue;
@@ -1402,5 +1614,6 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
   };
   setVariant('A');
   setVariant('bA');
+  setVariant('k1');
   return { setVariant };
 }
