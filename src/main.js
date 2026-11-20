@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { H, INFO, ROOMS, WALLS, RAILINGS, LANDING, LANDING_LIMITS } from './plan.js?v=20261119151846';
-import { woodTexture, tileTexture } from './textures.js?v=20261119151846';
-import { Minimap } from './minimap.js?v=20261119151846';
-import { buildInterior, ELECTRIC, FURNITURE } from './interior.js?v=20261119151846';
+import { H, INFO, ROOMS, WALLS, RAILINGS, LANDING, LANDING_LIMITS } from './plan.js?v=20261120083145';
+import { woodTexture, tileTexture } from './textures.js?v=20261120083145';
+import { Minimap } from './minimap.js?v=20261120083145';
+import { buildInterior, ELECTRIC, FURNITURE } from './interior.js?v=20261120083145';
 
 const M = (v) => v / 100; // cm -> m
 const EYE = 1.6;

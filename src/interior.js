@@ -151,8 +151,8 @@ export const FURNITURE = [
     mech: 'пералня + сушилня една върху друга с рафт-поставка между тях, врата пред тях (push); горе препарати и кърпи' },
   { name: '– умивалник 100 см', size: 'каменен плот с вградена мивка, висящ шкаф 48 дълбок',
     mech: 'горно чекмедже за козметика; отдолу 3 издърпващи се коша за пране – бяло, тъмно, цветно; над него огледален шкаф 100 × 70 с LED и рафт за кърпи' },
-  { name: '– висяща тоалетна', size: 'вградено казанче в облицована „полица“ 20 × 110 см',
-    mech: 'бутонът е в черно, отгоре полица от орех' },
+  { name: '– висяща тоалетна', size: 'вградено казанче в облицована „полица“ 20 × 110 см; над нея вграден шкаф 102 × 20 от 140 см до тавана',
+    mech: 'бутонът е в черно, отгоре полица от орех; шкафът е на една линия с полицата, 2 врати с push, 2 рафта вътре (тоалетна хартия, резервна козметика, препарати, кърпи), LED отдолу' },
   { name: '– душ 90 × 92 на нивото на плочките', size: 'линеен сифон по стената, без праг',
     mech: 'стъклена врата + неподвижни стъкла с тънък черен профил; таванен душ, ръчен душ, ниша с LED' },
   { name: '– облицовка', size: 'плочки 60 × 120 с вид на камък, до тавана',
@@ -1231,6 +1231,21 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     quiet(cylinder(820, 688, 112, 128, 4, mat('#8f9a8a'))); quiet(b(835, 683, 855, 692, 112, 114, mat('#e9e3d8')));
     block([762, 624, 815, 698]);
     block([762, 676, 865, 698]);
+    // built-in cabinet above the WC, flush with the installation ledge (20 deep), from 140 cm to the ceiling
+    {
+      const nW = [0, -1], fW = 678, frW = frame(nW, fW);
+      shell(nW, fW, 763, 865, 20, 140, 263, C.walnut);
+      quiet(b(...frW(765, 863, -4, -2), 138.6, 140, C.lightGlow));      // LED under the cabinet – lights the shelf niche
+      for (const z of [180, 222]) b(...frW(765, 863, -18, -2), z, z + 1.6, C.inner);
+      // toilet paper, spare toiletries, cleaning products, towels on top
+      for (let k = 0; k < 6; k++) quiet(cylinder(...frW(772 + k * 8.5, 772 + k * 8.5, -10, -10).slice(0, 2), 141.8, 152, 4, mat('#f6f5f2', { roughness: 1 })));
+      for (let k = 0; k < 6; k++) quiet(cylinder(...frW(772 + k * 8.5, 772 + k * 8.5, -10, -10).slice(0, 2), 152.2, 162.4, 4, mat('#f6f5f2', { roughness: 1 })));
+      for (let u = 825; u < 860; u += 7) quiet(cylinder(...frW(u, u, -10, -10).slice(0, 2), 141.8, 156 + rnd() * 10, 2.8, pick(['#e6eef0', '#9fc3d0', '#f0e2b6', '#c7d6c0'])));
+      for (let u = 768; u < 860; u += 8 + rnd() * 4) quiet(cylinder(...frW(u, u, -10, -10).slice(0, 2), 181.6, 192 + rnd() * 8, 2.2, pick(['#efe9df', '#c58b7a', '#9fb3c2', '#2a2a2a', '#e3c9a8'])));
+      folded({ u1: 766, u2: 862, v1: -18, v2: -3, z: 223.6, h: 34, add: (a1, a2, c1, c2, za, zb, m) => quiet(b(...frW(a1, a2, c1, c2), za, zb, m)) }, 3, linenCols, 6);
+      hingeDoor({ n: nW, f: fW, u1: 763, u2: 814, z0: 140, z1: 263, hinge: 'u1', front: C.walnut });
+      hingeDoor({ n: nW, f: fW, u1: 814, u2: 865, z0: 140, z1: 263, hinge: 'u2', front: C.walnut });
+    }
 
     // ---------- walk-in level shower 90 x 92: linear drain, glass hinged door + fixed panels, rain head, lit niche
     quiet(b(951, 612, 957, 692, 0, 0.35, steel));                      // linear drain along the east wall
