@@ -107,6 +107,11 @@ export const ELECTRIC = [
   { id: 'Л18', t: 'light', x: 798, y: 535, ceil: true, room: 'Баня', bg: 'Луни на тавана (IP44), едната над душа (IP65)' },
   { id: 'Д3', t: 'fan', x: 845, y: 640, ceil: true, room: 'Баня', bg: 'Вентилатор с таймер и датчик за влажност', note: 'банята е без прозорец – задължително' },
   { id: 'Л19', t: 'light', x: 920, y: 698, h: 144, n: [0, -1], plate: false, room: 'Баня', bg: 'LED в нишата на душа (IP65, 12V)' },
+  { id: 'Л20', t: 'light', x: 60, y: 167, h: 222, n: [1, 0], plate: false, room: 'Спалня 1',
+    bg: 'LED в гардероба – светва при отваряне', note: 'датчик на вратите; захранване от тавана' },
+  { id: 'К9', t: 'switch', x: 373, y: 130, h: 110, n: [-1, 0], w: 8, room: 'Спалня 1', bg: 'Ключ – основна лампа, до вратата' },
+  { id: 'Л21', t: 'light', x: 215, y: 167, ceil: true, room: 'Спалня 1', bg: 'Основна лампа – таван' },
+  { id: 'Т25', t: 'socket', x: 373, y: 300, h: 30, n: [-1, 0], w: 15, room: 'Спалня 1', bg: 'Двоен контакт' },
 ];
 
 // ---------------------------------------------------------------- furniture list (shown in the side panel)
@@ -157,6 +162,8 @@ export const FURNITURE = [
     mech: 'стъклена врата + неподвижни стъкла с тънък черен профил; таванен душ, ръчен душ, ниша с LED' },
   { name: '– облицовка', size: 'плочки 60 × 120 с вид на камък, до тавана',
     mech: 'черна електрическа лира за кърпи на лявата стена; вратата на банята е 70 см и се отваря плътно към горната стена' },
+  { name: 'Спалня 1 – вграден гардероб', size: '335 × 60, от пода до тавана, по стената срещу вратата',
+    mech: '6 високи + 6 горни врати от орех с push, без дръжки; вътре: дълги дрехи + обувки | два реда закачалки | рафтове | 4 вътрешни чекмеджета (бижута, бельо, тениски) + рафтове; горе кутии; LED, който светва при отваряне' },
 ];
 
 // ---------------------------------------------------------------- materials
@@ -1273,6 +1280,68 @@ export function buildInterior({ box, M, group, colliders, addDoor, pickables, H 
     // ceiling lights + fan
     for (const [x, y] of [[798, 500], [798, 570], [918, 652]]) quiet(cylinder(x, y, H - 1, H, 4.5, C.lightGlow));
     quiet(cylinder(845, 640, H - 1, H, 10, mat('#efefec')));
+  }
+
+  // ======================= BEDROOM 1: built-in wardrobe along the west wall (opposite the door) =======================
+  // 335 x 60, floor to ceiling, 6 push-to-open doors + 6 top doors; front at x 60, faces +x
+  {
+    const nW = [1, 0], fW = 60, frW = frame(nW, fW);
+    quiet(b(0, 0, 58, 335, 0, 6, C.black));                           // recessed plinth
+    shell(nW, fW, 0, 335, 60, 6, 263, C.walnut);
+    const cols = [0, 111.7, 223.3, 279.2, 335];                        // sections: long hang | double hang | shelves | drawers + shelves
+    for (const u of cols.slice(1, -1)) b(...frW(u - 0.9, u + 0.9, -60, -2), 6, 263, C.walnut);
+    b(...frW(1.8, 333.2, -60, -2), 223, 224.8, C.walnut);              // shelf under the top boxes
+    const railY = (u1, u2, z) => {
+      const m = new THREE.Mesh(new THREE.CylinderGeometry(M(1.2), M(1.2), M(u2 - u1), 12), C.black);
+      m.rotation.x = Math.PI / 2; m.position.set(M(30), M(z), M((u1 + u2) / 2)); group.add(m);
+    };
+    const hang = (u1, u2, top, minL, maxL) => {
+      for (let y = u1 + 3; y < u2 - 4; y += 3.6 + rnd() * 2.5) {
+        const len = minL + rnd() * (maxL - minL);
+        quiet(b(8 + rnd() * 3, y, 52 - rnd() * 3, y + 2.4, top - len, top - 3, pick(clothCols)));
+      }
+    };
+    // section 1 (0–111.7): long hanging – coats, dresses; shoe shelves below
+    railY(1.8, 110.8, 212); hang(1.8, 110.8, 210, 105, 150);
+    for (const z of [22, 42]) {
+      b(...frW(1.8, 110.8, -58, -4), z, z + 1.6, C.inner);
+      for (let y = 6; y < 104; y += 13) { const m = pick(['#2a2a2a', '#7a5a43', '#c8b49a', '#8e3b36', '#e8e2d6']); quiet(b(...frW(y, y + 5, -45, -8), z + 1.6, z + 9, m)); quiet(b(...frW(y + 6, y + 11, -45, -8), z + 1.6, z + 9, m)); }
+    }
+    for (let y = 6; y < 104; y += 13) { const m = pick(['#2a2a2a', '#7a5a43', '#c8b49a']); quiet(b(...frW(y, y + 5, -45, -8), 6, 13, m)); quiet(b(...frW(y + 6, y + 11, -45, -8), 6, 13, m)); }
+    // section 2 (111.7–223.3): double hanging – shirts, trousers
+    railY(112.6, 222.4, 212); hang(112.6, 222.4, 210, 70, 85);
+    b(...frW(112.6, 222.4, -58, -2), 118, 119.6, C.inner);
+    railY(112.6, 222.4, 112); hang(112.6, 222.4, 110, 55, 65);
+    // section 3 (223.3–279.2): shelves with folded clothes
+    const sAdd = (a1, a2, c1, c2, za, zb, m) => quiet(b(...frW(a1, a2, c1, c2), za, zb, m));
+    const sh3 = [6, 44, 82, 120, 158, 192];
+    for (const z of sh3.slice(1)) b(...frW(224.2, 278.3, -58, -2), z, z + 1.6, C.inner);
+    sh3.forEach((z, k) => folded({ u1: 225, u2: 277, v1: -55, v2: -6, z: z + (k ? 1.6 : 0), h: 28, add: sAdd }, 2, k > 3 ? linenCols : clothCols, 4.5));
+    // section 4 (279.2–335): 4 inner drawers with organisers, shelves above
+    const dFills = [
+      (a) => { a.add(a.u1, a.u2, a.v1, a.v2, a.z, a.z + 0.6, C.velvet); const a2 = { ...a, z: a.z + 0.6, h: 4 }; grid(a2, 4, 4, 3.5, C.velvetDark); smalls(a2, 8, 6, gold, 2); },
+      (a) => { grid(a, 4, 5, 9); smalls(a, 4, 5, ['#e8e2d6', '#d9b8a8', '#2a2a2a', '#c7b49b'], 6); },
+      (a) => folded(a, 2, clothCols, 3),
+      (a) => folded(a, 2, linenCols, 5),
+    ];
+    [[69, 88], [50, 69], [28, 50], [6, 28]].forEach(([z0, z1], i) =>
+      drawer({ n: nW, f: fW - 3, u1: 280.4, u2: 333.4, z0, z1, depth: 52, front: C.walnut, grip: 'top', fill: dFills[i] }));
+    for (const z of [90, 130, 172]) b(...frW(280.1, 333.2, -58, -2), z, z + 1.6, C.inner);
+    folded({ u1: 281, u2: 332, v1: -55, v2: -6, z: 91.6, h: 30, add: sAdd }, 2, clothCols, 5);
+    sAdd(283, 330, -50, -10, 131.6, 160, mat('#7a5a43', { roughness: 0.6 }));                  // bag
+    folded({ u1: 281, u2: 332, v1: -55, v2: -6, z: 173.6, h: 34, add: sAdd }, 2, linenCols, 6);
+    // top boxes
+    for (let y = 4; y < 330; y += 41) sAdd(y, Math.min(y + 37, 332), -54, -6, 224.8, 250, pick([C.box, mat('#c8b49a'), mat('#9aa7ad')]));
+    // LED strips inside (door switch)
+    for (const [u1, u2] of [[1.8, 110.8], [112.6, 222.4]]) quiet(b(...frW(u1, u2, -6, -4), 221, 222.8, C.lightGlow));
+    // doors: 6 tall (to 224) + 6 top (224–263), push-to-open, hinged in pairs
+    const dw = 335 / 6;
+    for (let i = 0; i < 6; i++) {
+      const u1 = i * dw, u2 = (i + 1) * dw, hinge = i % 2 ? 'u2' : 'u1';
+      hingeDoor({ n: nW, f: fW, u1, u2, z0: 6, z1: 224, hinge, front: C.walnut });
+      hingeDoor({ n: nW, f: fW, u1, u2, z0: 224, z1: 263, hinge, front: C.walnut });
+    }
+    block([0, 0, 60, 335]);
   }
 
   // closet ceiling light + sensor
