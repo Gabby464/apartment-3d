@@ -139,3 +139,4 @@ body:not(.show-elec) #elec-box { display: none; }
 #bath-variant span { color: var(--muted); margin-right: 2px; }
 #bath-variant button { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 5px 8px; font-size: 12px; }
 #bath-variant button.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+.link-btn { display: block; text-align: center; text-decoration: none; color: var(--ink); background: #f3ece4; }

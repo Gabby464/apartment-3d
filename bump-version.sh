@@ -5,5 +5,6 @@ set -e
 cd "$(dirname "$0")"
 V=$(date -u +%Y%m%d%H%M%S)
 sed -i -E "s#(src/main\.js|style\.css)(\?v=[0-9]+)?\"#\1?v=$V\"#g" index.html
-sed -i -E "s#from '\./(plan|textures|minimap|interior)\.js(\?v=[0-9]+)?'#from './\1.js?v=$V'#g" src/main.js
+sed -i -E "s#from '\./(plan|textures|minimap|interior)\.js(\?v=[0-9]+)?'#from './\1.js?v=$V'#g" src/main.js src/changes.js
+sed -i -E "s#src/changes\.js(\?v=[0-9]+)?\"#src/changes.js?v=$V\"#g; s#changes\.html(\?v=[0-9]+)?\"#changes.html?v=$V\"#g" changes.html index.html
 echo "version $V"

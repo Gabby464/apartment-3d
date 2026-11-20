@@ -33,6 +33,12 @@ Furnished so far: the master bedroom and its open, U-shaped walk-in closet with 
 doors, plus all electrical points (switches, sockets, lights, sensor) with heights. Furniture and the
 electrical layer can be toggled in the side panel. Interior lives in [`src/interior.js`](src/interior.js).
 
+## Changes for the developer
+
+[`changes.html`](changes.html) lists every change to request from the developer (walls, doors, kitchen,
+bathroom, electrical and plumbing points with heights). It is printable and has per-item "agreed"
+checkboxes. The points table is generated from `ELECTRIC` in `src/interior.js`.
+
 ## Editing the geometry
 
 All geometry lives in [`src/plan.js`](src/plan.js), in centimetres, using the same orientation as the
